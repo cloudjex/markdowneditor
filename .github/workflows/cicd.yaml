@@ -8,7 +8,6 @@ env:
   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
   AWS_DEFAULT_REGION: us-east-1
-  AWS_S3_BUCKET: cloudjex-s3
 
 jobs:
   fastapi:
@@ -87,9 +86,20 @@ jobs:
         run: |
           terraform_output=$(terraform output -json)
           echo $terraform_output
-          value=$(echo "$terraform_output" | jq -r '.cloudfront_id.value')
-          echo $value
+          
+          cloudfront_id=$(echo "$terraform_output" | jq -r '.cloudfront_id.value')
+          s3_bucket=$(echo "$terraform_output" | jq -r '.s3_bucket.value')
+
+          echo "cloudfront_id=$cloudfront_id" >> $GITHUB_OUTPUT
+          echo "s3_bucket=$s3_bucket" >> $GITHUB_OUTPUT
 
       - name: Copy Objects
         working-directory: ./react
-        run: aws s3 cp ./dist "s3://${{ env.AWS_S3_BUCKET }}" --recursive
+        run: |
+          s3_bucket=${{ steps.tf_output.outputs.s3_bucket }}
+          aws s3 cp ./dist "s3://${{ s3_bucket }}" --recursive
+
+      - name: Clear Cloudfront Cache
+        run: |
+          cloudfront_id=${{ steps.tf_output.outputs.cloudfront_id }}
+          aws cloudfront create-invalidation --distribution-id $cloudfront_id --paths "/*"

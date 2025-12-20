@@ -31,6 +31,6 @@ resource "aws_s3_bucket_policy" "frontend_policy" {
   })
 }
 
-output "s3" {
+output "s3_bucket" {
   value = aws_s3_bucket.frontend.bucket
 }
