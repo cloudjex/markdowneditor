@@ -75,14 +75,13 @@ function get_url_node_id(): string {
 }
 
 function get_node(tree: TreeNode, node_id: string): TreeNode {
-  const parts = node_id
-    .split("/")
-    .filter((part) => part && part !== "Folder");
+  let parts = node_id.split("/");
+  parts = parts.filter((part) => part && part !== "Folder");
 
   let current: TreeNode = tree;
   for (const part of parts) {
-    if (!current || !Array.isArray(current.children)) {
-      throw new Error(`current is invalid: node_id=${node_id}`);
+    if (!Array.isArray(current.children)) {
+      throw new Error(`current not have children: node_id=${node_id}`);
     };
 
     const next = current.children.find((child: TreeNode) => child.label === part);

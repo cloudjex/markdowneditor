@@ -13,17 +13,14 @@ function Breadcrumb() {
   const url_node_id = searchParams.get('node_id');
 
   let parentNodes = [];
+  const parents = utils.get_parent_node_ids(url_node_id);
 
-  if (tree && url_node_id) {
-    const parents = utils.get_parent_node_ids(url_node_id) || [];
-
-    const nodes = [
-      ...parents.map((id) => utils.get_node(tree, id)),
-      utils.get_node(tree, url_node_id),
-    ];
-
-    parentNodes = nodes;
-  }
+  try {
+    const this_node = utils.get_node(tree, url_node_id);
+    parentNodes = [...parents.map((id) => utils.get_node(tree, id)), this_node]
+  } catch {
+    parentNodes = [...parents.map((id) => utils.get_node(tree, id))]
+  };
 
   return (
     <Breadcrumbs aria-label="breadcrumb" sx={{ mb: 2 }}>
