@@ -17,9 +17,9 @@ function Breadcrumb() {
 
   try {
     const this_node = utils.get_node(tree, url_node_id);
-    parentNodes = [...parents.map((id) => utils.get_node(tree, id)), this_node]
+    parentNodes = [...parents.map((id) => utils.get_node(tree, id)), this_node];
   } catch {
-    parentNodes = [...parents.map((id) => utils.get_node(tree, id))]
+    parentNodes = [...parents.map((id) => utils.get_node(tree, id))];
   };
 
   return (
