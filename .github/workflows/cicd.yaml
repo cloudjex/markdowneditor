@@ -1,0 +1,86 @@
+name: CICD Workflow
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+env:
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  AWS_DEFAULT_REGION: us-east-1
+  AWS_S3_BUCKET: cloudjex-s3
+
+jobs:
+  fastapi:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./.github
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.13
+
+      - name: Local API Test
+        working-directory: ./fastapi
+        run: |
+          pip install -r requirements.txt
+          pip install pytest
+          pytest
+
+      - name: Build Lambda package
+        run: |
+          pip install -r ../fastapi/requirements.txt -t ./build
+          cp -r ../fastapi/* ./build/
+          cd ./build
+          zip -r deploy.zip .
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform Init
+        working-directory: ./.github/fastapi_terraform
+        run: terraform init
+
+      - name: Terraform Apply
+        working-directory: ./.github/fastapi_terraform
+        run: terraform apply -auto-approve
+
+  react:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./.github
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+
+      - name: Build
+        working-directory: ./react
+        run: |
+          npm ci
+          npm run build
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform Init
+        working-directory: ./.github/react_terraform
+        run: terraform init
+
+      - name: Terraform Apply
+        working-directory: ./.github/react_terraform
+        run: terraform apply -auto-approve
+
+      - name: Copy Objects
+        working-directory: ./react
+        run: aws s3 cp ./dist "s3://${{ env.AWS_S3_BUCKET }}" --recursive
