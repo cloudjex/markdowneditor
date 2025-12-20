@@ -18,12 +18,12 @@ import Loading from './loading';
 function Profile() {
   const navigate = useNavigate();
 
-  const { email, id_token } = userStore();
+  const { email, id_token, reset } = userStore();
   const [isLoading, setLoading] = useState(false);
-  const [isMenuOpen, setIsMenuOpen] = useState(null);
+  const [isMenuOpen, setIsMenuOpen] = useState<null | HTMLElement>(null);
   const [isOpenLogoutDialog, setOpenLogoutDialog] = useState(false);
 
-  const handleMenuOpen = (event) => {
+  const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setIsMenuOpen(event.currentTarget);
   };
 
@@ -31,7 +31,7 @@ function Profile() {
     setIsMenuOpen(null);
   };
 
-  const clickInformation = (path) => {
+  const clickInformation = (path: string) => {
     window.open(path);
     handleMenuClose();
   };
@@ -53,7 +53,7 @@ function Profile() {
     );
     setLoading(false);
 
-    userStore.getState().reset();
+    reset();
     navigate("/");
   };
 

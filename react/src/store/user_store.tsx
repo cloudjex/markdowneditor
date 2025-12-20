@@ -8,6 +8,14 @@ interface UserState {
   password: string;
   id_token: string;
   tree: TreeNode | null;
+
+  /* eslint-disable no-unused-vars */
+  setEmail: (email: string) => void;
+  setPassword: (password: string) => void;
+  setIdToken: (id_token: string) => void;
+  setTree: (tree: TreeNode | null) => void;
+
+  reset: () => void;
 }
 
 const userStore = create<UserState>()(
