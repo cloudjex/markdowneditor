@@ -93,13 +93,16 @@ jobs:
           echo "cloudfront_id=$cloudfront_id" >> $GITHUB_OUTPUT
           echo "s3_bucket=$s3_bucket" >> $GITHUB_OUTPUT
 
-      - name: Copy Objects
+      - name: Copy Objects to S3
         working-directory: ./react
+        env:
+          S3_BUCKET: ${{ steps.tf_output.outputs.s3_bucket }}
         run: |
-          s3_bucket=${{ steps.tf_output.outputs.s3_bucket }}
-          aws s3 cp ./dist "s3://${{ s3_bucket }}" --recursive
+          aws s3 cp ./dist "s3://$S3_BUCKET" --recursive
 
       - name: Clear Cloudfront Cache
+        env:
+          CLOUDFRONT_ID: ${{ steps.tf_output.outputs.cloudfront_id }}
         run: |
-          cloudfront_id=${{ steps.tf_output.outputs.cloudfront_id }}
-          aws cloudfront create-invalidation --distribution-id $cloudfront_id --paths "/*"
+          echo "Invalidating CloudFront distribution: $CLOUDFRONT_ID"
+          aws cloudfront create-invalidation --distribution-id "$CLOUDFRONT_ID" --paths "/*"
