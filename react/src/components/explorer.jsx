@@ -14,7 +14,7 @@ import TreeUpdate from './tree_update.jsx';
 
 function Explorer() {
   const navigate = useNavigate();
-  const { id_token, tree, setTree } = userStore();
+  const { id_token, tree } = userStore();
 
   const url_node_id = utils.get_url_node_id();
 
@@ -36,10 +36,6 @@ function Explorer() {
       setHasInitialized(true);
     }
   }, [tree, url_node_id, hasInitialized]);
-
-  useEffect(() => {
-    setTree(tree);
-  }, [tree]);
 
   const handleItemClick = (_, itemId) => {
     setCurrentNodeId(itemId);

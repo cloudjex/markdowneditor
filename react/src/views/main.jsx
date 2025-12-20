@@ -20,7 +20,7 @@ function Main() {
       var res = utils.requests(
         `${import.meta.env.VITE_API_HOST}/trees`,
         "GET",
-        { Authorization: `Bearer ${id_token}` },
+        { authorization: `Bearer ${id_token}` },
         {}
       );
       res = await res;
@@ -32,7 +32,7 @@ function Main() {
     if (id_token) {
       fetchData();
     };
-  }, []);
+  }, [id_token]);
 
   return (
     <>

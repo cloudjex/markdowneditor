@@ -17,7 +17,7 @@ const userStore = create(persist((set) => ({
     email: "",
     password: "",
     id_token: "",
-    tree: [],
+    tree: {},
   }),
 
 }), {
