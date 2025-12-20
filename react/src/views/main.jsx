@@ -2,13 +2,13 @@ import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import { useEffect, useState } from 'react';
 
-import Breadcrumb from "../components/breadcrumbs.jsx";
-import EditerHeader from "../components/editer_header.jsx";
-import Header from "../components/header.jsx";
-import Loading from "../components/loading.jsx";
-import MarkdownEditor from "../components/markdowneditor.jsx";
-import userStore from "../store/user_store.jsx";
-import utils from "../utils/utils.js";
+import Breadcrumb from "../components/breadcrumbs";
+import EditerHeader from "../components/editer_header";
+import Header from "../components/header";
+import Loading from "../components/loading";
+import MarkdownEditor from "../components/markdowneditor";
+import userStore from "../store/user_store";
+import utils from "../utils/utils";
 
 function Main() {
   const { id_token, setTree } = userStore();

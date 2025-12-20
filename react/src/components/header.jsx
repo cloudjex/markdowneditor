@@ -2,10 +2,10 @@ import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 
-import userStore from '../store/user_store.jsx';
+import userStore from '../store/user_store';
 
-import Profile from './profile.jsx';
-import Sidebar from './sidebar.jsx';
+import Profile from './profile';
+import Sidebar from './sidebar';
 
 function Header() {
   const { id_token } = userStore();

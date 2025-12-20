@@ -1,11 +1,7 @@
 import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';
 
-interface Props {
-  loading: boolean;
-}
-
-function Loading(props: Props) {
+function Loading(props: { loading: boolean }) {
   const loading = props.loading;
 
   return (

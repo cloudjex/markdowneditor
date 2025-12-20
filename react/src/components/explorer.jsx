@@ -7,10 +7,10 @@ import { RichTreeView } from '@mui/x-tree-view/RichTreeView';
 import { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
 
-import userStore from "../store/user_store.jsx";
-import utils from "../utils/utils.js";
+import userStore from "../store/user_store";
+import utils from "../utils/utils";
 
-import TreeUpdate from './tree_update.jsx';
+import TreeUpdate from './tree_update';
 
 function Explorer() {
   const navigate = useNavigate();

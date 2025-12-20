@@ -2,9 +2,9 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
-import Information from './views/information.jsx';
-import Login from './views/login.jsx';
-import Main from './views/main.jsx';
+import Information from './views/information';
+import Login from './views/login';
+import Main from './views/main';
 
 function NotFound() {
   return <h1>404</h1>;

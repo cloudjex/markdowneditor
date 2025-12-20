@@ -5,7 +5,7 @@ import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import { useState } from 'react';
 
-import Explorer from './explorer.jsx';
+import Explorer from './explorer';
 
 function Sidebar() {
   const [drawewrOpen, setDrawerOpen] = useState(false);

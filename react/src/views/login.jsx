@@ -6,10 +6,10 @@ import Typography from "@mui/material/Typography";
 import { useEffect, useState } from 'react';
 import { useNavigate } from "react-router-dom";
 
-import Header from "../components/header.jsx";
-import Loading from '../components/loading.jsx';
-import userStore from '../store/user_store.jsx';
-import utils from "../utils/utils.js";
+import Header from "../components/header";
+import Loading from '../components/loading';
+import userStore from '../store/user_store';
+import utils from "../utils/utils";
 
 function Login() {
   const navigate = useNavigate();

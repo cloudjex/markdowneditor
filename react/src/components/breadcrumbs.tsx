@@ -2,8 +2,8 @@ import Breadcrumbs from '@mui/material/Breadcrumbs';
 import Link from '@mui/material/Link';
 import { useLocation } from 'react-router-dom';
 
-import userStore from '../store/user_store.tsx';
-import utils from '../utils/utils.js';
+import userStore from '../store/user_store';
+import utils from '../utils/utils';
 
 import type { TreeNode } from "../types/tree";
 
