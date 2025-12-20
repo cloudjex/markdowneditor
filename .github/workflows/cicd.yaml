@@ -77,16 +77,12 @@ jobs:
         run: terraform init
 
       - name: Terraform Apply
-        working-directory: ./.github/react_terraform
-        run: terraform apply -auto-approve
-
-      - name: Get Terraform Output
         id: tf_output
         working-directory: ./.github/react_terraform
         run: |
+          terraform apply -auto-approve
+
           terraform_output=$(terraform output -json)
-          echo $terraform_output
-          
           cloudfront_id=$(echo "$terraform_output" | jq -r '.cloudfront_id.value')
           s3_bucket=$(echo "$terraform_output" | jq -r '.s3_bucket.value')
 
