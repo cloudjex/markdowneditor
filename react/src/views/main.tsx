@@ -10,6 +10,8 @@ import MarkdownEditor from "../components/markdowneditor";
 import userStore from "../store/user_store";
 import utils from "../utils/utils";
 
+import type { TreeNode } from "../types/types";
+
 function Main() {
   const { id_token, setTree } = userStore();
   const [isLoading, setLoading] = useState(false);
@@ -17,15 +19,16 @@ function Main() {
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
-      var res = utils.requests(
+      const res_promise = utils.requests(
         `${import.meta.env.VITE_API_HOST}/trees`,
         "GET",
         { authorization: `Bearer ${id_token}` },
         {}
       );
-      res = await res;
+      const res = await res_promise;
 
-      setTree(res.body.tree);
+      const body = res.body as { tree: TreeNode };
+      setTree(body.tree);
       setLoading(false);
     };
 
