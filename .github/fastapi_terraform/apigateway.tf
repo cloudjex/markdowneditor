@@ -66,5 +66,5 @@ resource "aws_api_gateway_base_path_mapping" "custom_mapping" {
   api_id      = aws_api_gateway_rest_api.rest_api.id
   domain_name = aws_api_gateway_domain_name.custom_domain.domain_name
   stage_name  = aws_api_gateway_stage.stage.stage_name
-  base_path = aws_api_gateway_stage.stage.stage_name
+  base_path = "api"
 }
