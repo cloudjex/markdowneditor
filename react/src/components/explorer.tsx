@@ -23,26 +23,31 @@ function Explorer() {
   const [hasInitialized, setHasInitialized] = useState(false);
 
   useEffect(() => {
-    setCurrentNodeId(url_node_id || "");
+    if (url_node_id === undefined) return;
+    const timer = setTimeout(() => {
+      setCurrentNodeId(url_node_id || "");
+    }, 0);
+    return () => clearTimeout(timer);
   }, [url_node_id]);
 
   useEffect(() => {
     if (!hasInitialized && tree && url_node_id) {
       const parents = utils.get_parent_node_ids(url_node_id);
-      if (parents) {
-        var latest_expanded_items = [...new Set([...expandedItems, ...parents])];
-        setExpandedItems(latest_expanded_items);
-      }
-      setHasInitialized(true);
+      const latest_expanded_items = parents ? [...new Set([...expandedItems, ...parents])] : null;
+      const timer = setTimeout(() => {
+        if (latest_expanded_items) setExpandedItems(latest_expanded_items);
+        setHasInitialized(true);
+      }, 0);
+      return () => clearTimeout(timer);
     }
-  }, [tree, url_node_id, hasInitialized]);
+  }, [tree, url_node_id, hasInitialized, expandedItems]);
 
-  const handleItemClick = (_, itemId) => {
+  const handleItemClick = (_: React.MouseEvent<Element, MouseEvent>, itemId: string) => {
     setCurrentNodeId(itemId);
     navigate(`/main?node_id=${itemId}`);
   };
 
-  if (id_token && tree) {
+  if (id_token && tree && currentNodeId) {
     return (
       <>
         <Typography variant="h5" sx={{ my: 2 }}>
@@ -53,7 +58,7 @@ function Explorer() {
           <RichTreeView
             items={[tree]}
             onItemClick={handleItemClick}
-            selectedItems={[currentNodeId]}
+            selectedItems={currentNodeId}
             expandedItems={expandedItems}
             onExpandedItemsChange={(_, ids) => setExpandedItems(ids)}
             slots={{
