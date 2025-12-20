@@ -5,7 +5,7 @@ resource "aws_dynamodb_table" "users_table" {
   read_capacity  = 1
   write_capacity = 1
 
-  hash_key = "id"
+  hash_key = "email"
   attribute {
     name = "email"
     type = "S"
@@ -23,7 +23,7 @@ resource "aws_dynamodb_table" "trees_table" {
   read_capacity  = 1
   write_capacity = 1
 
-  hash_key = "id"
+  hash_key = "email"
   attribute {
     name = "email"
     type = "S"
@@ -41,7 +41,7 @@ resource "aws_dynamodb_table" "nodes_table" {
   read_capacity  = 1
   write_capacity = 1
 
-  hash_key = "id"
+  hash_key = "email"
   attribute {
     name = "email"
     type = "S"
