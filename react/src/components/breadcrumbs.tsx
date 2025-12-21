@@ -28,7 +28,7 @@ function Breadcrumb() {
 
   if (parentNodes) {
     return (
-      <Breadcrumbs aria-label="breadcrumb" sx={{ mb: 2 }}>
+      <Breadcrumbs aria-label="breadcrumb" sx={{ mt: 1 }}>
         {parentNodes.map((node, index) => (
           <Link
             key={node.id}

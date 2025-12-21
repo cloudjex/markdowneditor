@@ -23,6 +23,7 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: 3.13
+          cache: 'pip'
 
       - name: Local API Test
         working-directory: ./fastapi
@@ -62,6 +63,8 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: 24
+          cache: 'npm'
+          cache-dependency-path: './react/package-lock.json'
 
       - name: Build
         working-directory: ./react

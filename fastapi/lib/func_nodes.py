@@ -12,10 +12,8 @@ def main(params: dict) -> dict:
         method: str = params["method"]
         if method == "GET":
             res = get(params)
-        elif method == "POST":
-            res = post(params)
-        # elif method == "PUT":
-        #     res = put(params)
+        elif method == "PUT":
+            res = put(params)
         elif method == "DELETE":
             res = delete(params)
         return utils.response_handler(body=res, status_code=200)
@@ -56,7 +54,7 @@ def get(params) -> dict:
         raise e
 
 
-def post(params) -> dict:
+def put(params) -> dict:
     try:
         email: str = params["email"]
         body: dict = params["body"]

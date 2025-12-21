@@ -2,7 +2,7 @@ from lib import func_nodes
 
 from .conftest import logger
 
-POST_NODE_ID = "test_id_12345"
+PUT_NODE_ID = "test_id_12345"
 
 
 class TestSuccessGET:
@@ -97,17 +97,17 @@ class TestFailGet:
         assert response["status_code"] == 404
 
 
-class TestSuccessPost:
-    def test_func_nodes_post_normal(self, id_token):
+class TestSuccessPut:
+    def test_func_nodes_put_normal(self, id_token):
         params = {
-            "method": "POST",
+            "method": "PUT",
             "headers": {
                 "content-type": "application/json",
                 "authorization": f"Bearer {id_token}"
             },
             "body": {
-                "node_id": f"{POST_NODE_ID}",
-                "text": f"#{POST_NODE_ID}",
+                "node_id": f"{PUT_NODE_ID}",
+                "text": f"#{PUT_NODE_ID}",
             },
             "query_params": {},
         }
@@ -117,10 +117,10 @@ class TestSuccessPost:
         assert type(response["body"]["node"]) is dict
 
 
-class TestFailPost:
-    def test_func_nodes_post_no_token(self):
+class TestFailPut:
+    def test_func_nodes_put_no_token(self):
         params = {
-            "method": "POST",
+            "method": "PUT",
             "headers": {
                 "content-type": "application/json",
                 "authorization": ""
@@ -132,9 +132,9 @@ class TestFailPost:
         logger(response)
         assert response["status_code"] == 401
 
-    def test_func_nodes_post_no_params(self, id_token):
+    def test_func_nodes_put_no_params(self, id_token):
         params = {
-            "method": "POST",
+            "method": "PUT",
             "headers": {
                 "content-type": "application/json",
                 "authorization": f"Bearer {id_token}"
@@ -149,16 +149,16 @@ class TestFailPost:
         logger(response)
         assert response["status_code"] == 400
 
-    def test_func_nodes_post_conflict(self, id_token):
+    def test_func_nodes_put_conflict(self, id_token):
         params = {
-            "method": "POST",
+            "method": "PUT",
             "headers": {
                 "content-type": "application/json",
                 "authorization": f"Bearer {id_token}"
             },
             "body": {
-                "node_id": f"{POST_NODE_ID}",
-                "text": f"#{POST_NODE_ID}",
+                "node_id": f"{PUT_NODE_ID}",
+                "text": f"#{PUT_NODE_ID}",
             },
             "query_params": {},
         }
@@ -177,7 +177,7 @@ class TestSuccessDelete:
             },
             "body": {},
             "query_params": {
-                "node_id": f"{POST_NODE_ID}",
+                "node_id": f"{PUT_NODE_ID}",
             },
         }
         response = func_nodes.main(params)

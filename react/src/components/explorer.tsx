@@ -36,8 +36,9 @@ function Explorer() {
           Explorer
         </Typography>
 
-        <Box>
+        <Box >
           <RichTreeView
+            sx={{ backgroundColor: "rgba(245, 245, 245, 1)", borderRadius: 3 }}
             items={[tree]}
             onItemClick={handleItemClick}
             selectedItems={url_node_id}

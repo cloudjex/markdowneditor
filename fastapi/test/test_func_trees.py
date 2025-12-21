@@ -77,24 +77,32 @@ class TestSuccessPut:
                     "id": '/Folder',
                     "label": 'Folder',
                     "children": [
-                        {"id": '/Folder/page1', "label": 'page1'},
-                        {"id": '/Folder/page2', "label": 'page2'},
+                        {"id": '/Folder/テスト1', "label": 'テスト1'},
+                        {"id": '/Folder/テスト2', "label": 'テスト2'},
                         {
-                            "id": '/Folder/work',
-                            "label": 'work',
+                            "id": '/Folder/仕事',
+                            "label": '仕事',
                             "children": [
-                                {"id": '/Folder/work/page1',
+                                {"id": '/Folder/仕事/page1',
                                  "label": 'page1'},
-                                {"id": '/Folder/work/page2',
+                                {"id": '/Folder/仕事/page2',
                                  "label": 'page2'},
                             ]
                         },
                         {
-                            "id": '/Folder/art',
-                            "label": 'art',
+                            "id": '/Folder/日記',
+                            "label": '日記',
                             "children": [
-                                {"id": '/Folder/art/page1', "label": 'page1'},
-                                {"id": '/Folder/art/page2', "label": 'page2'},
+                                {"id": '/Folder/日記/page1', "label": 'page1'},
+                                {"id": '/Folder/日記/page2', "label": 'page2'},
+                            ]
+                        },
+                        {
+                            "id": '/Folder/勉強',
+                            "label": '勉強',
+                            "children": [
+                                {"id": '/Folder/勉強/page1', "label": 'page1'},
+                                {"id": '/Folder/勉強/page2', "label": 'page2'},
                             ]
                         }
                     ]

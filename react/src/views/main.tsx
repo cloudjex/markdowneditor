@@ -1,12 +1,9 @@
-import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import { useEffect, useState } from 'react';
 
-import Breadcrumb from "../components/breadcrumbs";
-import EditerHeader from "../components/editer_header";
+import Editor from "../components/editor";
 import Header from "../components/header";
 import Loading from "../components/loading";
-import MarkdownEditor from "../components/markdowneditor";
 import userStore from "../store/user_store";
 import utils from "../utils/utils";
 
@@ -44,14 +41,7 @@ function Main() {
       <Loading loading={isLoading} />
 
       <Container sx={{ mt: 2 }}>
-
-        <Box display="flex" justifyContent="space-between">
-          <Breadcrumb />
-          <EditerHeader />
-        </Box>
-
-        <MarkdownEditor />
-
+        <Editor />
       </Container>
     </>
   );
