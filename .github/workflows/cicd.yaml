@@ -28,8 +28,8 @@ jobs:
         working-directory: ./fastapi
         run: |
           pip install -r requirements.txt
-          pip install pytest
-          pytest
+          pip install pytest pytest-xdist
+          pytest -n auto --dist loadfile
 
       - name: Build Lambda package
         run: |
@@ -62,15 +62,6 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: 24
-
-      - name: Cache node modules
-        uses: actions/cache@v3
-        with:
-          path: |
-            ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('react/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
 
       - name: Build
         working-directory: ./react
