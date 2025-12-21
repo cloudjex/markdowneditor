@@ -20,15 +20,7 @@
   color: #2d2d2d !important;
   text-decoration: none !important;
   font-style: normal !important;
-
-  .cm-comment {
-    font-size: 14px !important;
-    font-weight: normal !important;
-    color: #2d2d2d !important;
-    text-decoration: none !important;
-    font-style: normal !important;
-    background-color: unset !important;
-  }
+  background-color: unset !important;
 }
 
 /* プレビュー全体 */
