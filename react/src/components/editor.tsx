@@ -43,7 +43,7 @@ export const Editor = () => {
     };
 
     fetchNode();
-  }, [url_node_id, id_token]);
+  }, [url_node_id]);
 
   const options = useMemo(() => ({
     spellChecker: false,

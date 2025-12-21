@@ -52,8 +52,8 @@ function Profile() {
       {}
     );
 
-    setLoading(false);
     reset();
+    setLoading(false);
     navigate("/");
   };
 

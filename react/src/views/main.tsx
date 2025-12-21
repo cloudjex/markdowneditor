@@ -33,7 +33,7 @@ function Main() {
     if (id_token) {
       fetchData();
     };
-  }, [id_token]);
+  }, []);
 
   return (
     <>

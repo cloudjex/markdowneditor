@@ -91,7 +91,6 @@ function TreeUpdate(props: { currentNodeId: string }) {
     const body = res.body as { tree: TreeNode };
 
     setTree(body.tree);
-    setLoading(false);
     navigate(`/main?node_id=${next_current_id}`);
   };
 
