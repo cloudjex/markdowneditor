@@ -22,6 +22,7 @@ function EditorHeader(props: { markdownValue: string }) {
   function download() {
     console.log("clicked download");
     console.log(markdownValue);
+    // TODO: implement download func.
   };
 
   async function upload() {

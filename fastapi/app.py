@@ -10,11 +10,6 @@ from lib import func_login, func_logout, func_nodes, func_trees
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
-handler = logging.StreamHandler()
-formatter = logging.Formatter('[%(levelname)s] %(asctime)s: %(message)s')
-handler.setFormatter(formatter)
-logger.addHandler(handler)
-
 app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
@@ -37,6 +32,9 @@ async def handle_trees(request: Request):
     params = await handle_request(request)
     res = func_logout.main(params)
     return handle_response(res)
+
+
+# TODO: implement add new user func.
 
 
 @app.api_route("/trees", methods=["GET", "PUT"])
