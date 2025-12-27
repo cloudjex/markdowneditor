@@ -3,6 +3,7 @@ import SaveAltOutlinedIcon from '@mui/icons-material/SaveAltOutlined';
 import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
 import "../css/editor_header.css";
+import fileDownload from 'js-file-download';
 import { useLocation } from 'react-router-dom';
 
 import loadingState from "../store/loading_store";
@@ -17,11 +18,11 @@ function EditorHeader(props: { markdownValue: string }) {
   const { setLoading } = loadingState();
 
   const searchParams = new URLSearchParams(location.search);
-  const url_node_id = searchParams.get('node_id');
+  const url_node_id = searchParams.get('node_id') as string;
 
   function download() {
-    console.log("clicked download");
-    console.log(markdownValue);
+    const file_name = url_node_id.split("/").pop();
+    fileDownload(markdownValue, `${file_name}.md`);
   };
 
   async function upload() {
