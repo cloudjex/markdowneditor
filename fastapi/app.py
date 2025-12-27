@@ -34,9 +34,6 @@ async def handle_trees(request: Request):
     return handle_response(res)
 
 
-# TODO: implement add new user func.
-
-
 @app.api_route("/trees", methods=["GET", "PUT"])
 async def handle_trees(request: Request):
     params = await handle_request(request)

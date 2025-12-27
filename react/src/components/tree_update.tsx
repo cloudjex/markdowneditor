@@ -81,7 +81,7 @@ function TreeUpdate(props: { currentNodeId: string }) {
     const next_current_id = parents[parents.length - 1];
     const new_tree = utils.delete_tree_node(tree as TreeNode, props.currentNodeId);
 
-    // TODO: implement delete currentnode, and node follows deleted node func.
+    // implement delete currentnode, and node follows deleted node func.
 
     const res_promise = utils.requests(
       `${import.meta.env.VITE_API_HOST}/trees`,
