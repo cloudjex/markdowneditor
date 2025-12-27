@@ -84,7 +84,7 @@ def put(params) -> dict:
 def sort_tree(tree: dict) -> dict:
     """
     Sort tree recursively:
-    - Nodes with children (folders) come first
+    - Nodes with children come first
     - Then nodes without children (files)
     - Within each group, sort by id alphabetically
     """

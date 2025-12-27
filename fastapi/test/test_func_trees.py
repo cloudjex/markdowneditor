@@ -74,35 +74,35 @@ class TestSuccessPut:
             },
             "body": {
                 "tree":  {
-                    "id": '/Folder',
-                    "label": 'Folder',
+                    "id": '/Nodes',
+                    "label": 'Nodes',
                     "children": [
-                        {"id": '/Folder/テスト1', "label": 'テスト1'},
-                        {"id": '/Folder/テスト2', "label": 'テスト2'},
+                        {"id": '/Nodes/テスト1', "label": 'テスト1'},
+                        {"id": '/Nodes/テスト2', "label": 'テスト2'},
                         {
-                            "id": '/Folder/仕事',
+                            "id": '/Nodes/仕事',
                             "label": '仕事',
                             "children": [
-                                {"id": '/Folder/仕事/page1',
+                                {"id": '/Nodes/仕事/page1',
                                  "label": 'page1'},
-                                {"id": '/Folder/仕事/page2',
+                                {"id": '/Nodes/仕事/page2',
                                  "label": 'page2'},
                             ]
                         },
                         {
-                            "id": '/Folder/日記',
+                            "id": '/Nodes/日記',
                             "label": '日記',
                             "children": [
-                                {"id": '/Folder/日記/page1', "label": 'page1'},
-                                {"id": '/Folder/日記/page2', "label": 'page2'},
+                                {"id": '/Nodes/日記/page1', "label": 'page1'},
+                                {"id": '/Nodes/日記/page2', "label": 'page2'},
                             ]
                         },
                         {
-                            "id": '/Folder/勉強',
+                            "id": '/Nodes/勉強',
                             "label": '勉強',
                             "children": [
-                                {"id": '/Folder/勉強/page1', "label": 'page1'},
-                                {"id": '/Folder/勉強/page2', "label": 'page2'},
+                                {"id": '/Nodes/勉強/page1', "label": 'page1'},
+                                {"id": '/Nodes/勉強/page2', "label": 'page2'},
                             ]
                         }
                     ]
@@ -170,8 +170,8 @@ class TestFailPut:
             },
             "body": {
                 "tree": {
-                    "id": '/Folder',
-                    "label": 'Folder',
+                    "id": '/Nodes',
+                    "label": 'Nodes',
                 }
             },
             "query_params": {},

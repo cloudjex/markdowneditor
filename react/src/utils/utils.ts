@@ -53,7 +53,7 @@ async function requests(
 
 function get_node(tree: TreeNode, node_id: string): TreeNode | null {
   let parts = node_id.split("/");
-  parts = parts.filter((part) => part && part !== "Folder");
+  parts = parts.filter((part) => part && part !== "Nodes");
 
   let current: TreeNode = tree;
   for (const part of parts) {

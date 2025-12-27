@@ -48,7 +48,7 @@ function Login() {
 
     const body = res.body as { id_token: string };
     setIdToken(body.id_token);
-    navigate("/main?node_id=/Folder");
+    navigate("/main?node_id=/Nodes");
   };
 
   return (

@@ -81,7 +81,7 @@ function TreeUpdate(props: { currentNodeId: string }) {
     const next_current_id = parents[parents.length - 1];
     const new_tree = utils.delete_tree_node(tree as TreeNode, props.currentNodeId);
 
-    // implement delete currentnode, and node follows deleted node func.
+    // implement delete current node, and node follows deleted node func.
 
     const res_promise = utils.requests(
       `${import.meta.env.VITE_API_HOST}/trees`,
@@ -107,7 +107,7 @@ function TreeUpdate(props: { currentNodeId: string }) {
           <NoteAddOutlinedIcon />
         </Button>
 
-        <Button onClick={onClickDelModal} disabled={props.currentNodeId === "" || props.currentNodeId === '/Folder'} sx={{ color: "red" }}>
+        <Button onClick={onClickDelModal} disabled={props.currentNodeId === "" || props.currentNodeId === '/Nodes'} sx={{ color: "red" }}>
           <DeleteOutlineOutlinedIcon />
         </Button>
 
@@ -115,7 +115,7 @@ function TreeUpdate(props: { currentNodeId: string }) {
 
       <Dialog onClose={closeModal} open={postModalOpen}>
         <DialogTitle>
-          新しいコンテンツを作成
+          Nodeを作成
         </DialogTitle>
 
         <Container
@@ -126,14 +126,14 @@ function TreeUpdate(props: { currentNodeId: string }) {
         >
           <TextField
             id="outlined-basic"
-            label="フォルダ名"
+            label="親Node"
             variant="outlined"
             disabled
             value={`${props.currentNodeId}/`}
           />
           <TextField
             id="outlined-basic"
-            label="新しいコンテンツ名"
+            label="Node"
             variant="outlined"
             value={newContentName}
             onChange={(e) => setNewContentName(e.target.value)}
@@ -142,7 +142,7 @@ function TreeUpdate(props: { currentNodeId: string }) {
 
         {isInvalidId &&
           <Alert severity="error" sx={{ mx: 3 }}>
-            空欄または既存のコンテンツ名と重複しています。
+            Node名を確認してください。すでに存在するNode名、または不正な文字列が含まれています。
           </Alert>
         }
 
@@ -154,11 +154,11 @@ function TreeUpdate(props: { currentNodeId: string }) {
 
       <Dialog onClose={closeModal} open={delModalOpen}>
         <DialogTitle>
-          コンテンツを削除
+          Nodeを削除
         </DialogTitle>
 
         <DialogContent>
-          そのコンテンツとすべての子コンテンツが削除されます。
+          現在のNodeとすべての子Nodeが削除されます。
           削除しますか？
         </DialogContent>
 

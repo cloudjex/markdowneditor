@@ -29,7 +29,7 @@ class TestSuccessGET:
                 "authorization": f"Bearer {id_token}"
             },
             "body": {},
-            "query_params": {"node_id": "/Folder"},
+            "query_params": {"node_id": "/Nodes"},
         }
         response = func_nodes.main(params)
         logger(response)

@@ -17,10 +17,10 @@ function Explorer() {
   const location = useLocation();
 
   const { id_token, tree } = userStore();
-  const [expandedItems, setExpandedItems] = useState(["/Folder"]);
+  const [expandedItems, setExpandedItems] = useState(["/Nodes"]);
 
   const searchParams = new URLSearchParams(location.search);
-  const url_node_id = searchParams.get('node_id') || "/Folder";
+  const url_node_id = searchParams.get('node_id') || "/Nodes";
 
   const parents = utils.get_parent_node_ids(url_node_id);
   const displayedExpanded = [...new Set([...expandedItems, ...parents])];
