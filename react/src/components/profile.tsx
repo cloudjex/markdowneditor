@@ -85,7 +85,7 @@ function Profile() {
           <MenuItem onClick={() => clickInformation("/information")}>
             Information
           </MenuItem>
-          <MenuItem onClick={() => clickInformation("https://github.com/katagiri1999/cork-up")}>
+          <MenuItem onClick={() => clickInformation("https://github.com/katagiri1999/markdowneditor")}>
             Github
           </MenuItem>
           <MenuItem onClick={openLogout}>
