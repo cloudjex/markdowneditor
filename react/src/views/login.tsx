@@ -56,7 +56,7 @@ function Login() {
       <title>Login</title>
       <Header />
 
-      <Container maxWidth="xs" sx={{ marginTop: 10 }}>
+      <Container maxWidth="xs" sx={{ marginTop: 10, border: '1px solid #ddd', borderRadius: '10px', padding: '30px' }}>
 
         <Typography variant="h4" align="center">
           Login
@@ -84,7 +84,7 @@ function Login() {
           onClick={onClickSignin}
           fullWidth
           variant="contained"
-          sx={{ marginTop: "5%", marginBottom: "2%" }}
+          sx={{ marginTop: "5%" }}
         >
           ログイン
         </Button>
