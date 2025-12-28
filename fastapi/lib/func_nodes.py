@@ -14,8 +14,6 @@ def main(params: dict) -> dict:
             res = get(params)
         elif method == "PUT":
             res = put(params)
-        elif method == "DELETE":
-            res = delete(params)
         return utils.response_handler(body=res, status_code=200)
 
     except Exception as e:
@@ -69,6 +67,14 @@ def put(params) -> dict:
                 "error_code": "func_nodes.missing_parameters",
             })
 
+        node = dynamodbs.get_node(email, node_id)
+        if not node:
+            raise Exception({
+                "status_code": 404,
+                "exception": "Not Found",
+                "error_code": "func_nodes.not_found",
+            })
+
         dynamodbs.post_node(email, node_id, text)
 
         return {
@@ -77,38 +83,6 @@ def put(params) -> dict:
                 "node_id": node_id,
                 "text": text,
             }
-        }
-
-    except Exception as e:
-        raise e
-
-
-def delete(params) -> dict:
-    try:
-        email: str = params["email"]
-        query_params: dict = params["query_params"]
-
-        node_id = query_params.get("node_id")
-
-        if not node_id:
-            raise Exception({
-                "status_code": 400,
-                "exception": "Bad Request",
-                "error_code": "func_nodes.missing_parameters",
-            })
-
-        item = dynamodbs.get_node(email, node_id)
-        if not item:
-            raise Exception({
-                "status_code": 404,
-                "exception": "Not Found",
-                "error_code": "func_nodes.not_found",
-            })
-
-        dynamodbs.delete_node(email, node_id)
-
-        return {
-            "node": item
         }
 
     except Exception as e:

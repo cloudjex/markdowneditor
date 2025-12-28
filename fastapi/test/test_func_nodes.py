@@ -1,8 +1,8 @@
+import textwrap
+
 from lib import func_nodes
 
 from .conftest import logger
-
-PUT_NODE_ID = "test_id_12345"
 
 
 class TestSuccessGET:
@@ -99,6 +99,17 @@ class TestFailGet:
 
 class TestSuccessPut:
     def test_func_nodes_put_normal(self, id_token):
+        text = """
+            # MarkdownEditor
+
+            ## CICD Status
+            [![CICD Workflow](https://github.com/cloudjex/markdowneditor/actions/workflows/cicd.yaml/badge.svg)](https://github.com/cloudjex/markdowneditor/actions/workflows/cicd.yaml)
+
+            ## Sample Application URL
+            https://www.cloudjex.com
+        """
+        text = textwrap.dedent(text)
+
         params = {
             "method": "PUT",
             "headers": {
@@ -106,17 +117,32 @@ class TestSuccessPut:
                 "authorization": f"Bearer {id_token}"
             },
             "body": {
-                "node_id": f"{PUT_NODE_ID}",
-                "text": f"#{PUT_NODE_ID}",
+                "node_id": "/Nodes",
+                "text": f"{text}",
             },
             "query_params": {},
         }
         response = func_nodes.main(params)
         logger(response)
         assert response["status_code"] == 200
-        assert type(response["body"]["node"]) is dict
+        assert response["body"]["node"]["text"] == text
 
     def test_func_nodes_put_empty_text(self, id_token):
+        # First, get the current text
+        params = {
+            "method": "GET",
+            "headers": {
+                "content-type": "application/json",
+                "authorization": f"Bearer {id_token}"
+            },
+            "body": {},
+            "query_params": {"node_id": "/Nodes"},
+        }
+        response = func_nodes.main(params)
+        assert response["status_code"] == 200
+        before = response["body"]["node"]["text"]
+
+        # Update with empty text
         params = {
             "method": "PUT",
             "headers": {
@@ -124,7 +150,7 @@ class TestSuccessPut:
                 "authorization": f"Bearer {id_token}"
             },
             "body": {
-                "node_id": f"{PUT_NODE_ID}",
+                "node_id": "/Nodes",
                 "text": "",
             },
             "query_params": {},
@@ -132,7 +158,22 @@ class TestSuccessPut:
         response = func_nodes.main(params)
         logger(response)
         assert response["status_code"] == 200
-        assert type(response["body"]["node"]) is dict
+        assert response["body"]["node"]["text"] == ""
+
+        # Restore previous text
+        params = {
+            "method": "PUT",
+            "headers": {
+                "content-type": "application/json",
+                "authorization": f"Bearer {id_token}"
+            },
+            "body": {
+                "node_id": "/Nodes",
+                "text": f"{before}",
+            },
+            "query_params": {},
+        }
+        func_nodes.main(params)
 
 
 class TestFailPut:
@@ -167,69 +208,19 @@ class TestFailPut:
         logger(response)
         assert response["status_code"] == 400
 
-
-class TestSuccessDelete:
-    def test_func_nodes_delete_normal(self, id_token):
+    def test_func_nodes_put_no_exist_node(self, id_token):
         params = {
-            "method": "DELETE",
+            "method": "PUT",
             "headers": {
                 "content-type": "application/json",
                 "authorization": f"Bearer {id_token}"
             },
-            "body": {},
-            "query_params": {
-                "node_id": f"{PUT_NODE_ID}",
+            "body": {
+                "node_id": "non_existing_node_id",
+                "text": "",
             },
-        }
-        response = func_nodes.main(params)
-        logger(response)
-        assert response["status_code"] == 200
-        assert type(response["body"]["node"]) is dict
-
-
-class TestFailDelete:
-    def test_func_nodes_delete_no_token(self):
-        params = {
-            "method": "DELETE",
-            "headers": {
-                "content-type": "application/json",
-                "authorization": ""
-            },
-            "body": {},
             "query_params": {},
         }
         response = func_nodes.main(params)
         logger(response)
-        assert response["status_code"] == 401
-
-    def test_func_nodes_delete_noexist_node(self, id_token):
-        params = {
-            "method": "DELETE",
-            "headers": {
-                "content-type": "application/json",
-                "authorization": f"Bearer {id_token}"
-            },
-            "body": {},
-            "query_params": {
-                "node_id": "non_exist_node_id",
-            },
-        }
-        response = func_nodes.main(params)
-        logger(response)
         assert response["status_code"] == 404
-
-    def test_func_nodes_delete_no_params(self, id_token):
-        params = {
-            "method": "DELETE",
-            "headers": {
-                "content-type": "application/json",
-                "authorization": f"Bearer {id_token}"
-            },
-            "body": {},
-            "query_params": {
-                "node_id": "",
-            },
-        }
-        response = func_nodes.main(params)
-        logger(response)
-        assert response["status_code"] == 400
