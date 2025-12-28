@@ -55,10 +55,6 @@ function get_node(tree: TreeNode, node_id: string): TreeNode | null {
 
   let current: TreeNode = tree;
   for (const part of parts) {
-    if (!Array.isArray(current.children)) {
-      return null;
-    };
-
     const next = current.children.find((child: TreeNode) => child.label === part);
     if (!next) {
       return null;
@@ -100,6 +96,6 @@ function is_valid_new_node(tree: TreeNode, node_id: string): boolean {
     throw new Error(`parent is null`);
   };
 
-  const siblings = parent.children ?? [];
+  const siblings = parent.children;
   return !siblings.some((child) => child.label === node_id.split("/").pop());
 }

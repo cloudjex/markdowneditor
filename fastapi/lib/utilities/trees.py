@@ -2,7 +2,7 @@ def find_node(node_id: str, tree: dict) -> dict | None:
     if tree.get("id") == node_id:
         return tree
 
-    for child in tree.get("children", []):
+    for child in tree.get("children"):
         result = find_node(node_id, child)
         if result is not None:
             return result
@@ -35,8 +35,8 @@ def find_children_ids(node_id: str, tree: dict) -> list[str]:
     if target is None:
         return result
 
-    def collect(node):
-        for child in node.get("children", []):
+    def collect(node: dict):
+        for child in node.get("children"):
             result.append(child["id"])
             collect(child)
 
