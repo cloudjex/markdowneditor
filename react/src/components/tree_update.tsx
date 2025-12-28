@@ -49,8 +49,8 @@ function TreeUpdate(props: { currentNodeId: string }) {
       throw new Error(`tree is null`);
     };
 
-    const insert_node = { id: `${props.currentNodeId}/${newContentName}`, label: newContentName };
-    const isValid = utils.is_valid_new_node(tree, insert_node);
+    const new_node_id = `${props.currentNodeId}/${newContentName}`;
+    const isValid = utils.is_valid_new_node(tree, new_node_id);
     if (!isValid) {
       setIsInvalidId(true);
       return;
@@ -59,12 +59,11 @@ function TreeUpdate(props: { currentNodeId: string }) {
     closeModal();
     setLoading(true);
 
-    const new_tree = utils.insert_node(tree, insert_node);
     const res_promise = utils.requests(
-      `${import.meta.env.VITE_API_HOST}/trees`,
+      `${import.meta.env.VITE_API_HOST}/trees/operate`,
       "PUT",
       { authorization: `Bearer ${id_token}` },
-      { tree: new_tree }
+      { node_id: new_node_id }
     );
     const res = await res_promise;
     const body = res.body as { tree: TreeNode };
@@ -77,17 +76,14 @@ function TreeUpdate(props: { currentNodeId: string }) {
     closeModal();
     setLoading(true);
 
-    const parents = utils.get_parent_node_ids(props.currentNodeId);
-    const next_current_id = parents[parents.length - 1];
-    const new_tree = utils.delete_tree_node(tree as TreeNode, props.currentNodeId);
-
-    // implement delete current node, and node follows deleted node func.
+    const delete_node_id = props.currentNodeId;
+    const next_current_id = utils.get_parent_node_id(delete_node_id);
 
     const res_promise = utils.requests(
-      `${import.meta.env.VITE_API_HOST}/trees`,
-      "PUT",
+      `${import.meta.env.VITE_API_HOST}/trees/operate`,
+      "DELETE",
       { authorization: `Bearer ${id_token}` },
-      { tree: new_tree }
+      { node_id: delete_node_id }
     );
     const res = await res_promise;
     const body = res.body as { tree: TreeNode };

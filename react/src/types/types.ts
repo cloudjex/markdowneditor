@@ -7,5 +7,5 @@ export interface APIResponse {
 export interface TreeNode {
   id: string;
   label: string;
-  children?: TreeNode[];
+  children: TreeNode[];
 }
