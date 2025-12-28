@@ -41,7 +41,7 @@ async def handle_trees(request: Request):
     return handle_response(res)
 
 
-@app.api_route("/nodes", methods=["GET", "PUT", "DELETE"])
+@app.api_route("/nodes", methods=["GET", "PUT"])
 async def handle_nodes(request: Request):
     params = await handle_request(request)
     res = func_nodes.main(params)
