@@ -64,10 +64,10 @@ function Login() {
       <Container
         maxWidth="xs"
         sx={{
-          marginTop: 10,
+          marginTop: 8,
           border: "1px solid #ddd",
           borderRadius: "10px",
-          padding: "30px",
+          padding: "20px",
         }}
       >
         <form onSubmit={handleSubmit(onSubmit)}>
