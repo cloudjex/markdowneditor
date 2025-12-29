@@ -75,7 +75,7 @@ def put(params) -> dict:
                 "error_code": "func_nodes.not_found",
             })
 
-        dynamodbs.post_node(email, node_id, text)
+        dynamodbs.put_node(email, node_id, text)
 
         return {
             "node": {

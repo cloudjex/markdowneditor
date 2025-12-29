@@ -64,8 +64,8 @@ def put(params) -> dict:
         parent_node["children"] = children
         tree = trees.sort_tree(tree)
 
-        dynamodbs.update_tree(email, tree)
-        dynamodbs.post_node(email, node_id, "")
+        dynamodbs.put_tree(email, tree)
+        dynamodbs.put_node(email, node_id, "")
 
         return {"tree": tree}
 
@@ -105,7 +105,7 @@ def delete(params) -> dict:
 
         tree = trees.sort_tree(tree)
 
-        dynamodbs.update_tree(email, tree)
+        dynamodbs.put_tree(email, tree)
         for del_id in target_and_following:
             dynamodbs.delete_node(email, del_id)
 

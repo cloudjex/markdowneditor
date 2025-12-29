@@ -39,7 +39,7 @@ def get_tree(email: str) -> dict:
         raise e
 
 
-def update_tree(email: str, tree: dict) -> dict:
+def put_tree(email: str, tree: dict) -> dict:
     try:
         table = _get_table(config.TREE_TABLE_NAME)
 
@@ -87,7 +87,7 @@ def get_nodes(email: str) -> dict:
         raise e
 
 
-def post_node(email: str, node_id: str, text: str) -> dict:
+def put_node(email: str, node_id: str, text: str) -> dict:
     try:
         table = _get_table(config.NODES_TABLE_NAME)
 
