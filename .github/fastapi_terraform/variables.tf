@@ -9,3 +9,7 @@ variable "custom_domain" {
 variable "CLOUDJEX_JWT_KEY" {
   type = string
 }
+
+variable "CLOUDJEX_SMTP_PASSWORD" {
+  type = string
+}

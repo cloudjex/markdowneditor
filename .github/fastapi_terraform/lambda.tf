@@ -40,7 +40,8 @@ resource "aws_lambda_function" "fastapi_lambda" {
 
   environment {
     variables = {
-      JWT_KEY = "${var.CLOUDJEX_JWT_KEY}"
+      JWT_KEY = "${var.CLOUDJEX_JWT_KEY}",
+      SMTP_PASSWORD = "${var.CLOUDJEX_SMTP_PASSWORD}"
     }
   }
 

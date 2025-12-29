@@ -8,7 +8,9 @@ env:
   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
   AWS_DEFAULT_REGION: us-east-1
+
   TF_VAR_CLOUDJEX_JWT_KEY: ${{ secrets.CLOUDJEX_JWT_KEY }}
+  TF_VAR_CLOUDJEX_SMTP_PASSWORD: ${{ secrets.CLOUDJEX_SMTP_PASSWORD }}
 
 jobs:
   fastapi:
