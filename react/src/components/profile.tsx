@@ -11,8 +11,8 @@ import utils from "../utils/utils";
 function Profile() {
   const navigate = useNavigate();
 
-  const { email, id_token, reset } = userStore();
-  const { setLoading } = loadingState();
+  const { email, id_token, resetUserState } = userStore();
+  const { setLoading, resetLoadingState } = loadingState();
 
   const [isMenuOpen, setIsMenuOpen] = useState<null | HTMLElement>(null);
   const [isOpenLogoutDialog, setOpenLogoutDialog] = useState(false);
@@ -46,7 +46,8 @@ function Profile() {
       {}
     );
 
-    reset();
+    resetUserState();
+    resetLoadingState();
     setLoading(false);
     navigate("/");
   };

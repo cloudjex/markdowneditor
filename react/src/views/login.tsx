@@ -1,5 +1,5 @@
 import { Alert, Button, Container, TextField, Typography } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 
@@ -8,17 +8,19 @@ import loadingState from "../store/loading_store";
 import userStore from '../store/user_store';
 import utils from "../utils/utils";
 
-type LoginForm = {
-  email: string;
-  password: string;
-};
+import type { LoginForm } from "../types/types";
 
 function Login() {
   const navigate = useNavigate();
-  const { setEmail, setIdToken } = userStore();
-  const { setLoading } = loadingState();
+  const { setEmail, setIdToken, resetUserState } = userStore();
+  const { setLoading, resetLoadingState } = loadingState();
 
   const [loginError, setLoginError] = useState(false);
+
+  useEffect(() => {
+    resetUserState();
+    resetLoadingState();
+  }, []);
 
   const {
     register,
@@ -41,8 +43,9 @@ function Login() {
     );
     const res = await res_promise;
 
+    setLoading(false);
+
     if (res.status != 200) {
-      setLoading(false);
       setLoginError(true);
       throw new Error(`login error`);
     };

@@ -87,6 +87,7 @@ function TreeUpdate(props: { currentNodeId: string }) {
     const res = await res_promise;
     const body = res.body as { tree: TreeNode };
 
+    setLoading(false);
     setTree(body.tree);
     navigate(`/main?node_id=${next_current_id}`);
   };

@@ -15,7 +15,7 @@ interface UserState {
   setIdToken: (id_token: string) => void;
   setTree: (tree: TreeNode | null) => void;
 
-  reset: () => void;
+  resetUserState: () => void;
 }
 
 const userStore = create<UserState>()(
@@ -30,13 +30,12 @@ const userStore = create<UserState>()(
     setIdToken: (id_token: string): void => { set({ id_token }); },
     setTree: (tree: TreeNode | null): void => { set({ tree }); },
 
-    reset: () =>
-      set({
-        email: "",
-        password: "",
-        id_token: "",
-        tree: null,
-      }),
+    resetUserState: () => set({
+      email: "",
+      password: "",
+      id_token: "",
+      tree: null,
+    }),
   }),
     { name: "user-store", }
   )

@@ -9,3 +9,8 @@ export interface TreeNode {
   label: string;
   children: TreeNode[];
 }
+
+export interface LoginForm {
+  email: string;
+  password: string;
+};
