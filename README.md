@@ -7,7 +7,8 @@
 https://www.cloudjex.com
 
 ## Summary
-markdown管理アプリ用のPublicRepositoryです。  Serverless Architectureを使用した、シンプルなFrontend/Backend構成となります。
+markdown管理アプリ用のPublicRepositoryです。  
+Serverless Architectureを使用した、シンプルなFrontend/Backend構成となります。  
 Serverlessを採用することで、非常に安価に構築/運用しています。  
 OSS Applicationとして公開しておりますので、気軽にご利用ください。
 
