@@ -77,6 +77,20 @@ class TestFailPut:
         logger(response)
         assert response["status_code"] == 400
 
+    def test_func_trees_operate_put_invalid_node_id(self, id_token):
+        params = {
+            "method": "PUT",
+            "headers": {
+                "content-type": "application/json",
+                "authorization": f"Bearer {id_token}"
+            },
+            "body": {"node_id": "/Nodes/"},
+            "query_params": {},
+        }
+        response = func_trees_operate.main(params)
+        logger(response)
+        assert response["status_code"] == 400
+
     def test_func_trees_operate_put_dupulicate(self, id_token):
         params = {
             "method": "PUT",

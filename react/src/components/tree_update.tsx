@@ -49,12 +49,16 @@ function TreeUpdate(props: { currentNodeId: string }) {
       throw new Error(`tree is null`);
     };
 
-    const new_node_id = `${props.currentNodeId}/${newContentName}`;
-    const isValid = utils.is_valid_new_node(tree, new_node_id);
-    if (!isValid) {
+    if (!newContentName) {
       setIsInvalidId(true);
-      return;
-    }
+      throw new Error(`tree or newContentName is invalid`);
+    };
+
+    const parent = utils.get_node(tree, props.currentNodeId) as TreeNode;
+    if (parent.children.some((child) => child.label === newContentName)) {
+      setIsInvalidId(true);
+      throw new Error(`same node already exists`);
+    };
 
     closeModal();
     setLoading(true);
@@ -63,7 +67,7 @@ function TreeUpdate(props: { currentNodeId: string }) {
       `${import.meta.env.VITE_API_HOST}/trees/operate`,
       "PUT",
       { authorization: `Bearer ${id_token}` },
-      { node_id: new_node_id }
+      { node_id: `${props.currentNodeId}/${newContentName}` }
     );
     const res = await res_promise;
     const body = res.body as { tree: TreeNode };

@@ -34,15 +34,23 @@ def put(params) -> dict:
                 "error_code": "func_trees_operate.missing_parameters",
             })
 
+        label = node_id.split("/")[-1]
+        if not label:
+            raise Exception({
+                "status_code": 400,
+                "exception": "Bad Request",
+                "error_code": "func_trees_operate.invalid_node_id",
+            })
+
         tree = get_tree(email)
         parent_node = get_parent_node(node_id, tree)
 
         new_node = {
             "id": node_id,
-            "label": node_id.split("/")[-1],
+            "label": label,
             "children": [],
         }
-        children: list = parent_node.get("children", [])
+        children: list = parent_node.get("children")
 
         if any(child["id"] == node_id for child in children):
             raise Exception({
@@ -81,7 +89,7 @@ def delete(params) -> dict:
         tree = get_tree(email)
         parent_node = get_parent_node(node_id, tree)
 
-        children: list = parent_node.get("children", [])
+        children: list = parent_node.get("children")
         delete_node = trees.find_node(node_id, tree)
 
         if not delete_node:

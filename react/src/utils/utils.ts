@@ -5,7 +5,6 @@ export default {
   get_node,
   get_parent_node_id,
   get_parent_node_ids,
-  is_valid_new_node,
 };
 
 async function requests(
@@ -82,20 +81,4 @@ function get_parent_node_ids(node_id: string): string[] {
   }
 
   return parentIds;
-}
-
-function is_valid_new_node(tree: TreeNode, node_id: string): boolean {
-  if (!node_id) {
-    return false;
-  };
-
-  const parent_id = get_parent_node_id(node_id);
-  const parent = get_node(tree, parent_id);
-
-  if (!parent) {
-    throw new Error(`parent is null`);
-  };
-
-  const siblings = parent.children;
-  return !siblings.some((child) => child.label === node_id.split("/").pop());
 }
