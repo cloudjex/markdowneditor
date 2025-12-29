@@ -5,9 +5,9 @@ def main(params: dict) -> dict:
     try:
         body: dict = params["body"]
         email: str = body.get("email")
-        opt: str = body.get("opt")
+        otp: str = body.get("otp")
 
-        if not email or not opt:
+        if not email or not otp:
             raise Exception({
                 "status_code": 400,
                 "exception": "Bad Request",
@@ -23,7 +23,7 @@ def main(params: dict) -> dict:
             })
 
         options: dict = user.get("options", {})
-        if options.get("otp") != opt:
+        if options.get("otp") != otp:
             raise Exception({
                 "status_code": 401,
                 "exception": "Unauthorized",
