@@ -1,3 +1,5 @@
+import hashlib
+
 from lib.utilities import dynamodbs, jwt, response
 
 
@@ -15,18 +17,27 @@ def main(params: dict) -> dict:
             })
 
         user_info = dynamodbs.get_user(email=email)
-        if not user_info or user_info.get("password") != pw:
+        hashed_pw = hashlib.sha256(pw.encode()).hexdigest()
+        if not user_info or user_info.get("password") != hashed_pw:
             raise Exception({
                 "status_code": 401,
                 "exception": "Unauthorized",
                 "error_code": "func_login.invalid_credentials",
             })
 
+        options: dict = user_info.get("options")
+        if not options.get("enabled"):
+            raise Exception({
+                "status_code": 403,
+                "exception": "Forbidden",
+                "error_code": "func_login.account_not_enabled",
+            })
+
         id_token = jwt.generate_jwt(email)
 
         res = {
             "email": email,
-            "options": user_info["options"],
+            "options": options,
             "id_token": id_token,
         }
 

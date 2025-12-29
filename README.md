@@ -38,19 +38,21 @@ OSS Applicationとして公開しておりますので、気軽にご利用く�
 ## Table Design
 
 ### users table
-| key     | type   | desctiption | option        |
-| ------- | ------ | ----------- | ------------- |
-| email   | str    | email       | Partition Key |
-| options | object | options     |               |
+| key      | type   | desctiption | description        |
+| -------- | ------ | ----------- | ------------------ |
+| email    | str    | email       | Partition Key      |
+| password | str    | hashed pw   |                    |
+| options  | object | options     |                    |
+| - otp    | str    | otp         | only inactive user |
 
 ### trees table
-| key   | type   | desctiption  | option        |
+| key   | type   | desctiption  | description   |
 | ----- | ------ | ------------ | ------------- |
 | email | str    | email        | Partition Key |
 | tree  | object | tree content |               |
 
 ### nodes table
-| key   | type | desctiption | option        |
+| key   | type | desctiption | description   |
 | ----- | ---- | ----------- | ------------- |
 | email | str  | email       | Partition Key |
 | id    | str  | node id     | Sort Key      |
