@@ -37,9 +37,9 @@ def main(params: dict) -> dict:
         dynamodbs.put_user(email, hashed_password, options)
         if config.SMTP_PASSWORD:
             mail.send_mail(
-                to=email,
-                subject="ユーザ仮登録完了のお知らせ",
-                body=f"ユーザ仮登録が完了しました。認証画面で以下の認証コードを入力してください。<br><br>認証コード: {otp}"
+                email,
+                "ユーザ仮登録完了のお知らせ",
+                f"ユーザ仮登録が完了しました。認証画面で以下の認証コードを入力してください。<br><br>認証コード: {otp}"
             )
         else:
             print(f"Warning: SMTP is not configured. OTP for {email} is {otp}")
