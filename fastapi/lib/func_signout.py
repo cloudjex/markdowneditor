@@ -1,4 +1,4 @@
-from lib.utilities import utils
+from lib.utilities import response
 
 
 def main(params: dict) -> dict:
@@ -17,7 +17,7 @@ def main(params: dict) -> dict:
             "result": "success"
         }
 
-        return utils.response_handler(body=res, status_code=200)
+        return response.response_handler(body=res, status_code=200)
 
     except Exception as e:
-        return utils.error_handler(e)
+        return response.error_handler(e)

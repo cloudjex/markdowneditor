@@ -1,10 +1,10 @@
-from lib import func_logout
+from lib import func_signout
 
 from .conftest import logger
 
 
 class TestSuccessPost:
-    def test_func_logout_normal(self, id_token):
+    def test_func_signout_normal(self, id_token):
         params = {
             "method": "POST",
             "headers": {
@@ -14,7 +14,7 @@ class TestSuccessPost:
             "body": {},
             "query_params": {},
         }
-        response = func_logout.main(params)
+        response = func_signout.main(params)
         logger(response)
         assert response["status_code"] == 200
 
@@ -23,7 +23,7 @@ class TestSuccessPost:
 
 
 class TestFailPost:
-    def test_func_logout_no_token(self):
+    def test_func_signout_no_token(self):
         params = {
             "method": "POST",
             "headers": {
@@ -33,6 +33,6 @@ class TestFailPost:
             "body": {},
             "query_params": {},
         }
-        response = func_logout.main(params)
+        response = func_signout.main(params)
         logger(response)
         assert response["status_code"] == 400

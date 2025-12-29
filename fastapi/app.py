@@ -5,7 +5,7 @@ from mangum import Mangum
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-from lib import (func_login, func_logout, func_nodes, func_trees,
+from lib import (func_nodes, func_signin, func_signout, func_trees,
                  func_trees_operate)
 
 logger = logging.getLogger()
@@ -21,17 +21,17 @@ app.add_middleware(
 handler = Mangum(app)
 
 
-@app.api_route("/login", methods=["POST"])
-async def handle_login(request: Request):
+@app.api_route("/signin", methods=["POST"])
+async def handle_signin(request: Request):
     params = await handle_request(request)
-    res = func_login.main(params)
+    res = func_signin.main(params)
     return handle_response(res)
 
 
-@app.api_route("/logout", methods=["POST"])
-async def handle_trees(request: Request):
+@app.api_route("/signout", methods=["POST"])
+async def handle_signout(request: Request):
     params = await handle_request(request)
-    res = func_logout.main(params)
+    res = func_signout.main(params)
     return handle_response(res)
 
 

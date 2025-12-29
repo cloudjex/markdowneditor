@@ -1,4 +1,4 @@
-from lib.utilities import dynamodbs, utils
+from lib.utilities import dynamodbs, jwt, response
 
 
 def main(params: dict) -> dict:
@@ -6,17 +6,17 @@ def main(params: dict) -> dict:
         headers: dict = params["headers"]
         id_token: str = headers.get("authorization")
 
-        decoded = utils.verify_id_token(id_token)
+        decoded = jwt.verify_id_token(id_token)
         params.update({"email": decoded["email"]})
 
         method: str = params["method"]
         if method == "GET":
             res = get(params)
 
-        return utils.response_handler(body=res, status_code=200)
+        return response.response_handler(body=res, status_code=200)
 
     except Exception as e:
-        return utils.error_handler(e)
+        return response.error_handler(e)
 
 
 def get(params) -> dict:

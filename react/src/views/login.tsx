@@ -33,7 +33,7 @@ function Login() {
     setLoginError(false);
 
     const res_promise = utils.requests(
-      `${import.meta.env.VITE_API_HOST}/login`,
+      `${import.meta.env.VITE_API_HOST}/signin`,
       "POST",
       {},
       {

@@ -1,4 +1,4 @@
-from lib.utilities import dynamodbs, utils
+from lib.utilities import dynamodbs, jwt, response
 
 
 def main(params: dict) -> dict:
@@ -22,7 +22,7 @@ def main(params: dict) -> dict:
                 "error_code": "func_login.invalid_credentials",
             })
 
-        id_token = utils.generate_jwt(email)
+        id_token = jwt.generate_jwt(email)
 
         res = {
             "email": email,
@@ -30,7 +30,7 @@ def main(params: dict) -> dict:
             "id_token": id_token,
         }
 
-        return utils.response_handler(body=res, status_code=200)
+        return response.response_handler(body=res, status_code=200)
 
     except Exception as e:
-        return utils.error_handler(e)
+        return response.error_handler(e)

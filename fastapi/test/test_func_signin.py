@@ -1,10 +1,10 @@
-from lib import func_login
+from lib import func_signin
 
 from .conftest import logger
 
 
 class TestSuccessPost:
-    def test_func_login_normal(self):
+    def test_func_signin_normal(self):
         params = {
             "method": "POST",
             "headers": {
@@ -16,7 +16,7 @@ class TestSuccessPost:
             },
             "query_params": {},
         }
-        response = func_login.main(params)
+        response = func_signin.main(params)
         logger(response)
         assert response["status_code"] == 200
 
@@ -26,7 +26,7 @@ class TestSuccessPost:
 
 
 class TestFailPost:
-    def test_func_login_no_params(self):
+    def test_func_signin_no_params(self):
         params = {
             "method": "POST",
             "headers": {
@@ -38,11 +38,11 @@ class TestFailPost:
             },
             "query_params": {},
         }
-        response = func_login.main(params)
+        response = func_signin.main(params)
         logger(response)
         assert response["status_code"] == 400
 
-    def test_func_login_omit_params(self):
+    def test_func_signin_omit_params(self):
         params = {
             "method": "POST",
             "headers": {
@@ -51,11 +51,11 @@ class TestFailPost:
             "body": {},
             "query_params": {},
         }
-        response = func_login.main(params)
+        response = func_signin.main(params)
         logger(response)
         assert response["status_code"] == 400
 
-    def test_func_login_invalid_pw(self):
+    def test_func_signin_invalid_pw(self):
         params = {
             "method": "POST",
             "headers": {
@@ -67,11 +67,11 @@ class TestFailPost:
             },
             "query_params": {},
         }
-        response = func_login.main(params)
+        response = func_signin.main(params)
         logger(response)
         assert response["status_code"] == 401
 
-    def test_func_login_invalid_id_and_pw(self):
+    def test_func_signin_invalid_id_and_pw(self):
         params = {
             "method": "POST",
             "headers": {
@@ -83,6 +83,6 @@ class TestFailPost:
             },
             "query_params": {},
         }
-        response = func_login.main(params)
+        response = func_signin.main(params)
         logger(response)
         assert response["status_code"] == 401
