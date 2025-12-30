@@ -28,26 +28,22 @@ def generate_jwt(email: str) -> str:
 
 def verify_id_token(id_token: str) -> dict:
     try:
-        try:
-            id_token = id_token.replace("Bearer ", "")
+        id_token = id_token.replace("Bearer ", "")
 
-            json_payload: dict = jwt.decode(
-                jwt=id_token,
-                key=config.JWT_KEY,
-                algorithms="HS256",
-                audience=config.APP_URL,
-                issuer=config.APP_URL,
-                verify=True,
-            )
+        json_payload: dict = jwt.decode(
+            jwt=id_token,
+            key=config.JWT_KEY,
+            algorithms="HS256",
+            audience=config.APP_URL,
+            issuer=config.APP_URL,
+            verify=True,
+        )
 
-            return json_payload
+        return json_payload
 
-        except Exception:
-            raise Exception({
-                "exception": "Unauthorized",
-                "error_code": "verify_id_token.001",
-                "status_code": 401,
-            })
-
-    except Exception as e:
-        raise e
+    except Exception:
+        raise Exception({
+            "exception": "Unauthorized",
+            "error_code": "verify_id_token.001",
+            "status_code": 401,
+        })
