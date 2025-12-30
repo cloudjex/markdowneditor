@@ -10,7 +10,7 @@ TREE_TABLE_NAME = "cloudjex-trees-table"
 NODES_TABLE_NAME = "cloudjex-nodes-table"
 
 # smtp settings
-SMTP_HOST = "smtp.gmail.com"
+SMTP_HOST = "smtp.resend.com"
 SMTP_PORT = 587
-SMTP_USER = "cloudjex.com@gmail.com"
+SMTP_USER = "resend"
 SMTP_PASSWORD = os.environ.get("SMTP_PASSWORD")
