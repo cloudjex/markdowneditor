@@ -1,6 +1,4 @@
-import hashlib
-
-from lib.utilities import dynamodbs, jwt, response
+from lib.utilities import dynamodbs, hash, jwt, response
 
 
 def main(params: dict) -> dict:
@@ -17,8 +15,7 @@ def main(params: dict) -> dict:
             })
 
         user_info = dynamodbs.get_user(email=email)
-        hashed_pw = hashlib.sha256(pw.encode()).hexdigest()
-        if not user_info or user_info.get("password") != hashed_pw:
+        if not user_info or not hash.verify_password(pw, user_info.get("password")):
             raise Exception({
                 "status_code": 401,
                 "exception": "Unauthorized",

@@ -1,8 +1,6 @@
-import hashlib
 import random
 
-from lib import config
-from lib.utilities import dynamodbs, mail, response
+from lib.utilities import dynamodbs, hash, mail, response
 
 
 def main(params: dict) -> dict:
@@ -26,7 +24,7 @@ def main(params: dict) -> dict:
                 "error_code": "func_signup.user_already_exists",
             })
 
-        hashed_password = hashlib.sha256(password.encode()).hexdigest()
+        hashed_password = hash.hash_password(password)
 
         otp = str(random.randint(100000, 999999))
         options = {
