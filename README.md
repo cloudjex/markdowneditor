@@ -3,14 +3,13 @@
 ## CICD Status
 [![CICD Workflow](https://github.com/cloudjex/markdowneditor/actions/workflows/cicd.yaml/badge.svg)](https://github.com/cloudjex/markdowneditor/actions/workflows/cicd.yaml)
 
-## Sample Application URL
-https://www.cloudjex.com
-
 ## Summary
 markdown管理アプリ用のPublicRepositoryです。  
 Serverless Architectureを使用した、シンプルなFrontend/Backend構成となります。  
 Serverlessを採用することで、非常に安価に構築/運用しています。  
 OSS Applicationとして公開しておりますので、気軽にご利用ください。
+
+App: [cloudjex.com](https://www.cloudjex.com)
 
 ## System Overview
 本Repositoryでは以下のFramework/技術要素を使用しています。
@@ -19,21 +18,22 @@ OSS Applicationとして公開しておりますので、気軽にご利用く�
 | ------------------ | ---------- | -------- |
 | FastApi            | Python     | Backend  |
 | React              | TypeScript | Frontend |
-| GithubActions      | yml        | CICD     |
+| GithubActions      | yaml       | CICD     |
 | Terraform          | tf         | CICD     |
 
 <br>
 
 本Repositoryでは以下のサービスを使用しています。
 
-| サービス       | 用途            |
-| -------------- | --------------- |
-| AWS Lambda     | FastApi実行環境 |
-| AWS ApiGateway | FastApi配信     |
-| AWS DynamoDB   | DB              |
-| AWS S3         | React格納/配信  |
-| AWS CloudFront | React配信       |
-| お名前.com     | DNS, Domain管理 |
+| サービス       | 用途               |
+| -------------- | ------------------ |
+| AWS Lambda     | FastApi実行環境    |
+| AWS ApiGateway | FastApi配信        |
+| AWS DynamoDB   | DB                 |
+| AWS S3         | React格納/配信     |
+| AWS CloudFront | React配信          |
+| Resend         | SMTP               |
+| お名前.com     | DNS, Custom Domain |
 
 ## Table Design
 
