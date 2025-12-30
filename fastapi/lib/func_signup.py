@@ -26,7 +26,7 @@ def main(params: dict) -> dict:
 
         hashed_password = hash.hash_password(password)
 
-        otp = str(random.randint(100000, 999999))
+        otp = f"{random.randint(0, 999999):06d}"
         options = {
             "otp": otp,
             "enabled": False,
