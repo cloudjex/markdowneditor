@@ -59,7 +59,7 @@ function TreeUpdate(props: { currentNodeId: string }) {
     setLoading(true);
 
     const res_promise = utils.requests(
-      `${import.meta.env.VITE_API_HOST}/trees/operate`,
+      `${import.meta.env.VITE_API_HOST}/api/trees/operate`,
       "PUT",
       { authorization: `Bearer ${id_token}` },
       { node_id: `${props.currentNodeId}/${newContentName}` }
@@ -79,7 +79,7 @@ function TreeUpdate(props: { currentNodeId: string }) {
     const next_current_id = utils.get_parent_node_id(delete_node_id);
 
     const res_promise = utils.requests(
-      `${import.meta.env.VITE_API_HOST}/trees/operate`,
+      `${import.meta.env.VITE_API_HOST}/api/trees/operate`,
       "DELETE",
       { authorization: `Bearer ${id_token}` },
       { node_id: delete_node_id }

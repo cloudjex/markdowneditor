@@ -18,7 +18,7 @@ function Main() {
       setLoading(true);
 
       const res_promise = utils.requests(
-        `${import.meta.env.VITE_API_HOST}/trees`,
+        `${import.meta.env.VITE_API_HOST}/api/trees`,
         "GET",
         { authorization: `Bearer ${id_token}` },
         {}

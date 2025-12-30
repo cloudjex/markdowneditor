@@ -26,7 +26,7 @@ export const Editor = () => {
       setLoading(true);
 
       const res = await utils.requests(
-        `${import.meta.env.VITE_API_HOST}/nodes`,
+        `${import.meta.env.VITE_API_HOST}/api/nodes`,
         "GET",
         { authorization: `Bearer ${id_token}` },
         { node_id: url_node_id }

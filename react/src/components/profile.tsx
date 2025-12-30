@@ -40,7 +40,7 @@ function Profile() {
     setLoading(true);
 
     await utils.requests(
-      `${import.meta.env.VITE_API_HOST}/signout`,
+      `${import.meta.env.VITE_API_HOST}/api/signout`,
       "POST",
       { authorization: `Bearer ${id_token}` },
       {}

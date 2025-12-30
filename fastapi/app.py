@@ -21,49 +21,49 @@ app.add_middleware(
 handler = Mangum(app)
 
 
-@app.api_route("/signin", methods=["POST"])
+@app.api_route("/api/signin", methods=["POST"])
 async def handle_signin(request: Request):
     params = await handle_request(request)
     res = func_signin.main(params)
     return handle_response(res)
 
 
-@app.api_route("/signout", methods=["POST"])
+@app.api_route("/api/signout", methods=["POST"])
 async def handle_signout(request: Request):
     params = await handle_request(request)
     res = func_signout.main(params)
     return handle_response(res)
 
 
-@app.api_route("/signup", methods=["POST"])
+@app.api_route("/api/signup", methods=["POST"])
 async def handle_signup(request: Request):
     params = await handle_request(request)
     res = func_signup.main(params)
     return handle_response(res)
 
 
-@app.api_route("/signup/verify", methods=["POST"])
+@app.api_route("/api/signup/verify", methods=["POST"])
 async def handle_signup_verify(request: Request):
     params = await handle_request(request)
     res = func_signup_verify.main(params)
     return handle_response(res)
 
 
-@app.api_route("/trees", methods=["GET"])
+@app.api_route("/api/trees", methods=["GET"])
 async def handle_trees(request: Request):
     params = await handle_request(request)
     res = func_trees.main(params)
     return handle_response(res)
 
 
-@app.api_route("/trees/operate", methods=["PUT", "DELETE"])
+@app.api_route("/api/trees/operate", methods=["PUT", "DELETE"])
 async def handle_trees_operate(request: Request):
     params = await handle_request(request)
     res = func_trees_operate.main(params)
     return handle_response(res)
 
 
-@app.api_route("/nodes", methods=["GET", "PUT"])
+@app.api_route("/api/nodes", methods=["GET", "PUT"])
 async def handle_nodes(request: Request):
     params = await handle_request(request)
     res = func_nodes.main(params)

@@ -28,7 +28,7 @@ function EditorHeader(props: { markdownValue: string }) {
     setLoading(true);
 
     const res_promise = utils.requests(
-      `${import.meta.env.VITE_API_HOST}/nodes`,
+      `${import.meta.env.VITE_API_HOST}/api/nodes`,
       "PUT",
       { authorization: `Bearer ${id_token}` },
       { node_id: url_node_id, text: markdownValue }
