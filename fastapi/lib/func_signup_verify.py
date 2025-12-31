@@ -1,7 +1,7 @@
 from lib import config
-from lib.utilities import response
 from lib.utilities.dynamodb_client import DynamoDBClient
 from lib.utilities.jwt_client import JwtClient
+from lib.utilities.response_handler import ResponseHandler
 
 
 def main(params: dict) -> dict:
@@ -46,7 +46,7 @@ def main(params: dict) -> dict:
             "options": options,
             "id_token": id_token,
         }
-        return response.response_handler(body=res, status_code=200)
+        return ResponseHandler().response(body=res, status_code=200)
 
     except Exception as e:
-        return response.error_handler(e)
+        return ResponseHandler().error_response(e)
