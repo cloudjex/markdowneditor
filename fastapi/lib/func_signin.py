@@ -1,4 +1,8 @@
-from lib.utilities import dynamodbs, hash, jwt, response
+from lib import config
+from lib.utilities.bcrypt_hash import BcryptHash
+from lib.utilities.dynamodb_client import UserTableClient
+from lib.utilities.jwt_client import JwtClient
+from lib.utilities.response_handler import ResponseHandler
 
 
 def main(params: dict) -> dict:
@@ -14,8 +18,11 @@ def main(params: dict) -> dict:
                 "error_code": "func_login.missing_parameters",
             })
 
-        user_info = dynamodbs.get_user(email=email)
-        if not user_info or not hash.verify_password(pw, user_info.get("password")):
+        db_client = UserTableClient()
+        user_info = db_client.get_user(email=email)
+
+        bcrypt = BcryptHash()
+        if not user_info or not bcrypt.bcrypt_verify(pw, user_info.get("password")):
             raise Exception({
                 "status_code": 401,
                 "exception": "Unauthorized",
@@ -30,7 +37,7 @@ def main(params: dict) -> dict:
                 "error_code": "func_login.account_not_enabled",
             })
 
-        id_token = jwt.generate_jwt(email)
+        id_token = JwtClient().generate_jwt(email)
 
         res = {
             "email": email,
@@ -38,7 +45,7 @@ def main(params: dict) -> dict:
             "id_token": id_token,
         }
 
-        return response.response_handler(body=res, status_code=200)
+        return ResponseHandler().response(body=res, status_code=200)
 
     except Exception as e:
-        return response.error_handler(e)
+        return ResponseHandler().error_response(e)

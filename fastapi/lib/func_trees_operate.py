@@ -1,4 +1,8 @@
-from lib.utilities import dynamodbs, jwt, response, trees
+from lib import config
+from lib.utilities.dynamodb_client import NodeTableClient, TreeTableClient
+from lib.utilities.jwt_client import JwtClient
+from lib.utilities.response_handler import ResponseHandler
+from lib.utilities.tree_handler import TreeHander
 
 
 def main(params: dict) -> dict:
@@ -6,7 +10,7 @@ def main(params: dict) -> dict:
         headers: dict = params["headers"]
         id_token: str = headers.get("authorization")
 
-        decoded = jwt.verify_id_token(id_token)
+        decoded = JwtClient().verify_id_token(id_token)
         params.update({"email": decoded["email"]})
 
         method: str = params["method"]
@@ -15,11 +19,10 @@ def main(params: dict) -> dict:
         elif method == "DELETE":
             res = delete(params)
 
-        return response.response_handler(body=res, status_code=200)
+        return ResponseHandler().response(body=res, status_code=200)
 
     except Exception as e:
-        return response.error_handler(e)
-
+        return ResponseHandler().error_response(e)
 
 def put(params) -> dict:
     try:
@@ -43,7 +46,15 @@ def put(params) -> dict:
             })
 
         tree = get_tree(email)
-        parent_node = get_parent_node(node_id, tree)
+
+        tree_hander = TreeHander()
+        parent_node = tree_hander.get_parent_node(node_id, tree)
+        if not parent_node:
+            raise Exception({
+                "status_code": 404,
+                "exception": "Not Found",
+                "error_code": "func_trees_operate.not_found",
+            })
 
         new_node = {
             "id": node_id,
@@ -62,11 +73,13 @@ def put(params) -> dict:
         children.append(new_node)
 
         parent_node["children"] = children
-        tree = trees.sort_tree(tree)
+        tree = tree_hander.sort_tree(tree)
 
-        dynamodbs.put_tree(email, tree)
-        dynamodbs.put_node(email, node_id, "")
+        tree_db_client = TreeTableClient()
+        node_db_client = NodeTableClient()
 
+        tree_db_client.put_tree(email, tree)
+        node_db_client.put_node(email, node_id, "")
         return {"tree": tree}
 
     except Exception as e:
@@ -87,10 +100,18 @@ def delete(params) -> dict:
             })
 
         tree = get_tree(email)
-        parent_node = get_parent_node(node_id, tree)
+
+        tree_hander = TreeHander()
+        parent_node = tree_hander.get_parent_node(node_id, tree)
+        if not parent_node:
+            raise Exception({
+                "status_code": 404,
+                "exception": "Not Found",
+                "error_code": "func_trees_operate.not_found",
+            })
 
         children: list = parent_node.get("children")
-        delete_node = trees.find_node(node_id, tree)
+        delete_node = tree_hander.get_node(node_id, tree)
 
         if not delete_node:
             raise Exception({
@@ -99,15 +120,18 @@ def delete(params) -> dict:
                 "error_code": "func_trees_operate.not_found",
             })
 
-        children_ids = trees.find_children_ids(node_id, tree)
+        children_ids = tree_hander.get_children_ids(node_id, tree)
         target_and_following: list = [node_id] + children_ids
         children.remove(delete_node)
 
-        tree = trees.sort_tree(tree)
+        tree = tree_hander.sort_tree(tree)
 
-        dynamodbs.put_tree(email, tree)
+        tree_db_client = TreeTableClient()
+        node_db_client = NodeTableClient()
+
+        tree_db_client.put_tree(email, tree)
         for del_id in target_and_following:
-            dynamodbs.delete_node(email, del_id)
+            node_db_client.delete_node(email, del_id)
 
         return {"tree": tree}
 
@@ -116,7 +140,8 @@ def delete(params) -> dict:
 
 
 def get_tree(email: str) -> dict:
-    tree_info = dynamodbs.get_tree(email)
+    db_client = TreeTableClient()
+    tree_info = db_client.get_tree(email)
     if not tree_info:
         raise Exception({
             "status_code": 404,
@@ -126,17 +151,3 @@ def get_tree(email: str) -> dict:
 
     tree = tree_info.get("tree")
     return tree
-
-
-def get_parent_node(node_id: str, tree: dict) -> dict:
-    parent_node_ids = node_id.split("/")
-    parent_node_id = "/" + "/".join(parent_node_ids[1: -1])
-
-    parent_node = trees.find_node(parent_node_id, tree)
-    if not parent_node:
-        raise Exception({
-            "status_code": 404,
-            "exception": "Not Found",
-            "error_code": "func_trees_operate.parent_not_found",
-        })
-    return parent_node

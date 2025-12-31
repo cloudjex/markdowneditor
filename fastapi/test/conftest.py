@@ -3,7 +3,7 @@ import logging
 
 import pytest
 
-from lib.utilities import jwt
+from lib.utilities.jwt_client import JwtClient
 
 _logger = logging.getLogger('Logger')
 _logger.setLevel(logging.INFO)
@@ -23,7 +23,7 @@ def logger(x):
 
 @pytest.fixture
 def id_token():
-    return jwt.generate_jwt(EMAIL)
+    return JwtClient().generate_jwt(EMAIL)
 
 
 @pytest.fixture
@@ -33,4 +33,4 @@ def invalid_id_token():
 
 @pytest.fixture
 def nonuser_id_token():
-    return jwt.generate_jwt(NONUSER_EMAIL)
+    return JwtClient().generate_jwt(NONUSER_EMAIL)

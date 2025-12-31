@@ -1,4 +1,6 @@
-from lib.utilities import dynamodbs, jwt, response
+from lib.utilities.dynamodb_client import NodeTableClient
+from lib.utilities.jwt_client import JwtClient
+from lib.utilities.response_handler import ResponseHandler
 
 
 def main(params: dict) -> dict:
@@ -6,7 +8,7 @@ def main(params: dict) -> dict:
         headers: dict = params["headers"]
         id_token: str = headers.get("authorization")
 
-        decoded = jwt.verify_id_token(id_token)
+        decoded = JwtClient().verify_id_token(id_token)
         params.update({"email": decoded["email"]})
 
         method: str = params["method"]
@@ -14,11 +16,10 @@ def main(params: dict) -> dict:
             res = get(params)
         elif method == "PUT":
             res = put(params)
-        return response.response_handler(body=res, status_code=200)
+        return ResponseHandler().response(body=res, status_code=200)
 
     except Exception as e:
-        return response.error_handler(e)
-
+        return ResponseHandler().error_response(e)
 
 def get(params) -> dict:
     try:
@@ -26,8 +27,9 @@ def get(params) -> dict:
         query_params: dict = params["query_params"]
         node_id: str = query_params.get("node_id")
 
+        db_client = NodeTableClient()
         if node_id:
-            item = dynamodbs.get_node(email, node_id)
+            item = db_client.get_node(email, node_id)
             if not item:
                 raise Exception({
                     "status_code": 404,
@@ -37,7 +39,7 @@ def get(params) -> dict:
             ret = {"node": item}
 
         else:
-            items = dynamodbs.get_nodes(email)
+            items = db_client.get_nodes(email)
             if not items:
                 raise Exception({
                     "status_code": 404,
@@ -67,7 +69,8 @@ def put(params) -> dict:
                 "error_code": "func_nodes.missing_parameters",
             })
 
-        node = dynamodbs.get_node(email, node_id)
+        db_client = NodeTableClient()
+        node = db_client.get_node(email, node_id)
         if not node:
             raise Exception({
                 "status_code": 404,
@@ -75,7 +78,7 @@ def put(params) -> dict:
                 "error_code": "func_nodes.not_found",
             })
 
-        dynamodbs.put_node(email, node_id, text)
+        db_client.put_node(email, node_id, text)
 
         return {
             "node": {

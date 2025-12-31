@@ -1,6 +1,10 @@
 import random
 
-from lib.utilities import dynamodbs, hash, mail, response
+from lib import config
+from lib.utilities.bcrypt_hash import BcryptHash
+from lib.utilities.dynamodb_client import UserTableClient
+from lib.utilities.response_handler import ResponseHandler
+from lib.utilities.smtp_client import SmtpClient
 
 
 def main(params: dict) -> dict:
@@ -16,7 +20,8 @@ def main(params: dict) -> dict:
                 "error_code": "func_signup.missing_parameters",
             })
 
-        user = dynamodbs.get_user(email)
+        db_client = UserTableClient()
+        user = db_client.get_user(email)
         if user and user["options"]["enabled"]:
             raise Exception({
                 "status_code": 409,
@@ -24,7 +29,8 @@ def main(params: dict) -> dict:
                 "error_code": "func_signup.user_already_exists",
             })
 
-        hashed_password = hash.hash_password(password)
+        bcrypt = BcryptHash()
+        hashed_password = bcrypt.bcrypt_hash(password)
 
         otp = f"{random.randint(0, 999999):06d}"
         options = {
@@ -32,15 +38,15 @@ def main(params: dict) -> dict:
             "enabled": False,
         }
 
-        dynamodbs.put_user(email, hashed_password, options)
-        mail.send_mail(
+        db_client.put_user(email, hashed_password, options)
+        SmtpClient().send_mail(
             email,
             "ユーザ仮登録完了のお知らせ",
             f"ユーザ仮登録が完了しました。認証画面で以下の認証コードを入力してください。<br><br>認証コード: {otp}"
         )
 
         res = {"email": email}
-        return response.response_handler(body=res, status_code=200)
+        return ResponseHandler().response(body=res, status_code=200)
 
     except Exception as e:
-        return response.error_handler(e)
+        return ResponseHandler().error_response(e)
