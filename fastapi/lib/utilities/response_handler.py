@@ -1,6 +1,6 @@
 import traceback
 
-from lib.utilities.exceptions import BaseExceptions
+from lib.utilities.errors import BaseExceptionClass
 
 
 class ResponseHandler:
@@ -9,12 +9,11 @@ class ResponseHandler:
 
     def error_response(self, e: Exception) -> dict:
         try:
-            args = e.args[0]
-
-            if isinstance(e, BaseExceptions):
+            if isinstance(e, BaseExceptionClass):
                 status_code = e.status_code
+                error_code = e.args[0]
                 body = {
-                    "error_code": args.get("error_code"),
+                    "error_code": error_code,
                     "exception": e.exception,
                 }
             else:
@@ -29,7 +28,6 @@ class ResponseHandler:
 
         except Exception as e:
             raise e
-
 
     def response(self, status_code: int, body: dict) -> dict:
         try:

@@ -1,4 +1,4 @@
-from lib.utilities import exceptions
+from lib.utilities import errors
 from lib.utilities.dynamodb_client import NodeTableClient, TreeTableClient
 from lib.utilities.jwt_client import JwtClient
 from lib.utilities.response_handler import ResponseHandler
@@ -24,6 +24,7 @@ def main(params: dict) -> dict:
     except Exception as e:
         return ResponseHandler().error_response(e)
 
+
 def put(params) -> dict:
     try:
         email: str = params["email"]
@@ -31,24 +32,18 @@ def put(params) -> dict:
         node_id: str = body.get("node_id")
 
         if not node_id:
-            raise exceptions.BadRequestError({
-                "error_code": "func_trees_operate.missing_parameters",
-            })
+            raise errors.BadRequestError("func_trees_operate.missing_params")
 
         label = node_id.split("/")[-1]
         if not label:
-            raise exceptions.BadRequestError({
-                "error_code": "func_trees_operate.invalid_node_id",
-            })
+            raise errors.BadRequestError("func_trees_operate.invalid_params")
 
         tree = get_tree(email)
 
         tree_hander = TreeHander()
         parent_node = tree_hander.get_parent_node(node_id, tree)
         if not parent_node:
-            raise exceptions.NotFoundError({
-                "error_code": "func_trees_operate.not_found",
-            })
+            raise errors.NotFoundError("func_trees_operate.not_found")
 
         new_node = {
             "id": node_id,
@@ -58,9 +53,7 @@ def put(params) -> dict:
         children: list = parent_node.get("children")
 
         if any(child["id"] == node_id for child in children):
-            raise exceptions.ConflictError({
-                "error_code": "func_trees_operate.duplicate_node",
-            })
+            raise errors.ConflictError("func_trees_operate.conflict_node")
 
         children.append(new_node)
 
@@ -85,26 +78,20 @@ def delete(params) -> dict:
         node_id: str = query_params.get("node_id")
 
         if not node_id:
-            raise exceptions.BadRequestError({
-                "error_code": "func_trees_operate.missing_parameters",
-            })
+            raise errors.BadRequestError("func_trees_operate.missing_params")
 
         tree = get_tree(email)
 
         tree_hander = TreeHander()
         parent_node = tree_hander.get_parent_node(node_id, tree)
         if not parent_node:
-            raise exceptions.NotFoundError({
-                "error_code": "func_trees_operate.not_found",
-            })
+            raise errors.NotFoundError("func_trees_operate.not_found")
 
         children: list = parent_node.get("children")
         delete_node = tree_hander.get_node(node_id, tree)
 
         if not delete_node:
-            raise exceptions.NotFoundError({
-                "error_code": "func_trees_operate.not_found",
-            })
+            raise errors.NotFoundError("func_trees_operate.not_found")
 
         children_ids = tree_hander.get_children_ids(node_id, tree)
         target_and_following: list = [node_id] + children_ids
@@ -129,9 +116,7 @@ def get_tree(email: str) -> dict:
     db_client = TreeTableClient()
     tree_info = db_client.get_tree(email)
     if not tree_info:
-        raise exceptions.NotFoundError({
-            "error_code": "func_trees_operate.not_found",
-        })
+        raise errors.NotFoundError("func_trees_operate.not_found")
 
     tree = tree_info.get("tree")
     return tree

@@ -101,7 +101,7 @@ class TestFailPut:
         logger(response)
         assert response["status_code"] == 400
 
-    def test_func_trees_operate_put_dupulicate(self, id_token):
+    def test_func_trees_operate_put_duplicate(self, id_token):
         params = {
             "method": "PUT",
             "headers": {

@@ -1,4 +1,4 @@
-from lib.utilities import exceptions
+from lib.utilities import errors
 from lib.utilities.response_handler import ResponseHandler
 
 
@@ -8,9 +8,7 @@ def main(params: dict) -> dict:
         id_token: str = headers.get("authorization")
 
         if not id_token:
-            raise exceptions.BadRequestError({
-                "error_code": "func_logout.missing_parameters",
-            })
+            raise errors.BadRequestError("func_logout.missing_params")
 
         res = {
             "result": "success"
