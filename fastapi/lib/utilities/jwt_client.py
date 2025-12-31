@@ -11,24 +11,20 @@ class JwtClient:
         pass
 
     def generate_jwt(self, email: str) -> str:
-        try:
-            claim = {
-                "email": email,
-                "iss": config.APP_URL,
-                "aud": config.APP_URL,
-                "iat": int(time.time()),
-                "exp": int(time.time()) + 3600,
-            }
+        claim = {
+            "email": email,
+            "iss": config.APP_URL,
+            "aud": config.APP_URL,
+            "iat": int(time.time()),
+            "exp": int(time.time()) + 3600,
+        }
 
-            str_jwt = jwt.encode(
-                payload=claim,
-                key=config.JWT_KEY,
-                algorithm="HS256",
-            )
-            return str_jwt
-
-        except Exception as e:
-            raise e
+        str_jwt = jwt.encode(
+            payload=claim,
+            key=config.JWT_KEY,
+            algorithm="HS256",
+        )
+        return str_jwt
 
     def verify_id_token(self, id_token: str) -> dict:
         try:

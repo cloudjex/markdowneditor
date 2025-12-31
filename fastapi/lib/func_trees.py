@@ -23,19 +23,15 @@ def main(params: dict) -> dict:
 
 
 def get(params) -> dict:
-    try:
-        email: str = params["email"]
+    email: str = params["email"]
 
-        db_client = TreeTableClient()
-        tree_info = db_client.get_tree(email=email)
-        if not tree_info:
-            raise errors.NotFoundError("func_trees.not_found")
+    db_client = TreeTableClient()
+    tree_info = db_client.get_tree(email=email)
+    if not tree_info:
+        raise errors.NotFoundError("func_trees.not_found")
 
-        res = {
-            "tree": tree_info["tree"],
-        }
+    res = {
+        "tree": tree_info["tree"],
+    }
 
-        return res
-
-    except Exception as e:
-        raise e
+    return res
