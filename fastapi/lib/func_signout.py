@@ -1,3 +1,4 @@
+from lib.utilities import exceptions
 from lib.utilities.response_handler import ResponseHandler
 
 
@@ -7,9 +8,7 @@ def main(params: dict) -> dict:
         id_token: str = headers.get("authorization")
 
         if not id_token:
-            raise Exception({
-                "status_code": 400,
-                "exception": "Bad Request",
+            raise exceptions.BadRequestError({
                 "error_code": "func_logout.missing_parameters",
             })
 

@@ -3,6 +3,7 @@ import time
 import jwt
 
 from lib import config
+from lib.utilities import exceptions
 
 
 class JwtClient:
@@ -45,8 +46,6 @@ class JwtClient:
             return json_payload
 
         except Exception:
-            raise Exception({
-                "exception": "Unauthorized",
+            raise exceptions.UnauthorizedError({
                 "error_code": "verify_id_token.001",
-                "status_code": 401,
             })

@@ -1,3 +1,4 @@
+from lib.utilities import exceptions
 from lib.utilities.dynamodb_client import NodeTableClient
 from lib.utilities.jwt_client import JwtClient
 from lib.utilities.response_handler import ResponseHandler
@@ -31,9 +32,7 @@ def get(params) -> dict:
         if node_id:
             item = db_client.get_node(email, node_id)
             if not item:
-                raise Exception({
-                    "status_code": 404,
-                    "exception": "Not Found",
+                raise exceptions.NotFoundError({
                     "error_code": "func_nodes.not_found",
                 })
             ret = {"node": item}
@@ -41,9 +40,7 @@ def get(params) -> dict:
         else:
             items = db_client.get_nodes(email)
             if not items:
-                raise Exception({
-                    "status_code": 404,
-                    "exception": "Not Found",
+                raise exceptions.NotFoundError({
                     "error_code": "func_nodes.not_found",
                 })
             ret = {"nodes": items}
@@ -63,18 +60,14 @@ def put(params) -> dict:
         text: str = body.get("text")
 
         if not node_id or text is None:
-            raise Exception({
-                "status_code": 400,
-                "exception": "Bad Request",
+            raise exceptions.BadRequestError({
                 "error_code": "func_nodes.missing_parameters",
             })
 
         db_client = NodeTableClient()
         node = db_client.get_node(email, node_id)
         if not node:
-            raise Exception({
-                "status_code": 404,
-                "exception": "Not Found",
+            raise exceptions.NotFoundError({
                 "error_code": "func_nodes.not_found",
             })
 

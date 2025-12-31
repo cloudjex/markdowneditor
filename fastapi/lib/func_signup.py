@@ -1,5 +1,6 @@
 import random
 
+from lib.utilities import exceptions
 from lib.utilities.bcrypt_hash import BcryptHash
 from lib.utilities.dynamodb_client import UserTableClient
 from lib.utilities.response_handler import ResponseHandler
@@ -13,18 +14,14 @@ def main(params: dict) -> dict:
         password: str = body.get("password")
 
         if not email or not password:
-            raise Exception({
-                "status_code": 400,
-                "exception": "Bad Request",
+            raise exceptions.BadRequestError({
                 "error_code": "func_signup.missing_parameters",
             })
 
         db_client = UserTableClient()
         user = db_client.get_user(email)
         if user and user["options"]["enabled"]:
-            raise Exception({
-                "status_code": 409,
-                "exception": "Conflict",
+            raise exceptions.ConflictError({
                 "error_code": "func_signup.user_already_exists",
             })
 

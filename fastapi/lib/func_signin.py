@@ -1,3 +1,4 @@
+from lib.utilities import exceptions
 from lib.utilities.bcrypt_hash import BcryptHash
 from lib.utilities.dynamodb_client import UserTableClient
 from lib.utilities.jwt_client import JwtClient
@@ -11,9 +12,7 @@ def main(params: dict) -> dict:
         pw: str = body.get("password")
 
         if not email or not pw:
-            raise Exception({
-                "status_code": 400,
-                "exception": "Bad Request",
+            raise exceptions.BadRequestError({
                 "error_code": "func_login.missing_parameters",
             })
 
@@ -22,17 +21,13 @@ def main(params: dict) -> dict:
 
         bcrypt = BcryptHash()
         if not user_info or not bcrypt.bcrypt_verify(pw, user_info.get("password")):
-            raise Exception({
-                "status_code": 401,
-                "exception": "Unauthorized",
+            raise exceptions.UnauthorizedError({
                 "error_code": "func_login.invalid_credentials",
             })
 
         options: dict = user_info.get("options")
         if not options.get("enabled"):
-            raise Exception({
-                "status_code": 403,
-                "exception": "Forbidden",
+            raise exceptions.ForbiddenError({
                 "error_code": "func_login.account_not_enabled",
             })
 

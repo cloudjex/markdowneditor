@@ -1,3 +1,4 @@
+from lib.utilities import exceptions
 from lib.utilities.dynamodb_client import TreeTableClient
 from lib.utilities.jwt_client import JwtClient
 from lib.utilities.response_handler import ResponseHandler
@@ -27,9 +28,7 @@ def get(params) -> dict:
         db_client = TreeTableClient()
         tree_info = db_client.get_tree(email=email)
         if not tree_info:
-            raise Exception({
-                "status_code": 404,
-                "exception": "Not Found",
+            raise exceptions.NotFoundError({
                 "error_code": "func_trees.not_found",
             })
 

@@ -1,5 +1,7 @@
 import traceback
 
+from lib.utilities.exceptions import BaseExceptions
+
 
 class ResponseHandler:
     def __init__(self):
@@ -9,30 +11,27 @@ class ResponseHandler:
         try:
             args = e.args[0]
 
-            status_code = None
-            params = {}
-
-            if type(args) is dict and args.get("status_code"):
-                # Expected Errors
-                status_code = args["status_code"]
-                params.update({
-                    "exception": args.get("exception"),
+            if isinstance(e, BaseExceptions):
+                status_code = e.status_code
+                body = {
                     "error_code": args.get("error_code"),
-                })
-
+                    "exception": e.exception,
+                }
             else:
                 # Unexpected error (internal error)
                 status_code = 500
-                traceback_str = traceback.format_exc()
-                params.update({"exception": traceback_str})
+                body = {
+                    "error_code": traceback.format_exc(),
+                    "exception": "INTERNAL_SERVER_ERROR",
+                }
 
-            return self.response(body=params, status_code=status_code)
+            return self.response(status_code, body)
 
         except Exception as e:
             raise e
 
 
-    def response(self, body: dict, status_code: int = 200) -> dict:
+    def response(self, status_code: int, body: dict) -> dict:
         try:
             return {
                 "headers": {"Content-Type": "application/json"},

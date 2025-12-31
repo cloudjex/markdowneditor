@@ -1,3 +1,4 @@
+from lib.utilities import exceptions
 from lib.utilities.dynamodb_client import UserTableClient
 from lib.utilities.jwt_client import JwtClient
 from lib.utilities.response_handler import ResponseHandler
@@ -10,26 +11,20 @@ def main(params: dict) -> dict:
         otp: str = body.get("otp")
 
         if not email or not otp:
-            raise Exception({
-                "status_code": 400,
-                "exception": "Bad Request",
+            raise exceptions.BadRequestError({
                 "error_code": "func_signup_verify.missing_parameters",
             })
 
         db_client = UserTableClient()
         user = db_client.get_user(email)
         if not user:
-            raise Exception({
-                "status_code": 404,
-                "exception": "User Not Found",
+            raise exceptions.NotFoundError({
                 "error_code": "func_signup_verify.user_not_found",
             })
 
         options: dict = user.get("options", {})
         if options.get("otp") != otp:
-            raise Exception({
-                "status_code": 401,
-                "exception": "Unauthorized",
+            raise exceptions.UnauthorizedError({
                 "error_code": "func_signup_verify.invalid_otp",
             })
 
