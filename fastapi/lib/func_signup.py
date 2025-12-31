@@ -1,9 +1,10 @@
 import random
 
 from lib import config
-from lib.utilities import mail, response
+from lib.utilities import response
 from lib.utilities.bcrypt_hash import BcryptHash
 from lib.utilities.dynamodb_client import DynamoDBClient
+from lib.utilities.smtp_client import SmtpClient
 
 
 def main(params: dict) -> dict:
@@ -38,7 +39,7 @@ def main(params: dict) -> dict:
         }
 
         db_client.put_user(email, hashed_password, options)
-        mail.send_mail(
+        SmtpClient().send_mail(
             email,
             "ユーザ仮登録完了のお知らせ",
             f"ユーザ仮登録が完了しました。認証画面で以下の認証コードを入力してください。<br><br>認証コード: {otp}"
