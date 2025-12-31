@@ -2,7 +2,7 @@ from lib.utilities import errors
 from lib.utilities.dynamodb_client import NodeTableClient, TreeTableClient
 from lib.utilities.jwt_client import JwtClient
 from lib.utilities.response_handler import ResponseHandler
-from lib.utilities.tree_handler import TreeHander
+from lib.utilities.tree_handler import TreeHandler
 
 
 def main(params: dict) -> dict:
@@ -37,30 +37,24 @@ def put(params) -> dict:
     if not label:
         raise errors.BadRequestError("func_trees_operate.invalid_params")
 
-    tree = get_tree(email)
-
-    tree_hander = TreeHander()
-    parent_node = tree_hander.get_parent_node(node_id, tree)
-    if not parent_node:
-        raise errors.NotFoundError("func_trees_operate.not_found")
-
     new_node = {
         "id": node_id,
         "label": label,
         "children": [],
     }
-    children: list = parent_node.get("children")
-
-    if any(child["id"] == node_id for child in children):
-        raise errors.ConflictError("func_trees_operate.conflict_node")
-
-    children.append(new_node)
-
-    parent_node["children"] = children
-    tree = tree_hander.sort_tree(tree)
 
     tree_db_client = TreeTableClient()
     node_db_client = NodeTableClient()
+
+    tree_info = tree_db_client.get_tree(email)
+    if not tree_info:
+        raise errors.NotFoundError("func_trees_operate.not_found")
+
+    tree = tree_info["tree"]
+    tree_handler = TreeHandler(tree)
+
+    tree_handler.insert_node(new_node)
+    tree = tree_handler.sort_tree()
 
     tree_db_client.put_tree(email, tree)
     node_db_client.put_node(email, node_id, "")
@@ -75,40 +69,24 @@ def delete(params) -> dict:
     if not node_id:
         raise errors.BadRequestError("func_trees_operate.missing_params")
 
-    tree = get_tree(email)
-
-    tree_hander = TreeHander()
-    parent_node = tree_hander.get_parent_node(node_id, tree)
-    if not parent_node:
-        raise errors.NotFoundError("func_trees_operate.not_found")
-
-    children: list = parent_node.get("children")
-    delete_node = tree_hander.get_node(node_id, tree)
-
-    if not delete_node:
-        raise errors.NotFoundError("func_trees_operate.not_found")
-
-    children_ids = tree_hander.get_children_ids(node_id, tree)
-    target_and_following: list = [node_id] + children_ids
-    children.remove(delete_node)
-
-    tree = tree_hander.sort_tree(tree)
-
     tree_db_client = TreeTableClient()
     node_db_client = NodeTableClient()
 
-    tree_db_client.put_tree(email, tree)
-    for del_id in target_and_following:
-        node_db_client.delete_node(email, del_id)
-
-    return {"tree": tree}
-
-
-def get_tree(email: str) -> dict:
-    db_client = TreeTableClient()
-    tree_info = db_client.get_tree(email)
+    tree_info = tree_db_client.get_tree(email)
     if not tree_info:
         raise errors.NotFoundError("func_trees_operate.not_found")
 
-    tree = tree_info.get("tree")
-    return tree
+    tree = tree_info["tree"]
+    tree_handler = TreeHandler(tree)
+
+    children_ids = tree_handler.get_children_ids(node_id)
+    tree_handler.delete_node(node_id)
+    tree = tree_handler.sort_tree()
+
+    for del_id in children_ids:
+        node_db_client.delete_node(email, del_id)
+
+    node_db_client.delete_node(email, node_id)
+    tree_db_client.put_tree(email, tree)
+
+    return {"tree": tree}

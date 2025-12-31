@@ -1,53 +1,92 @@
-class TreeHander:
-    def __init__(self):
-        pass
+from lib.utilities import errors
 
-    def get_node(self, node_id: str, tree: dict) -> dict | None:
-        if tree.get("id") == node_id:
-            return tree
 
-        for child in tree.get("children"):
-            result = self.get_node(node_id, child)
-            if result is not None:
-                return result
+class TreeHandler:
+    def __init__(self, tree):
+        self._tree = tree
 
-        return None
+    def get_node(self, node_id: str) -> dict | None:
+        parts = [p for p in node_id.split("/") if p]
 
-    def get_parent_node(self, node_id: str, tree: dict) -> dict | None:
-        parent_node_ids = node_id.split("/")
-        parent_node_id = "/" + "/".join(parent_node_ids[1: -1])
+        current: dict = self._tree
 
-        parent_node = self.get_node(parent_node_id, tree)
-        return parent_node
+        for part in parts[1:]:
+            children: list[dict] = current["children"]
+            found = None
 
-    def get_children_ids(self, node_id: str, tree: dict) -> list[str]:
-        target = self.get_node(node_id, tree)
+            for child in children:
+                if child["label"] == part:
+                    found = child
+                    break
+
+            if not found:
+                return None
+
+            current = found
+
+        return current
+
+    def get_parent_node(self, node_id: str) -> dict | None:
+        parts = [p for p in node_id.split("/") if p]
+        if len(parts) <= 1:
+            return None
+
+        parent_id = "/" + "/".join(parts[:-1])
+        return self.get_node(parent_id)
+
+    def get_children_ids(self, node_id: str) -> list[str]:
+        target = self.get_node(node_id)
         result = []
         if target is None:
             return result
 
         def collect(node: dict):
-            for child in node.get("children"):
+            for child in node["children"]:
                 result.append(child["id"])
                 collect(child)
 
         collect(target)
         return result
 
-    def sort_tree(self, tree: dict) -> dict:
-        if not tree or not isinstance(tree, dict):
-            return tree
+    def insert_node(self, new_node: dict) -> None:
+        node_id = new_node["id"]
+        parent_node = self.get_parent_node(node_id)
+        if parent_node is None:
+            raise errors.BadRequestError("TreeHandler.invalid_node_id")
 
-        def sort_key(child: dict) -> tuple[bool, str]:
-            node_id: str = child.get("id", "")
-            is_file = "children" not in child or not child.get("children")
-            return (is_file, node_id)
+        children: list = parent_node["children"]
 
-        children = tree.get("children")
-        if isinstance(children, list):
-            children.sort(key=sort_key)
-            for child in children:
-                self.sort_tree(child)
-            tree["children"] = children
+        for child in children:
+            if child["id"] == new_node["id"]:
+                raise errors.ConflictError(f"TreeHandler.conflict_node")
+
+        children.append(new_node)
+
+    def delete_node(self, node_id: str) -> None:
+        parent_node = self.get_parent_node(node_id)
+        if parent_node is None:
+            raise errors.NotFoundError("TreeHandler.not_found")
+
+        children: list = parent_node["children"]
+        for i, child in enumerate(children):
+            if child["id"] == node_id:
+                del children[i]
+                return
+
+        raise errors.NotFoundError("TreeHandler.not_found")
+
+    def sort_tree(self, tree: dict | None = None) -> dict:
+        if tree is None:
+            tree = self._tree
+
+        def sort_key(child: dict):
+            is_file = not child["children"]
+            return (is_file, child["id"])
+
+        children: list = tree["children"]
+        children.sort(key=sort_key)
+
+        for child in children:
+            self.sort_tree(child)
 
         return tree
