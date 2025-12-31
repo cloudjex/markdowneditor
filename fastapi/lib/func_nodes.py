@@ -1,5 +1,4 @@
-from lib import config
-from lib.utilities.dynamodb_client import DynamoDBClient
+from lib.utilities.dynamodb_client import NodeTableClient
 from lib.utilities.jwt_client import JwtClient
 from lib.utilities.response_handler import ResponseHandler
 
@@ -28,7 +27,7 @@ def get(params) -> dict:
         query_params: dict = params["query_params"]
         node_id: str = query_params.get("node_id")
 
-        db_client = DynamoDBClient(config.NODES_TABLE_NAME)
+        db_client = NodeTableClient()
         if node_id:
             item = db_client.get_node(email, node_id)
             if not item:
@@ -70,7 +69,7 @@ def put(params) -> dict:
                 "error_code": "func_nodes.missing_parameters",
             })
 
-        db_client = DynamoDBClient(config.NODES_TABLE_NAME)
+        db_client = NodeTableClient()
         node = db_client.get_node(email, node_id)
         if not node:
             raise Exception({

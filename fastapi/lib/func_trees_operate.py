@@ -1,5 +1,5 @@
 from lib import config
-from lib.utilities.dynamodb_client import DynamoDBClient
+from lib.utilities.dynamodb_client import NodeTableClient, TreeTableClient
 from lib.utilities.jwt_client import JwtClient
 from lib.utilities.response_handler import ResponseHandler
 from lib.utilities.tree_handler import TreeHander
@@ -75,12 +75,11 @@ def put(params) -> dict:
         parent_node["children"] = children
         tree = tree_hander.sort_tree(tree)
 
-        db_client_tree = DynamoDBClient(config.TREE_TABLE_NAME)
-        db_client_node = DynamoDBClient(config.NODES_TABLE_NAME)
+        tree_db_client = TreeTableClient()
+        node_db_client = NodeTableClient()
 
-        db_client_tree.put_tree(email, tree)
-        db_client_node.put_node(email, node_id, "")
-
+        tree_db_client.put_tree(email, tree)
+        node_db_client.put_node(email, node_id, "")
         return {"tree": tree}
 
     except Exception as e:
@@ -127,12 +126,12 @@ def delete(params) -> dict:
 
         tree = tree_hander.sort_tree(tree)
 
-        db_client_tree = DynamoDBClient(config.TREE_TABLE_NAME)
-        db_client_node = DynamoDBClient(config.NODES_TABLE_NAME)
+        tree_db_client = TreeTableClient()
+        node_db_client = NodeTableClient()
 
-        db_client_tree.put_tree(email, tree)
+        tree_db_client.put_tree(email, tree)
         for del_id in target_and_following:
-            db_client_node.delete_node(email, del_id)
+            node_db_client.delete_node(email, del_id)
 
         return {"tree": tree}
 
@@ -141,7 +140,7 @@ def delete(params) -> dict:
 
 
 def get_tree(email: str) -> dict:
-    db_client = DynamoDBClient(config.TREE_TABLE_NAME)
+    db_client = TreeTableClient()
     tree_info = db_client.get_tree(email)
     if not tree_info:
         raise Exception({

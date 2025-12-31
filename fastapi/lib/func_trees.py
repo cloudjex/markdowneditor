@@ -1,5 +1,5 @@
 from lib import config
-from lib.utilities.dynamodb_client import DynamoDBClient
+from lib.utilities.dynamodb_client import TreeTableClient
 from lib.utilities.jwt_client import JwtClient
 from lib.utilities.response_handler import ResponseHandler
 
@@ -25,7 +25,7 @@ def get(params) -> dict:
     try:
         email: str = params["email"]
 
-        db_client = DynamoDBClient(config.TREE_TABLE_NAME)
+        db_client = TreeTableClient()
         tree_info = db_client.get_tree(email=email)
         if not tree_info:
             raise Exception({

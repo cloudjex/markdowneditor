@@ -2,17 +2,23 @@ import boto3
 from boto3.dynamodb.conditions import Key
 from mypy_boto3_dynamodb.service_resource import Table
 
+from lib import config
 
-class DynamoDBClient:
+
+class BaseDynamoDBClient:
     def __init__(self, table_name: str):
         self._dynamodb_client: Table = boto3.resource("dynamodb").Table(table_name)
+
+
+class UserTableClient(BaseDynamoDBClient):
+    def __init__(self):
+        super().__init__(config.USERS_TABLE_NAME)
 
     def get_user(self, email: str) -> dict | None:
         try:
             response = self._dynamodb_client.get_item(
                 Key={"email": email}
             )
-
             return response.get("Item")
 
         except Exception as e:
@@ -31,12 +37,16 @@ class DynamoDBClient:
         except Exception as e:
             raise e
 
+
+class TreeTableClient(BaseDynamoDBClient):
+    def __init__(self):
+        super().__init__(config.TREES_TABLE_NAME)
+
     def get_tree(self, email: str) -> dict | None:
         try:
             response = self._dynamodb_client.get_item(
                 Key={"email": email}
             )
-
             return response.get("Item")
 
         except Exception as e:
@@ -54,6 +64,11 @@ class DynamoDBClient:
         except Exception as e:
             raise e
 
+
+class NodeTableClient(BaseDynamoDBClient):
+    def __init__(self):
+        super().__init__(config.NODES_TABLE_NAME)
+
     def get_node(self, email: str, node_id) -> dict | None:
         try:
             response = self._dynamodb_client.get_item(
@@ -62,7 +77,6 @@ class DynamoDBClient:
                     "id": node_id,
                 }
             )
-
             return response.get("Item")
 
         except Exception as e:
@@ -75,7 +89,6 @@ class DynamoDBClient:
             )
 
             items = response.get("Items", [])
-
             return items
 
         except Exception as e:

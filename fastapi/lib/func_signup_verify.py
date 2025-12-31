@@ -1,5 +1,5 @@
 from lib import config
-from lib.utilities.dynamodb_client import DynamoDBClient
+from lib.utilities.dynamodb_client import UserTableClient
 from lib.utilities.jwt_client import JwtClient
 from lib.utilities.response_handler import ResponseHandler
 
@@ -17,7 +17,7 @@ def main(params: dict) -> dict:
                 "error_code": "func_signup_verify.missing_parameters",
             })
 
-        db_client = DynamoDBClient(config.USER_TABLE_NAME)
+        db_client = UserTableClient()
         user = db_client.get_user(email)
         if not user:
             raise Exception({
