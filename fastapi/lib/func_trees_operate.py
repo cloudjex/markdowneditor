@@ -46,7 +46,15 @@ def put(params) -> dict:
             })
 
         tree = get_tree(email)
-        parent_node = get_parent_node(node_id, tree)
+
+        tree_hander = TreeHander()
+        parent_node = tree_hander.find_parent_node(node_id, tree)
+        if not parent_node:
+            raise Exception({
+                "status_code": 404,
+                "exception": "Not Found",
+                "error_code": "func_trees_operate.not_found",
+            })
 
         new_node = {
             "id": node_id,
@@ -65,7 +73,7 @@ def put(params) -> dict:
         children.append(new_node)
 
         parent_node["children"] = children
-        tree = TreeHander().sort_tree(tree)
+        tree = tree_hander.sort_tree(tree)
 
         db_client_tree = DynamoDBClient(config.TREE_TABLE_NAME)
         db_client_node = DynamoDBClient(config.NODES_TABLE_NAME)
@@ -93,9 +101,15 @@ def delete(params) -> dict:
             })
 
         tree = get_tree(email)
-        parent_node = get_parent_node(node_id, tree)
 
         tree_hander = TreeHander()
+        parent_node = tree_hander.find_parent_node(node_id, tree)
+        if not parent_node:
+            raise Exception({
+                "status_code": 404,
+                "exception": "Not Found",
+                "error_code": "func_trees_operate.not_found",
+            })
 
         children: list = parent_node.get("children")
         delete_node = tree_hander.find_node(node_id, tree)
@@ -138,17 +152,3 @@ def get_tree(email: str) -> dict:
 
     tree = tree_info.get("tree")
     return tree
-
-
-def get_parent_node(node_id: str, tree: dict) -> dict:
-    parent_node_ids = node_id.split("/")
-    parent_node_id = "/" + "/".join(parent_node_ids[1: -1])
-
-    parent_node = TreeHander().find_node(parent_node_id, tree)
-    if not parent_node:
-        raise Exception({
-            "status_code": 404,
-            "exception": "Not Found",
-            "error_code": "func_trees_operate.parent_not_found",
-        })
-    return parent_node
