@@ -1,8 +1,8 @@
 from lib import config
-from lib.utilities import trees
 from lib.utilities.dynamodb_client import DynamoDBClient
 from lib.utilities.jwt_client import JwtClient
 from lib.utilities.response_handler import ResponseHandler
+from lib.utilities.tree_handler import TreeHander
 
 
 def main(params: dict) -> dict:
@@ -65,7 +65,7 @@ def put(params) -> dict:
         children.append(new_node)
 
         parent_node["children"] = children
-        tree = trees.sort_tree(tree)
+        tree = TreeHander().sort_tree(tree)
 
         db_client_tree = DynamoDBClient(config.TREE_TABLE_NAME)
         db_client_node = DynamoDBClient(config.NODES_TABLE_NAME)
@@ -95,8 +95,10 @@ def delete(params) -> dict:
         tree = get_tree(email)
         parent_node = get_parent_node(node_id, tree)
 
+        tree_hander = TreeHander()
+
         children: list = parent_node.get("children")
-        delete_node = trees.find_node(node_id, tree)
+        delete_node = tree_hander.find_node(node_id, tree)
 
         if not delete_node:
             raise Exception({
@@ -105,11 +107,11 @@ def delete(params) -> dict:
                 "error_code": "func_trees_operate.not_found",
             })
 
-        children_ids = trees.find_children_ids(node_id, tree)
+        children_ids = tree_hander.find_children_ids(node_id, tree)
         target_and_following: list = [node_id] + children_ids
         children.remove(delete_node)
 
-        tree = trees.sort_tree(tree)
+        tree = tree_hander.sort_tree(tree)
 
         db_client_tree = DynamoDBClient(config.TREE_TABLE_NAME)
         db_client_node = DynamoDBClient(config.NODES_TABLE_NAME)
@@ -142,7 +144,7 @@ def get_parent_node(node_id: str, tree: dict) -> dict:
     parent_node_ids = node_id.split("/")
     parent_node_id = "/" + "/".join(parent_node_ids[1: -1])
 
-    parent_node = trees.find_node(parent_node_id, tree)
+    parent_node = TreeHander().find_node(parent_node_id, tree)
     if not parent_node:
         raise Exception({
             "status_code": 404,
