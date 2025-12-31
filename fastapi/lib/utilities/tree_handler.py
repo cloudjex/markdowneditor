@@ -2,26 +2,26 @@ class TreeHander:
     def __init__(self):
         pass
 
-    def find_node(self, node_id: str, tree: dict) -> dict | None:
+    def get_node(self, node_id: str, tree: dict) -> dict | None:
         if tree.get("id") == node_id:
             return tree
 
         for child in tree.get("children"):
-            result = self.find_node(node_id, child)
+            result = self.get_node(node_id, child)
             if result is not None:
                 return result
 
         return None
 
-    def find_parent_node(self, node_id: str, tree: dict) -> dict | None:
+    def get_parent_node(self, node_id: str, tree: dict) -> dict | None:
         parent_node_ids = node_id.split("/")
         parent_node_id = "/" + "/".join(parent_node_ids[1: -1])
 
-        parent_node = self.find_node(parent_node_id, tree)
+        parent_node = self.get_node(parent_node_id, tree)
         return parent_node
 
-    def find_children_ids(self, node_id: str, tree: dict) -> list[str]:
-        target = self.find_node(node_id, tree)
+    def get_children_ids(self, node_id: str, tree: dict) -> list[str]:
+        target = self.get_node(node_id, tree)
         result = []
         if target is None:
             return result

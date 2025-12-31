@@ -48,7 +48,7 @@ def put(params) -> dict:
         tree = get_tree(email)
 
         tree_hander = TreeHander()
-        parent_node = tree_hander.find_parent_node(node_id, tree)
+        parent_node = tree_hander.get_parent_node(node_id, tree)
         if not parent_node:
             raise Exception({
                 "status_code": 404,
@@ -102,7 +102,7 @@ def delete(params) -> dict:
         tree = get_tree(email)
 
         tree_hander = TreeHander()
-        parent_node = tree_hander.find_parent_node(node_id, tree)
+        parent_node = tree_hander.get_parent_node(node_id, tree)
         if not parent_node:
             raise Exception({
                 "status_code": 404,
@@ -111,7 +111,7 @@ def delete(params) -> dict:
             })
 
         children: list = parent_node.get("children")
-        delete_node = tree_hander.find_node(node_id, tree)
+        delete_node = tree_hander.get_node(node_id, tree)
 
         if not delete_node:
             raise Exception({
@@ -120,7 +120,7 @@ def delete(params) -> dict:
                 "error_code": "func_trees_operate.not_found",
             })
 
-        children_ids = tree_hander.find_children_ids(node_id, tree)
+        children_ids = tree_hander.get_children_ids(node_id, tree)
         target_and_following: list = [node_id] + children_ids
         children.remove(delete_node)
 
