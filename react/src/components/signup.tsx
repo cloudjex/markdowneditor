@@ -4,12 +4,14 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 
 import loadingState from "../store/loading_store";
+import userStore from '../store/user_store';
 import utils from "../utils/utils";
 
 import type { SignupForm } from "../types/types";
 
 function Signup() {
   const navigate = useNavigate();
+  const { setEmail } = userStore();
   const { setLoading } = loadingState();
   const [pwMatchError, setPwMatchError] = useState(false);
   const [signupError, setSignupError] = useState(false);
@@ -49,6 +51,7 @@ function Signup() {
       throw new Error(`signup error`);
     };
 
+    setEmail(data.email);
     navigate("/verify");
   };
 
