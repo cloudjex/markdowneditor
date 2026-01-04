@@ -8,7 +8,8 @@ import { useNavigate } from 'react-router-dom';
 
 import loadingState from "../store/loading_store";
 import userStore from '../store/user_store';
-import utils from "../utils/utils";
+import request_utils from "../utils/request_utils";
+import tree_utils from "../utils/tree_utils";
 
 import type { TreeNode } from "../types/types";
 
@@ -49,7 +50,7 @@ function TreeUpdate(props: { currentNodeId: string }) {
       throw new Error(`tree or newContentName is invalid`);
     };
 
-    const parent = utils.get_node(tree, props.currentNodeId) as TreeNode;
+    const parent = tree_utils.get_node(tree, props.currentNodeId) as TreeNode;
     if (parent.children.some((child) => child.label === newContentName)) {
       setIsInvalidId(true);
       throw new Error(`same node already exists`);
@@ -58,7 +59,7 @@ function TreeUpdate(props: { currentNodeId: string }) {
     closeModal();
     setLoading(true);
 
-    const res_promise = utils.requests(
+    const res_promise = request_utils.requests(
       `${import.meta.env.VITE_API_HOST}/api/trees/operate`,
       "PUT",
       { authorization: `Bearer ${id_token}` },
@@ -76,9 +77,9 @@ function TreeUpdate(props: { currentNodeId: string }) {
     setLoading(true);
 
     const delete_node_id = props.currentNodeId;
-    const next_current_id = utils.get_parent_node_id(delete_node_id);
+    const next_current_id = tree_utils.get_parent_node_id(delete_node_id);
 
-    const res_promise = utils.requests(
+    const res_promise = request_utils.requests(
       `${import.meta.env.VITE_API_HOST}/api/trees/operate`,
       "DELETE",
       { authorization: `Bearer ${id_token}` },

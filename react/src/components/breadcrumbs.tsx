@@ -2,7 +2,7 @@ import { Breadcrumbs, Link } from '@mui/material';
 import { useLocation } from 'react-router-dom';
 
 import userStore from '../store/user_store';
-import utils from '../utils/utils';
+import tree_utils from '../utils/tree_utils';
 
 import type { TreeNode } from "../types/types";
 
@@ -15,10 +15,10 @@ function Breadcrumb() {
 
   let parentNodes: TreeNode[] = [];
   if (url_node_id && tree) {
-    const parents = utils.get_parent_node_ids(url_node_id);
-    const this_node = utils.get_node(tree, url_node_id);
+    const parents = tree_utils.get_parent_node_ids(url_node_id);
+    const this_node = tree_utils.get_node(tree, url_node_id);
 
-    const filter_targets = parents.map((id) => utils.get_node(tree, id));
+    const filter_targets = parents.map((id) => tree_utils.get_node(tree, id));
     parentNodes = filter_targets.filter((node) => node !== null);
     if (this_node) {
       parentNodes.push(this_node);

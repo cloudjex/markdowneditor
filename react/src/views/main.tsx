@@ -5,7 +5,7 @@ import Editor from "../components/editor";
 import Header from "../components/header";
 import loadingState from "../store/loading_store";
 import userStore from "../store/user_store";
-import utils from "../utils/utils";
+import request_utils from "../utils/request_utils";
 
 import type { TreeNode } from "../types/types";
 
@@ -17,7 +17,7 @@ function Main() {
     const fetchData = async () => {
       setLoading(true);
 
-      const res_promise = utils.requests(
+      const res_promise = request_utils.requests(
         `${import.meta.env.VITE_API_HOST}/api/trees`,
         "GET",
         { authorization: `Bearer ${id_token}` },

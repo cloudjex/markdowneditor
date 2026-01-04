@@ -1,52 +1,10 @@
-import type { APIResponse, TreeNode } from '../types/types';
+import type { TreeNode } from '../types/types';
 
 export default {
-  requests,
   get_node,
   get_parent_node_id,
   get_parent_node_ids,
 };
-
-async function requests(
-  url: string,
-  method: string,
-  headers: Record<string, string>,
-  params: unknown
-): Promise<APIResponse> {
-  if (!headers["Content-Type"]) {
-    headers["Content-Type"] = "application/json";
-  }
-
-  console.group("API Request");
-  console.log(`[${method}]: ${url}`);
-  console.log({ url, method, headers, params });
-
-  let detail;
-  if (method === "GET" || method === "DELETE") {
-    detail = {
-      method,
-      headers,
-    };
-    url = `${url}?${new URLSearchParams(params as Record<string, string>)}`;
-  } else {
-    detail = {
-      method,
-      headers,
-      body: JSON.stringify(params),
-    };
-  }
-
-  const res = await fetch(url, detail);
-  const result: APIResponse = {
-    status: res.status,
-    headers: res.headers,
-    body: await res.json(),
-  };
-
-  console.log(result);
-  console.groupEnd();
-  return result;
-}
 
 function get_node(tree: TreeNode, node_id: string): TreeNode | null {
   let parts = node_id.split("/");
@@ -63,13 +21,13 @@ function get_node(tree: TreeNode, node_id: string): TreeNode | null {
   }
 
   return current;
-}
+};
 
 function get_parent_node_id(node_id: string): string {
   const parts = node_id.split("/").filter(Boolean);
   const parentParts = parts.slice(0, -1);
   return "/" + parentParts.join("/");
-}
+};
 
 function get_parent_node_ids(node_id: string): string[] {
   const parts = node_id.split("/").filter(Boolean);
@@ -81,4 +39,4 @@ function get_parent_node_ids(node_id: string): string[] {
   }
 
   return parentIds;
-}
+};

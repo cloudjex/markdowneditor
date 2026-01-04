@@ -7,7 +7,7 @@ import { useState } from 'react';
 import { useNavigate, useLocation } from "react-router-dom";
 
 import userStore from "../store/user_store";
-import utils from "../utils/utils";
+import tree_utils from "../utils/tree_utils";
 
 import TreeUpdate from './tree_update';
 
@@ -21,7 +21,7 @@ function Explorer() {
   const searchParams = new URLSearchParams(location.search);
   const url_node_id = searchParams.get('node_id') || "/Nodes";
 
-  const parents = utils.get_parent_node_ids(url_node_id);
+  const parents = tree_utils.get_parent_node_ids(url_node_id);
   const displayedExpanded = [...new Set([...expandedItems, ...parents])];
 
   const handleItemClick = (_: React.MouseEvent<Element, MouseEvent>, itemId: string) => {

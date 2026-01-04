@@ -9,7 +9,7 @@ import Breadcrumb from "../components/breadcrumbs";
 import EditorHeader from "../components/editor_header";
 import loadingState from "../store/loading_store";
 import userStore from '../store/user_store';
-import utils from "../utils/utils";
+import request_utils from "../utils/request_utils";
 
 export const Editor = () => {
   const { id_token } = userStore();
@@ -25,7 +25,7 @@ export const Editor = () => {
     const fetchNode = async () => {
       setLoading(true);
 
-      const res = await utils.requests(
+      const res = await request_utils.requests(
         `${import.meta.env.VITE_API_HOST}/api/nodes`,
         "GET",
         { authorization: `Bearer ${id_token}` },

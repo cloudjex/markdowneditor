@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 
 import loadingState from "../store/loading_store";
 import userStore from '../store/user_store';
-import utils from "../utils/utils";
+import request_utils from "../utils/request_utils";
 
 import type { SigninForm } from "../types/types";
 
@@ -31,7 +31,7 @@ function Signin() {
     setLoading(true);
     setSigninError(false);
 
-    const res_promise = utils.requests(
+    const res_promise = request_utils.requests(
       `${import.meta.env.VITE_API_HOST}/api/signin`,
       "POST",
       {},

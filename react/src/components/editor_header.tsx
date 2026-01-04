@@ -7,7 +7,7 @@ import { useLocation } from 'react-router-dom';
 
 import loadingState from "../store/loading_store";
 import userStore from '../store/user_store';
-import utils from "../utils/utils";
+import request_utils from "../utils/request_utils";
 
 function EditorHeader(props: { markdownValue: string }) {
   const markdownValue = props.markdownValue;
@@ -27,7 +27,7 @@ function EditorHeader(props: { markdownValue: string }) {
   async function upload() {
     setLoading(true);
 
-    const res_promise = utils.requests(
+    const res_promise = request_utils.requests(
       `${import.meta.env.VITE_API_HOST}/api/nodes`,
       "PUT",
       { authorization: `Bearer ${id_token}` },

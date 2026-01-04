@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 
 import loadingState from "../store/loading_store";
 import userStore from '../store/user_store';
-import utils from "../utils/utils";
+import request_utils from "../utils/request_utils";
 
 function Profile() {
   const navigate = useNavigate();
@@ -39,7 +39,7 @@ function Profile() {
     setOpenLogoutDialog(false);
     setLoading(true);
 
-    await utils.requests(
+    await request_utils.requests(
       `${import.meta.env.VITE_API_HOST}/api/signout`,
       "POST",
       { authorization: `Bearer ${id_token}` },

@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import Header from "../components/header";
 import loadingState from "../store/loading_store";
 import userStore from "../store/user_store";
-import utils from "../utils/utils";
+import request_utils from "../utils/request_utils";
 
 import type { Otp } from "../types/types";
 
@@ -25,7 +25,7 @@ function Verify() {
   const onSubmit = async (data: Otp) => {
     setLoading(true);
 
-    const res_promise = utils.requests(
+    const res_promise = request_utils.requests(
       `${import.meta.env.VITE_API_HOST}/api/signup/verify`,
       "POST",
       {},
