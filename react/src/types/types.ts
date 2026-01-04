@@ -43,7 +43,3 @@ export interface SignupForm {
   password: string;
   password_confirm: string;
 };
-
-export interface Otp {
-  otp: string;
-};

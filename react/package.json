@@ -18,6 +18,7 @@
     "dompurify": "^3.3.1",
     "easymde": "^2.20.0",
     "js-file-download": "^0.4.12",
+    "mui-one-time-password-input": "^5.0.0",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
     "react-hook-form": "^7.69.0",

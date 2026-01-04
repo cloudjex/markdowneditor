@@ -1,28 +1,37 @@
-import { Alert, Button, Container, TextField } from "@mui/material";
+import { Alert, Button, Container, Typography } from "@mui/material";
+import { MuiOtpInput } from 'mui-one-time-password-input';
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 
 import Header from "../components/header";
 import loadingState from "../store/loading_store";
-import userStore from "../store/user_store";
+import userStore from '../store/user_store';
 import request_utils from "../utils/request_utils";
-
-import type { Otp } from "../types/types";
 
 function Verify() {
   const navigate = useNavigate();
-  const { email } = userStore();
   const { setLoading } = loadingState();
-  const [otpError, setOtpError] = useState<boolean>(false);
+  const { email } = userStore();
+
+  const [otp, setOtp] = useState<string>('');
+  const [verifyError, setVerifyError] = useState<boolean>(false);
+
+  const handleChange = (newValue: string) => {
+    setOtp(newValue);
+  };
 
   const {
-    register,
     handleSubmit,
-    formState: { errors },
-  } = useForm<Otp>();
+  } = useForm();
 
-  const onSubmit = async (data: Otp) => {
+  const onSubmit = async () => {
+    if (otp.length < 6) {
+      setVerifyError(true);
+      throw new Error(`invalid otp`);
+    }
+
+    setVerifyError(false);
     setLoading(true);
 
     const res_promise = request_utils.requests(
@@ -30,8 +39,8 @@ function Verify() {
       "POST",
       {},
       {
-        otp: data.otp,
-        email: email
+        email: email,
+        otp: otp,
       }
     );
     const res = await res_promise;
@@ -39,8 +48,8 @@ function Verify() {
     setLoading(false);
 
     if (res.status != 200) {
-      setOtpError(true);
-      throw new Error(`invalid otp`);
+      setVerifyError(true);
+      throw new Error(`signup error`);
     };
 
     navigate("/");
@@ -54,23 +63,26 @@ function Verify() {
       <Container
         maxWidth="xs"
         sx={{
-          marginTop: 3,
+          marginTop: 7,
           border: "1px solid #ddd",
           borderRadius: "10px",
           padding: "15px",
         }}
       >
+        <Typography
+          variant="body1"
+          sx={{ marginBottom: 5 }}
+        >
+          メールアドレスに添付されたワンタイムパスワードを入力し、ユーザ登録を完了してください
+        </Typography>
 
         <form onSubmit={handleSubmit(onSubmit)}>
-          <TextField
-            label="ワンタイムパスワード"
-            fullWidth
-            margin="normal"
-            {...register("otp", {
-              required: "ワンタイムパスワードは必須です",
-            })}
-            error={!!errors.otp}
-            helperText={errors.otp?.message}
+
+          <MuiOtpInput
+            value={otp}
+            onChange={handleChange}
+            length={6}
+            autoFocus
           />
 
           <Button
@@ -82,15 +94,14 @@ function Verify() {
             Sign Up
           </Button>
 
-          {otpError && (
+          {verifyError && (
             <Alert severity="error" sx={{ mt: 2 }}>
               ワンタイムパスワードが正しくありません
             </Alert>
           )}
 
         </form>
-
-      </Container>
+      </Container >
     </>
   );
 };
