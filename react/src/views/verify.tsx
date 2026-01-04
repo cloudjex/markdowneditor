@@ -14,7 +14,7 @@ function Verify() {
   const navigate = useNavigate();
   const { email } = userStore();
   const { setLoading } = loadingState();
-  const [otpError, setOtpError] = useState(false);
+  const [otpError, setOtpError] = useState<boolean>(false);
 
   const {
     register,

@@ -13,8 +13,8 @@ function Signup() {
   const navigate = useNavigate();
   const { setEmail } = userStore();
   const { setLoading } = loadingState();
-  const [pwMatchError, setPwMatchError] = useState(false);
-  const [signupError, setSignupError] = useState(false);
+  const [pwMatchError, setPwMatchError] = useState<boolean>(false);
+  const [signupError, setSignupError] = useState<boolean>(false);
 
   const {
     register,

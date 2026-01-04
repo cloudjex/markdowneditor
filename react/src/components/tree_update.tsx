@@ -19,10 +19,10 @@ function TreeUpdate(props: { currentNodeId: string }) {
   const { id_token, tree, setTree } = userStore();
   const { setLoading } = loadingState();
 
-  const [postModalOpen, setPostModalOpen] = useState(false);
-  const [delModalOpen, setDelModalOpen] = useState(false);
-  const [isInvalidId, setIsInvalidId] = useState(false);
-  const [newContentName, setNewContentName] = useState("");
+  const [postModalOpen, setPostModalOpen] = useState<boolean>(false);
+  const [delModalOpen, setDelModalOpen] = useState<boolean>(false);
+  const [isInvalidId, setIsInvalidId] = useState<boolean>(false);
+  const [newContentName, setNewContentName] = useState<string>("");
 
   const onClickPostModal = () => {
     setNewContentName("");

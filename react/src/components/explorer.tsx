@@ -16,7 +16,7 @@ function Explorer() {
   const location = useLocation();
 
   const { id_token, tree } = userStore();
-  const [expandedItems, setExpandedItems] = useState(["/Nodes"]);
+  const [expandedItems, setExpandedItems] = useState<string[]>(["/Nodes"]);
 
   const searchParams = new URLSearchParams(location.search);
   const url_node_id = searchParams.get('node_id') || "/Nodes";

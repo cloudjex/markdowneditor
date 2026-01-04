@@ -14,7 +14,7 @@ function Signin() {
   const { setEmail, setIdToken, resetUserState } = userStore();
   const { setLoading, resetLoadingState } = loadingState();
 
-  const [signinError, setSigninError] = useState(false);
+  const [signinError, setSigninError] = useState<boolean>(false);
 
   useEffect(() => {
     resetUserState();

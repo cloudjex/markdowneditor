@@ -6,7 +6,7 @@ import Signin from "../components/signin";
 import Signup from "../components/signup";
 
 function Top() {
-  const [tab, setTab] = useState(0);
+  const [tab, setTab] = useState<number>(0);
 
   return (
     <>

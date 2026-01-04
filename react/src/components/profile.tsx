@@ -15,7 +15,7 @@ function Profile() {
   const { setLoading, resetLoadingState } = loadingState();
 
   const [isMenuOpen, setIsMenuOpen] = useState<null | HTMLElement>(null);
-  const [isOpenLogoutDialog, setOpenLogoutDialog] = useState(false);
+  const [isOpenLogoutDialog, setOpenLogoutDialog] = useState<boolean>(false);
 
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setIsMenuOpen(event.currentTarget);

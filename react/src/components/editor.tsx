@@ -21,7 +21,7 @@ export const Editor = () => {
   const searchParams = new URLSearchParams(location.search);
   const url_node_id = searchParams.get('node_id');
 
-  const [markdownValue, setMarkdownValue] = useState("");
+  const [markdownValue, setMarkdownValue] = useState<string>("");
 
   useEffect(() => {
     const fetchNode = async () => {

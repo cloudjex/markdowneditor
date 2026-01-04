@@ -5,7 +5,7 @@ import { useState } from 'react';
 import Explorer from './explorer';
 
 function Sidebar() {
-  const [drawewrOpen, setDrawerOpen] = useState(false);
+  const [drawewrOpen, setDrawerOpen] = useState<boolean>(false);
 
   const handleDrawerToggle = () => {
     setDrawerOpen((prevState) => !prevState);
