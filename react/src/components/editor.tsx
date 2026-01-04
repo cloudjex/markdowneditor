@@ -51,6 +51,7 @@ export const Editor = () => {
     autofocus: true,
     placeholder: "",
     lineNumbers: true,
+    sideBySideFullscreen: false,
   }), []);
 
   return (
