@@ -73,7 +73,7 @@ function Verify() {
           variant="body1"
           sx={{ marginBottom: 5 }}
         >
-          メールアドレスに添付されたワンタイムパスワードを入力し、ユーザ登録を完了してください
+          メールアドレスに添付された認証コードを入力し、ユーザ登録を完了してください
         </Typography>
 
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -96,7 +96,7 @@ function Verify() {
 
           {verifyError && (
             <Alert severity="error" sx={{ mt: 2 }}>
-              ワンタイムパスワードが正しくありません
+              認証コードが正しくありません
             </Alert>
           )}
 
