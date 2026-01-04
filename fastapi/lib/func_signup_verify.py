@@ -1,6 +1,5 @@
 from lib.utilities import errors
 from lib.utilities.dynamodb_client import DynamoDBClient
-from lib.utilities.jwt_client import JwtClient
 from lib.utilities.response_handler import ResponseHandler
 
 
@@ -18,21 +17,27 @@ def main(params: dict) -> dict:
         if not user:
             raise errors.NotFoundError("func_signup_verify.not_found")
 
-        options: dict = user.get("options", {})
-        if options.get("otp") != otp:
+        options: dict = user["options"]
+        invalid: bool = (options.get("enabled")) or (options.get("otp") != otp)
+        if invalid:
             raise errors.UnauthorizedError("func_signup_verify.invalid_otp")
 
         options.pop("otp")
         options["enabled"] = True
 
-        db_client.put_user(email, user["password"], options)
+        initial_tree = {
+            "id": "/Nodes",
+            "label": "Nodes",
+            "children": [],
+        }
+        initial_node_id = "/Nodes"
 
-        id_token = JwtClient().generate_jwt(email)
+        db_client.put_user(email, user["password"], options)
+        db_client.put_tree(email, initial_tree)
+        db_client.put_node(email, initial_node_id, "")
 
         res = {
-            "email": email,
-            "options": options,
-            "id_token": id_token,
+            "result": "success"
         }
         return ResponseHandler().response(body=res, status_code=200)
 
