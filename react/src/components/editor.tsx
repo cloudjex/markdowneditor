@@ -12,6 +12,7 @@ import userStore from '../store/user_store';
 import request_utils from "../utils/request_utils";
 
 import type { NodeResponse } from "../types/types";
+import type { Options } from "easymde";
 
 export const Editor = () => {
   const { id_token } = userStore();
@@ -46,12 +47,13 @@ export const Editor = () => {
     fetchNode();
   }, [url_node_id]);
 
-  const options = useMemo(() => ({
+  const options: Options = useMemo(() => ({
     spellChecker: false,
     autofocus: true,
     placeholder: "",
     lineNumbers: true,
     sideBySideFullscreen: false,
+    toolbar: ["heading", "bold", "italic", "quote", "unordered-list", "ordered-list", "link", "|", "preview", "side-by-side", "fullscreen",]
   }), []);
 
   return (
