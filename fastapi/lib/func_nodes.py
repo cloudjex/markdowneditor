@@ -1,5 +1,5 @@
 from lib.utilities import errors
-from lib.utilities.dynamodb_client import NodeTableClient
+from lib.utilities.dynamodb_client import DynamoDBClient
 from lib.utilities.jwt_client import JwtClient
 from lib.utilities.response_handler import ResponseHandler
 
@@ -28,7 +28,7 @@ def get(params) -> dict:
     query_params: dict = params["query_params"]
     node_id: str = query_params.get("node_id")
 
-    db_client = NodeTableClient()
+    db_client = DynamoDBClient()
     if node_id:
         item = db_client.get_node(email, node_id)
         if not item:
@@ -54,7 +54,7 @@ def put(params) -> dict:
     if not node_id or text is None:
         raise errors.BadRequestError("func_nodes.missing_params")
 
-    db_client = NodeTableClient()
+    db_client = DynamoDBClient()
     node = db_client.get_node(email, node_id)
     if not node:
         raise errors.NotFoundError("func_nodes.not_found")

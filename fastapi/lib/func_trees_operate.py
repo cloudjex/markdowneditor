@@ -1,5 +1,5 @@
 from lib.utilities import errors
-from lib.utilities.dynamodb_client import NodeTableClient, TreeTableClient
+from lib.utilities.dynamodb_client import DynamoDBClient
 from lib.utilities.jwt_client import JwtClient
 from lib.utilities.response_handler import ResponseHandler
 from lib.utilities.tree_handler import TreeHandler
@@ -43,10 +43,9 @@ def put(params) -> dict:
         "children": [],
     }
 
-    tree_db_client = TreeTableClient()
-    node_db_client = NodeTableClient()
+    db_client = DynamoDBClient()
 
-    tree_info = tree_db_client.get_tree(email)
+    tree_info = db_client.get_tree(email)
     if not tree_info:
         raise errors.NotFoundError("func_trees_operate.not_found")
 
@@ -56,8 +55,8 @@ def put(params) -> dict:
     tree_handler.insert_node(new_node)
     tree = tree_handler.sort_tree()
 
-    tree_db_client.put_tree(email, tree)
-    node_db_client.put_node(email, node_id, "")
+    db_client.put_tree(email, tree)
+    db_client.put_node(email, node_id, "")
     return {"tree": tree}
 
 
@@ -69,10 +68,9 @@ def delete(params) -> dict:
     if not node_id:
         raise errors.BadRequestError("func_trees_operate.missing_params")
 
-    tree_db_client = TreeTableClient()
-    node_db_client = NodeTableClient()
+    db_client = DynamoDBClient()
 
-    tree_info = tree_db_client.get_tree(email)
+    tree_info = db_client.get_tree(email)
     if not tree_info:
         raise errors.NotFoundError("func_trees_operate.not_found")
 
@@ -84,9 +82,9 @@ def delete(params) -> dict:
     tree = tree_handler.sort_tree()
 
     for del_id in children_ids:
-        node_db_client.delete_node(email, del_id)
+        db_client.delete_node(email, del_id)
 
-    node_db_client.delete_node(email, node_id)
-    tree_db_client.put_tree(email, tree)
+    db_client.delete_node(email, node_id)
+    db_client.put_tree(email, tree)
 
     return {"tree": tree}

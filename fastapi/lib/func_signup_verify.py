@@ -1,5 +1,5 @@
 from lib.utilities import errors
-from lib.utilities.dynamodb_client import UserTableClient
+from lib.utilities.dynamodb_client import DynamoDBClient
 from lib.utilities.jwt_client import JwtClient
 from lib.utilities.response_handler import ResponseHandler
 
@@ -13,7 +13,7 @@ def main(params: dict) -> dict:
         if not email or not otp:
             raise errors.BadRequestError("func_signup_verify.missing_params")
 
-        db_client = UserTableClient()
+        db_client = DynamoDBClient()
         user = db_client.get_user(email)
         if not user:
             raise errors.NotFoundError("func_signup_verify.not_found")

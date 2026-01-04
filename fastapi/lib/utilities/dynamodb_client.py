@@ -5,82 +5,98 @@ from mypy_boto3_dynamodb.service_resource import Table
 from lib import config
 
 
-class BaseDynamoDBClient:
-    def __init__(self, table: str):
-        self._dynamodb_client: Table = boto3.resource("dynamodb").Table(table)
-
-
-class UserTableClient(BaseDynamoDBClient):
+class DynamoDBClient:
     def __init__(self):
-        super().__init__(config.USERS_TABLE_NAME)
+        self._db_client: Table = boto3.resource("dynamodb").Table(config.TABLE_NAME)
 
     def get_user(self, email: str) -> dict | None:
-        response = self._dynamodb_client.get_item(
-            Key={"email": email}
+        response = self._db_client.get_item(
+            Key={
+                "PK": f"EMAIL#{email}",
+                "SK": "PROFILE",
+            }
         )
-        return response.get("Item")
+        item = response.get("Item")
+
+        if item:
+            item["email"] = item.pop("PK").replace("EMAIL#", "")
+            item.pop("SK")
+        return item
 
     def put_user(self, email: str, password: str, options: dict) -> None:
-        self._dynamodb_client.put_item(
+        self._db_client.put_item(
             Item={
-                "email": email,
+                "PK": f"EMAIL#{email}",
+                "SK": "PROFILE",
                 "password": password,
                 "options": options,
             }
         )
 
-
-class TreeTableClient(BaseDynamoDBClient):
-    def __init__(self):
-        super().__init__(config.TREES_TABLE_NAME)
-
     def get_tree(self, email: str) -> dict | None:
-        response = self._dynamodb_client.get_item(
-            Key={"email": email}
+        response = self._db_client.get_item(
+            Key={
+                "PK": f"EMAIL#{email}",
+                "SK": "TREE",
+            }
         )
-        return response.get("Item")
+        item = response.get("Item")
+
+        if item:
+            item["email"] = item.pop("PK").replace("EMAIL#", "")
+            item.pop("SK")
+        return item
 
     def put_tree(self, email: str, tree: dict) -> None:
-        self._dynamodb_client.put_item(
+        self._db_client.put_item(
             Item={
-                "email": email,
+                "PK": f"EMAIL#{email}",
+                "SK": "TREE",
                 "tree": tree,
             }
         )
 
-
-class NodeTableClient(BaseDynamoDBClient):
-    def __init__(self):
-        super().__init__(config.NODES_TABLE_NAME)
-
     def get_node(self, email: str, node_id) -> dict | None:
-        response = self._dynamodb_client.get_item(
+        response = self._db_client.get_item(
             Key={
-                "email": email,
-                "id": node_id,
+                "PK": f"EMAIL#{email}",
+                "SK": f"NODE#{node_id}",
             }
         )
-        return response.get("Item")
+        item = response.get("Item")
+
+        if item:
+            item["email"] = item.pop("PK").replace("EMAIL#", "")
+            item["id"] = item.pop("SK").replace("NODE#", "")
+        return item
 
     def get_nodes(self, email: str) -> list[dict]:
-        response = self._dynamodb_client.query(
-            KeyConditionExpression=Key("email").eq(email)
+        response = self._db_client.query(
+            KeyConditionExpression=(
+                Key("PK").eq(f"EMAIL#{email}") &
+                Key("SK").begins_with("NODE#")
+            )
         )
-        return response.get("Items", [])
+        items = response.get("Items", [])
+
+        for item in items:
+            item["email"] = item.pop("PK").replace("EMAIL#", "")
+            item["id"] = item.pop("SK").replace("NODE#", "")
+        return items
 
     def put_node(self, email: str, node_id: str, text: str) -> None:
-        self._dynamodb_client.put_item(
+        self._db_client.put_item(
             Item={
-                "email": email,
-                "id": node_id,
+                "PK": f"EMAIL#{email}",
+                "SK": f"NODE#{node_id}",
                 "text": text,
             }
         )
 
     def delete_node(self, email: str, node_id: str) -> None:
-        self._dynamodb_client.delete_item(
+        self._db_client.delete_item(
             Key={
-                "email": email,
-                "id": node_id,
+                "PK": f"EMAIL#{email}",
+                "SK": f"NODE#{node_id}",
             }
         )
