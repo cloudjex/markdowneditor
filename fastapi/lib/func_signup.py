@@ -2,7 +2,7 @@ import random
 
 from lib.utilities import errors
 from lib.utilities.bcrypt_hash import BcryptHash
-from lib.utilities.dynamodb_client import UserTableClient
+from lib.utilities.dynamodb_client import DynamoDBClient
 from lib.utilities.response_handler import ResponseHandler
 from lib.utilities.smtp_client import SmtpClient
 
@@ -16,7 +16,7 @@ def main(params: dict) -> dict:
         if not email or not password:
             raise errors.BadRequestError("func_signup.missing_params")
 
-        db_client = UserTableClient()
+        db_client = DynamoDBClient()
         user = db_client.get_user(email)
         if user and user["options"]["enabled"]:
             raise errors.ConflictError("func_signup.conflict_user")

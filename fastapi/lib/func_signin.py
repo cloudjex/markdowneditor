@@ -1,6 +1,6 @@
 from lib.utilities import errors
 from lib.utilities.bcrypt_hash import BcryptHash
-from lib.utilities.dynamodb_client import UserTableClient
+from lib.utilities.dynamodb_client import DynamoDBClient
 from lib.utilities.jwt_client import JwtClient
 from lib.utilities.response_handler import ResponseHandler
 
@@ -14,7 +14,7 @@ def main(params: dict) -> dict:
         if not email or not pw:
             raise errors.BadRequestError("func_login.missing_params")
 
-        db_client = UserTableClient()
+        db_client = DynamoDBClient()
         user_info = db_client.get_user(email=email)
 
         bcrypt = BcryptHash()
