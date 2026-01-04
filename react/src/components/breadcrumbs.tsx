@@ -4,7 +4,7 @@ import { useLocation } from 'react-router-dom';
 import userStore from '../store/user_store';
 import tree_utils from '../utils/tree_utils';
 
-import type { TreeNode } from "../types/types";
+import type { Tree } from "../types/types";
 
 function Breadcrumb() {
   const { tree } = userStore();
@@ -13,7 +13,7 @@ function Breadcrumb() {
   const searchParams = new URLSearchParams(location.search);
   const url_node_id = searchParams.get('node_id');
 
-  let parentNodes: TreeNode[] = [];
+  let parentNodes: Tree[] = [];
   if (url_node_id && tree) {
     const parents = tree_utils.get_parent_node_ids(url_node_id);
     const this_node = tree_utils.get_node(tree, url_node_id);

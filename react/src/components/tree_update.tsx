@@ -11,7 +11,7 @@ import userStore from '../store/user_store';
 import request_utils from "../utils/request_utils";
 import tree_utils from "../utils/tree_utils";
 
-import type { TreeNode } from "../types/types";
+import type { Tree, TreeResponse } from "../types/types";
 
 function TreeUpdate(props: { currentNodeId: string }) {
   const navigate = useNavigate();
@@ -50,7 +50,7 @@ function TreeUpdate(props: { currentNodeId: string }) {
       throw new Error(`tree or newContentName is invalid`);
     };
 
-    const parent = tree_utils.get_node(tree, props.currentNodeId) as TreeNode;
+    const parent = tree_utils.get_node(tree, props.currentNodeId) as Tree;
     if (parent.children.some((child) => child.label === newContentName)) {
       setIsInvalidId(true);
       throw new Error(`same node already exists`);
@@ -59,16 +59,15 @@ function TreeUpdate(props: { currentNodeId: string }) {
     closeModal();
     setLoading(true);
 
-    const res_promise = request_utils.requests(
+    const res_promise = request_utils.requests<TreeResponse>(
       `${import.meta.env.VITE_API_HOST}/api/trees/operate`,
       "PUT",
       { authorization: `Bearer ${id_token}` },
       { node_id: `${props.currentNodeId}/${newContentName}` }
     );
     const res = await res_promise;
-    const body = res.body as { tree: TreeNode };
 
-    setTree(body.tree);
+    setTree(res.body.tree);
     setLoading(false);
   };
 
@@ -79,17 +78,16 @@ function TreeUpdate(props: { currentNodeId: string }) {
     const delete_node_id = props.currentNodeId;
     const next_current_id = tree_utils.get_parent_node_id(delete_node_id);
 
-    const res_promise = request_utils.requests(
+    const res_promise = request_utils.requests<TreeResponse>(
       `${import.meta.env.VITE_API_HOST}/api/trees/operate`,
       "DELETE",
       { authorization: `Bearer ${id_token}` },
       { node_id: delete_node_id }
     );
     const res = await res_promise;
-    const body = res.body as { tree: TreeNode };
 
     setLoading(false);
-    setTree(body.tree);
+    setTree(res.body.tree);
     navigate(`/main?node_id=${next_current_id}`);
   };
 

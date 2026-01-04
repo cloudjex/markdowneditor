@@ -7,7 +7,7 @@ import loadingState from "../store/loading_store";
 import userStore from "../store/user_store";
 import request_utils from "../utils/request_utils";
 
-import type { TreeNode } from "../types/types";
+import type { TreeResponse } from "../types/types";
 
 function Main() {
   const { id_token, setTree } = userStore();
@@ -17,16 +17,15 @@ function Main() {
     const fetchData = async () => {
       setLoading(true);
 
-      const res_promise = request_utils.requests(
+      const res_promise = request_utils.requests<TreeResponse>(
         `${import.meta.env.VITE_API_HOST}/api/trees`,
         "GET",
         { authorization: `Bearer ${id_token}` },
         {}
       );
       const res = await res_promise;
-      const body = res.body as { tree: TreeNode };
 
-      setTree(body.tree);
+      setTree(res.body.tree);
       setLoading(false);
     };
 

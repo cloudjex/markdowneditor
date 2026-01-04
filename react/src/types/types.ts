@@ -1,15 +1,38 @@
-export interface APIResponse {
+// Response
+export interface BaseAPIResponse<T> {
   status: number;
   headers: Headers;
-  body: unknown;
+  body: T;
 };
 
-export interface TreeNode {
+export interface SigninResponse {
+  email: string;
+  id_token: string;
+  options: {
+    enabled: boolean;
+  }
+};
+
+export interface TreeResponse {
+  tree: Tree;
+};
+
+export interface NodeResponse {
+  node: {
+    id: string;
+    email: string;
+    text: string;
+  };
+};
+
+// Object
+export interface Tree {
   id: string;
   label: string;
-  children: TreeNode[];
+  children: Tree[];
 };
 
+// Form
 export interface SigninForm {
   email: string;
   password: string;

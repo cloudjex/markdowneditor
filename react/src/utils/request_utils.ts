@@ -1,15 +1,15 @@
-import type { APIResponse } from '../types/types';
+import type { BaseAPIResponse } from '../types/types';
 
 export default {
   requests
 };
 
-async function requests(
+async function requests<T = unknown>(
   url: string,
   method: string,
   headers: Record<string, string>,
   params: unknown
-): Promise<APIResponse> {
+): Promise<BaseAPIResponse<T>> {
   if (!headers["Content-Type"]) {
     headers["Content-Type"] = "application/json";
   }
@@ -34,7 +34,7 @@ async function requests(
   }
 
   const res = await fetch(url, detail);
-  const result: APIResponse = {
+  const result: BaseAPIResponse<T> = {
     status: res.status,
     headers: res.headers,
     body: await res.json(),

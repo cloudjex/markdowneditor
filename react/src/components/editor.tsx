@@ -11,6 +11,8 @@ import loadingState from "../store/loading_store";
 import userStore from '../store/user_store';
 import request_utils from "../utils/request_utils";
 
+import type { NodeResponse } from "../types/types";
+
 export const Editor = () => {
   const { id_token } = userStore();
   const { setLoading } = loadingState();
@@ -25,17 +27,16 @@ export const Editor = () => {
     const fetchNode = async () => {
       setLoading(true);
 
-      const res = await request_utils.requests(
+      const res = await request_utils.requests<NodeResponse>(
         `${import.meta.env.VITE_API_HOST}/api/nodes`,
         "GET",
         { authorization: `Bearer ${id_token}` },
         { node_id: url_node_id }
       );
 
-      const body = res.body as { node: { text: string } };
       let text = "";
       if (res.status == 200) {
-        text = body.node.text;
+        text = res.body.node.text;
       };
       setMarkdownValue(text);
 

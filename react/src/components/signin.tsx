@@ -7,7 +7,7 @@ import loadingState from "../store/loading_store";
 import userStore from '../store/user_store';
 import request_utils from "../utils/request_utils";
 
-import type { SigninForm } from "../types/types";
+import type { SigninForm, SigninResponse } from "../types/types";
 
 function Signin() {
   const navigate = useNavigate();
@@ -31,7 +31,7 @@ function Signin() {
     setLoading(true);
     setSigninError(false);
 
-    const res_promise = request_utils.requests(
+    const res_promise = request_utils.requests<SigninResponse>(
       `${import.meta.env.VITE_API_HOST}/api/signin`,
       "POST",
       {},
@@ -49,9 +49,8 @@ function Signin() {
       throw new Error(`signin error`);
     };
 
-    const body = res.body as { email: string, id_token: string };
-    setEmail(body.email);
-    setIdToken(body.id_token);
+    setEmail(res.body.email);
+    setIdToken(res.body.id_token);
     navigate("/main?node_id=/Nodes");
   };
 

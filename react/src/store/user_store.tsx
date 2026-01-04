@@ -1,19 +1,19 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-import type { TreeNode } from "../types/types";
+import type { Tree } from "../types/types";
 
 interface UserState {
   email: string;
   password: string;
   id_token: string;
-  tree: TreeNode | null;
+  tree: Tree | null;
 
   /* eslint-disable no-unused-vars */
   setEmail: (email: string) => void;
   setPassword: (password: string) => void;
   setIdToken: (id_token: string) => void;
-  setTree: (tree: TreeNode | null) => void;
+  setTree: (tree: Tree | null) => void;
 
   resetUserState: () => void;
 }
@@ -28,7 +28,7 @@ const userStore = create<UserState>()(
     setEmail: (email: string): void => { set({ email }); },
     setPassword: (password: string): void => { set({ password }); },
     setIdToken: (id_token: string): void => { set({ id_token }); },
-    setTree: (tree: TreeNode | null): void => { set({ tree }); },
+    setTree: (tree: Tree | null): void => { set({ tree }); },
 
     resetUserState: () => set({
       email: "",
