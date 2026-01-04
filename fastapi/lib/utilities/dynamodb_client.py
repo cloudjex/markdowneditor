@@ -9,6 +9,9 @@ class DynamoDBClient:
     def __init__(self):
         self._db_client: Table = boto3.resource("dynamodb").Table(config.TABLE_NAME)
 
+    ###############################
+    # For User
+    ###############################
     def get_user(self, email: str) -> dict | None:
         response = self._db_client.get_item(
             Key={
@@ -33,6 +36,9 @@ class DynamoDBClient:
             }
         )
 
+    ###############################
+    # For Tree
+    ###############################
     def get_tree(self, email: str) -> dict | None:
         response = self._db_client.get_item(
             Key={
@@ -56,6 +62,9 @@ class DynamoDBClient:
             }
         )
 
+    ###############################
+    # For Node
+    ###############################
     def get_node(self, email: str, node_id) -> dict | None:
         response = self._db_client.get_item(
             Key={
@@ -70,7 +79,7 @@ class DynamoDBClient:
             item["id"] = item.pop("SK").replace("NODE#", "")
         return item
 
-    def get_nodes(self, email: str) -> list[dict]:
+    def get_nodes(self, email: str) -> list:
         response = self._db_client.query(
             KeyConditionExpression=(
                 Key("PK").eq(f"EMAIL#{email}") &
