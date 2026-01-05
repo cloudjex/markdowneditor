@@ -1,15 +1,15 @@
 /* ツールバー */
 .editor-toolbar button {
-  border: none;
   color: #333;
-  padding: 6px 10px;
+  background-color: #f8f8f8;
+  padding: 5px 5px;
   margin: 2px;
-  border-radius: 6px;
-  transition: background-color 0.5s ease;
+  border: 0.5px solid #5d5d5d;
+  border-radius: 7px;
 
   &.active {
-    background-color: #b0b0b0;
-    color: #474747;
+    background-color: #4a4a4a;
+    color: #fefefe;
   }
 }
 
@@ -51,20 +51,17 @@
 
   /* インラインコード */
   code {
-    background-color: #d3d3d3;
-    padding: 0.2rem 0.4rem;
+    background-color: #e8e8e8;
+    padding: 0.2rem 0.2rem;
     border-radius: 4px;
-    font-family: "Fira Code", monospace;
   }
 
   /* コードブロック */
   pre code {
-    background-color: #d3d3d3;
+    background-color: #e8e8e8;
     padding: 1rem;
     border-radius: 6px;
     display: block;
-    overflow-x: auto;
-    font-family: "Fira Code", monospace;
     color: #2d2d2d;
   }
 
