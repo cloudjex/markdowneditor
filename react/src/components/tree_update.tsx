@@ -11,12 +11,12 @@ import userStore from '../store/user_store';
 import request_utils from "../utils/request_utils";
 import tree_utils from "../utils/tree_utils";
 
-import type { Tree, TreeResponse } from "../types/types";
+import type { NodeTree, TreeResponse } from "../types/types";
 
 function TreeUpdate(props: { currentNodeId: string }) {
   const navigate = useNavigate();
 
-  const { id_token, tree, setTree } = userStore();
+  const { id_token, node_tree, setNodeTree } = userStore();
   const { setLoading } = loadingState();
 
   const [postModalOpen, setPostModalOpen] = useState<boolean>(false);
@@ -41,7 +41,7 @@ function TreeUpdate(props: { currentNodeId: string }) {
   };
 
   const clickCreateNewContent = async () => {
-    if (!tree) {
+    if (!node_tree) {
       throw new Error(`tree is null`);
     };
 
@@ -50,7 +50,7 @@ function TreeUpdate(props: { currentNodeId: string }) {
       throw new Error(`tree or newContentName is invalid`);
     };
 
-    const parent = tree_utils.get_node(tree, props.currentNodeId) as Tree;
+    const parent = tree_utils.get_node(node_tree, props.currentNodeId) as NodeTree;
     if (parent.children.some((child) => child.label === newContentName)) {
       setIsInvalidId(true);
       throw new Error(`same node already exists`);
@@ -67,7 +67,7 @@ function TreeUpdate(props: { currentNodeId: string }) {
     );
     const res = await res_promise;
 
-    setTree(res.body.tree);
+    setNodeTree(res.body.node_tree);
     setLoading(false);
   };
 
@@ -87,7 +87,7 @@ function TreeUpdate(props: { currentNodeId: string }) {
     const res = await res_promise;
 
     setLoading(false);
-    setTree(res.body.tree);
+    setNodeTree(res.body.node_tree);
     navigate(`/main?node_id=${next_current_id}`);
   };
 

@@ -15,7 +15,7 @@ function Explorer() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { id_token, tree } = userStore();
+  const { id_token, node_tree } = userStore();
   const [expandedItems, setExpandedItems] = useState<string[]>(["/Nodes"]);
 
   const searchParams = new URLSearchParams(location.search);
@@ -28,7 +28,7 @@ function Explorer() {
     navigate(`/main?node_id=${itemId}`);
   };
 
-  if (id_token && tree) {
+  if (id_token && node_tree) {
     return (
       <>
         <Typography variant="h5" sx={{ my: 2 }}>
@@ -38,7 +38,7 @@ function Explorer() {
         <Box >
           <RichTreeView
             sx={{ backgroundColor: "rgba(245, 245, 245, 1)", borderRadius: 3 }}
-            items={[tree]}
+            items={[node_tree]}
             onItemClick={handleItemClick}
             selectedItems={url_node_id}
             expandedItems={displayedExpanded}

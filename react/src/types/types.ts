@@ -14,7 +14,7 @@ export interface SigninResponse {
 };
 
 export interface TreeResponse {
-  tree: Tree;
+  node_tree: NodeTree;
 };
 
 export interface NodeResponse {
@@ -26,10 +26,10 @@ export interface NodeResponse {
 };
 
 // Object
-export interface Tree {
+export interface NodeTree {
   id: string;
   label: string;
-  children: Tree[];
+  children: NodeTree[];
 };
 
 // Form

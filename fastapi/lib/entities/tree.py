@@ -1,7 +1,7 @@
 class Tree:
-    def __init__(self, email: str, tree: dict):
+    def __init__(self, email: str, node_tree: dict):
         self._email = email
-        self._tree = TreeItem(tree)
+        self._node_tree = NodeTree(node_tree)
 
     @property
     def email(self):
@@ -12,29 +12,29 @@ class Tree:
         self._email = email
 
     @property
-    def tree(self):
-        return self._tree
+    def node_tree(self):
+        return self._node_tree
 
-    @tree.setter
-    def tree(self, tree):
-        if type(tree) is dict:
-            tree = TreeItem(tree)
-        self._tree = tree
+    @node_tree.setter
+    def node_tree(self, node_tree):
+        if type(node_tree) is dict:
+            node_tree = NodeTree(node_tree)
+        self._node_tree = node_tree
 
     @property
     def json(self):
         return {
             "email": self._email,
-            "tree": self._tree.json,
+            "trees": self._node_tree.json,
         }
 
 
-class TreeItem:
+class NodeTree:
     def __init__(self, tree_item: dict):
         self._id: str = tree_item["id"]
         self._label: str = tree_item["label"]
         self._children = [
-            TreeItem(c) for c in tree_item["children"] if c
+            NodeTree(c) for c in tree_item["children"] if c
         ]
 
     @property

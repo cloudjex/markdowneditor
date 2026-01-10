@@ -1,4 +1,4 @@
-import type { Tree } from '../types/types';
+import type { NodeTree } from '../types/types';
 
 export default {
   get_node,
@@ -6,13 +6,13 @@ export default {
   get_parent_node_ids,
 };
 
-function get_node(tree: Tree, node_id: string): Tree | null {
+function get_node(node_tree: NodeTree, node_id: string): NodeTree | null {
   let parts = node_id.split("/");
   parts = parts.filter((part) => part && part !== "Nodes");
 
-  let current: Tree = tree;
+  let current: NodeTree = node_tree;
   for (const part of parts) {
-    const next = current.children.find((child: Tree) => child.label === part);
+    const next = current.children.find((child: NodeTree) => child.label === part);
     if (!next) {
       return null;
     };

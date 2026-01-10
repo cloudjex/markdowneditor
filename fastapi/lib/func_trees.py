@@ -31,7 +31,7 @@ def get(params) -> dict:
         raise errors.NotFoundError("func_trees.not_found")
 
     res = {
-        "tree": tree.tree.json,
+        "node_tree": tree.node_tree.json,
     }
 
     return res

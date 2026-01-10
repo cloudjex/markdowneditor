@@ -2,13 +2,13 @@ from lib.utilities import errors
 
 
 class TreeHandler:
-    def __init__(self, tree):
-        self._tree = tree
+    def __init__(self, node_tree):
+        self._node_tree = node_tree
 
     def get_node(self, node_id: str) -> dict | None:
         parts = [p for p in node_id.split("/") if p]
 
-        current: dict = self._tree
+        current: dict = self._node_tree
 
         for part in parts[1:]:
             children: list[dict] = current["children"]
@@ -75,18 +75,18 @@ class TreeHandler:
 
         raise errors.NotFoundError("TreeHandler.not_found")
 
-    def sort_tree(self, tree: dict | None = None) -> dict:
-        if tree is None:
-            tree = self._tree
+    def sort_tree(self, node_tree: dict | None = None) -> dict:
+        if node_tree is None:
+            node_tree = self._node_tree
 
         def sort_key(child: dict):
             is_file = not child["children"]
             return (is_file, child["id"])
 
-        children: list = tree["children"]
+        children: list = node_tree["children"]
         children.sort(key=sort_key)
 
         for child in children:
             self.sort_tree(child)
 
-        return tree
+        return node_tree

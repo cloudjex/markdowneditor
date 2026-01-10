@@ -10,7 +10,7 @@ import request_utils from "../utils/request_utils";
 import type { TreeResponse } from "../types/types";
 
 function Main() {
-  const { id_token, setTree } = userStore();
+  const { id_token, setNodeTree } = userStore();
   const { setLoading } = loadingState();
 
   useEffect(() => {
@@ -25,7 +25,7 @@ function Main() {
       );
       const res = await res_promise;
 
-      setTree(res.body.tree);
+      setNodeTree(res.body.node_tree);
       setLoading(false);
     };
 

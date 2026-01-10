@@ -44,21 +44,21 @@ def put(params) -> dict:
     if not tree:
         raise errors.NotFoundError("func_trees_operate.not_found")
 
-    tree_handler = TreeHandler(tree.tree.json)
+    tree_handler = TreeHandler(tree.node_tree.json)
     new_node = {
         "id": node_id,
         "label": label,
         "children": [],
     }
     tree_handler.insert_node(new_node)
-    new_tree = tree_handler.sort_tree()
-    tree.tree = new_tree
+    new_node_tree = tree_handler.sort_tree()
+    tree.node_tree = new_node_tree
 
     new_node = Node(email, node_id, "")
 
     db_client.put_tree(tree)
     db_client.put_node(new_node)
-    return {"tree": new_tree}
+    return {"node_tree": new_node_tree}
 
 
 def delete(params) -> dict:
@@ -78,12 +78,12 @@ def delete(params) -> dict:
     if not tree:
         raise errors.NotFoundError("func_trees_operate.not_found")
 
-    tree_handler = TreeHandler(tree.tree.json)
+    tree_handler = TreeHandler(tree.node_tree.json)
 
     children_ids = tree_handler.get_children_ids(node_id)
     tree_handler.delete_node(node_id)
-    new_tree = tree_handler.sort_tree()
-    tree.tree = new_tree
+    new_node_tree = tree_handler.sort_tree()
+    tree.node_tree = new_node_tree
 
     for del_id in children_ids:
         db_client.delete_node(Node(email, del_id, ""))
@@ -91,4 +91,4 @@ def delete(params) -> dict:
     db_client.delete_node(Node(email, node_id, ""))
     db_client.put_tree(tree)
 
-    return {"tree": new_tree}
+    return {"node_tree": new_node_tree}

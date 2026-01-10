@@ -57,7 +57,7 @@ class DynamoDBClient:
 
         else:
             _email = item.pop("PK").replace("EMAIL#", "")
-            entity = Tree(_email, item["tree"])
+            entity = Tree(_email, item["node_tree"])
             return entity
 
     def put_tree(self, tree: Tree) -> None:
@@ -65,7 +65,7 @@ class DynamoDBClient:
             Item={
                 "PK": f"EMAIL#{tree.email}",
                 "SK": "TREE",
-                "tree": tree.tree.json,
+                "node_tree": tree.node_tree.json,
             }
         )
 

@@ -18,8 +18,8 @@ class TestSuccessPut:
         response = func_trees_operate.main(params)
         logger(response)
         assert response["status_code"] == 200
-        tree = response["body"]["tree"]
-        children = tree["children"]
+        node_tree = response["body"]["node_tree"]
+        children = node_tree["children"]
         new_node = None
         for child in children:
             if child["id"] == new_node_id:
@@ -131,8 +131,8 @@ class TestSuccessDelete:
         response = func_trees_operate.main(params)
         logger(response)
         assert response["status_code"] == 200
-        tree = response["body"]["tree"]
-        children = tree["children"]
+        node_tree = response["body"]["node_tree"]
+        children = node_tree["children"]
         new_node = None
         for child in children:
             if child["id"] == new_node_id:
