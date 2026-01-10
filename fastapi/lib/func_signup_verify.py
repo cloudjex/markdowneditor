@@ -17,13 +17,12 @@ def main(params: dict) -> dict:
         if not user:
             raise errors.NotFoundError("func_signup_verify.not_found")
 
-        options: dict = user["options"]
-        invalid: bool = (options.get("enabled")) or (options.get("otp") != otp)
+        invalid: bool = (user.options.enabled) or (user.options.otp != otp)
         if invalid:
             raise errors.UnauthorizedError("func_signup_verify.invalid_otp")
 
-        options.pop("otp")
-        options["enabled"] = True
+        user.options.otp = ""
+        user.options.enabled = True
 
         initial_tree = {
             "id": "/Nodes",
@@ -32,7 +31,7 @@ def main(params: dict) -> dict:
         }
         initial_node_id = "/Nodes"
 
-        db_client.put_user(email, user["password"], options)
+        db_client.put_user(email, user.password, user.options.json)
         db_client.put_tree(email, initial_tree)
         db_client.put_node(email, initial_node_id, "")
 

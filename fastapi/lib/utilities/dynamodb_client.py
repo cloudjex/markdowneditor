@@ -3,6 +3,7 @@ from boto3.dynamodb.conditions import Key
 from mypy_boto3_dynamodb.service_resource import Table
 
 from lib import config
+from lib.entities import node, tree, user
 
 
 class DynamoDBClient:
@@ -12,7 +13,7 @@ class DynamoDBClient:
     ###############################
     # For User
     ###############################
-    def get_user(self, email: str) -> dict | None:
+    def get_user(self, email: str) -> user.User | None:
         response = self._db_client.get_item(
             Key={
                 "PK": f"EMAIL#{email}",
@@ -20,11 +21,13 @@ class DynamoDBClient:
             }
         )
         item = response.get("Item")
+        if item is None:
+            return None
 
-        if item:
-            item["email"] = item.pop("PK").replace("EMAIL#", "")
-            item.pop("SK")
-        return item
+        else:
+            _email = item.pop("PK").replace("EMAIL#", "")
+            entity = user.User(_email, item["password"], item["options"])
+            return entity
 
     def put_user(self, email: str, password: str, options: dict) -> None:
         self._db_client.put_item(
@@ -39,7 +42,7 @@ class DynamoDBClient:
     ###############################
     # For Tree
     ###############################
-    def get_tree(self, email: str) -> dict | None:
+    def get_tree(self, email: str) -> tree.Tree | None:
         response = self._db_client.get_item(
             Key={
                 "PK": f"EMAIL#{email}",
@@ -47,11 +50,13 @@ class DynamoDBClient:
             }
         )
         item = response.get("Item")
+        if item is None:
+            return None
 
-        if item:
-            item["email"] = item.pop("PK").replace("EMAIL#", "")
-            item.pop("SK")
-        return item
+        else:
+            _email = item.pop("PK").replace("EMAIL#", "")
+            entity = tree.Tree(_email, item["tree"])
+            return entity
 
     def put_tree(self, email: str, tree: dict) -> None:
         self._db_client.put_item(
@@ -65,7 +70,7 @@ class DynamoDBClient:
     ###############################
     # For Node
     ###############################
-    def get_node(self, email: str, node_id) -> dict | None:
+    def get_node(self, email: str, node_id) -> tree.Tree | None:
         response = self._db_client.get_item(
             Key={
                 "PK": f"EMAIL#{email}",
@@ -73,13 +78,16 @@ class DynamoDBClient:
             }
         )
         item = response.get("Item")
+        if item is None:
+            return None
 
-        if item:
-            item["email"] = item.pop("PK").replace("EMAIL#", "")
-            item["id"] = item.pop("SK").replace("NODE#", "")
-        return item
+        else:
+            _email = item.pop("PK").replace("EMAIL#", "")
+            _node_id = item.pop("SK").replace("NODE#", "")
+            entity = node.Node(_email, _node_id, item["text"])
+            return entity
 
-    def get_nodes(self, email: str) -> list:
+    def get_nodes(self, email: str) -> list[node.Node] | list:
         response = self._db_client.query(
             KeyConditionExpression=(
                 Key("PK").eq(f"EMAIL#{email}") &
@@ -87,11 +95,17 @@ class DynamoDBClient:
             )
         )
         items = response.get("Items", [])
+        if items is []:
+            return []
 
-        for item in items:
-            item["email"] = item.pop("PK").replace("EMAIL#", "")
-            item["id"] = item.pop("SK").replace("NODE#", "")
-        return items
+        else:
+            entities = []
+            for item in items:
+                _email = item.pop("PK").replace("EMAIL#", "")
+                _node_id = item.pop("SK").replace("NODE#", "")
+                entity = node.Node(_email, _node_id, item["text"])
+                entities.append(entity)
+            return entities
 
     def put_node(self, email: str, node_id: str, text: str) -> None:
         self._db_client.put_item(
