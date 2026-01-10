@@ -1,4 +1,3 @@
-from lib.entities.node import Node
 from lib.utilities import errors
 from lib.utilities.dynamodb_client import DynamoDBClient
 from lib.utilities.jwt_client import JwtClient
