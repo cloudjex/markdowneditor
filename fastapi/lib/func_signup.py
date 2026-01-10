@@ -18,7 +18,7 @@ def main(params: dict) -> dict:
 
         db_client = DynamoDBClient()
         user = db_client.get_user(email)
-        if user and user["options"]["enabled"]:
+        if user and user.options.enabled:
             raise errors.ConflictError("func_signup.conflict_user")
 
         bcrypt = BcryptHash()

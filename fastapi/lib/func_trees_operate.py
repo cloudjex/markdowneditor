@@ -45,19 +45,18 @@ def put(params) -> dict:
 
     db_client = DynamoDBClient()
 
-    tree_info = db_client.get_tree(email)
-    if not tree_info:
+    tree = db_client.get_tree(email)
+    if not tree:
         raise errors.NotFoundError("func_trees_operate.not_found")
 
-    tree = tree_info["tree"]
-    tree_handler = TreeHandler(tree)
+    tree_handler = TreeHandler(tree.tree.json)
 
     tree_handler.insert_node(new_node)
-    tree = tree_handler.sort_tree()
+    new_tree = tree_handler.sort_tree()
 
-    db_client.put_tree(email, tree)
+    db_client.put_tree(email, new_tree)
     db_client.put_node(email, node_id, "")
-    return {"tree": tree}
+    return {"tree": new_tree}
 
 
 def delete(params) -> dict:
@@ -73,21 +72,20 @@ def delete(params) -> dict:
 
     db_client = DynamoDBClient()
 
-    tree_info = db_client.get_tree(email)
-    if not tree_info:
+    tree = db_client.get_tree(email)
+    if not tree:
         raise errors.NotFoundError("func_trees_operate.not_found")
 
-    tree = tree_info["tree"]
-    tree_handler = TreeHandler(tree)
+    tree_handler = TreeHandler(tree.tree.json)
 
     children_ids = tree_handler.get_children_ids(node_id)
     tree_handler.delete_node(node_id)
-    tree = tree_handler.sort_tree()
+    new_tree = tree_handler.sort_tree()
 
     for del_id in children_ids:
         db_client.delete_node(email, del_id)
 
     db_client.delete_node(email, node_id)
-    db_client.put_tree(email, tree)
+    db_client.put_tree(email, new_tree)
 
-    return {"tree": tree}
+    return {"tree": new_tree}

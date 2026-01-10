@@ -26,12 +26,12 @@ def get(params) -> dict:
     email: str = params["email"]
 
     db_client = DynamoDBClient()
-    tree_info = db_client.get_tree(email=email)
-    if not tree_info:
+    tree = db_client.get_tree(email=email)
+    if not tree:
         raise errors.NotFoundError("func_trees.not_found")
 
     res = {
-        "tree": tree_info["tree"],
+        "tree": tree.tree.json,
     }
 
     return res

@@ -15,21 +15,20 @@ def main(params: dict) -> dict:
             raise errors.BadRequestError("func_login.missing_params")
 
         db_client = DynamoDBClient()
-        user_info = db_client.get_user(email=email)
+        user = db_client.get_user(email=email)
 
         bcrypt = BcryptHash()
-        if not user_info or not bcrypt.bcrypt_verify(pw, user_info.get("password")):
+        if not user or not bcrypt.bcrypt_verify(pw, user.password):
             raise errors.UnauthorizedError("func_login.invalid_credentials")
 
-        options: dict = user_info.get("options")
-        if not options.get("enabled"):
+        if not user.options.enabled:
             raise errors.ForbiddenError("func_login.not_enabled")
 
         id_token = JwtClient().generate_jwt(email)
 
         res = {
             "email": email,
-            "options": options,
+            "options": user.options.json,
             "id_token": id_token,
         }
 
