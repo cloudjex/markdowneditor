@@ -2,7 +2,7 @@ class User:
     def __init__(self, email: str, password: str, options: dict):
         self.email = email
         self.password = password
-        self.options = Options(options)
+        self.options = Options(options["enabled"], options["otp"])
 
     def to_dict(self, include_pw=False):
         return {
@@ -13,9 +13,9 @@ class User:
 
 
 class Options:
-    def __init__(self, options: dict):
-        self.enabled: bool = options["enabled"]
-        self.otp: str = options["otp"]
+    def __init__(self, enabled: bool, otp: str):
+        self.enabled = enabled
+        self.otp = otp
 
     def to_dict(self):
         return {
