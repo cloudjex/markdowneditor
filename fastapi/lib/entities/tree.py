@@ -3,9 +3,6 @@ class Tree:
         self.email = email
         self.node_tree = NodeTree(node_tree)
 
-    def set_node_tree(self, node_tree: dict) -> None:
-        self.node_tree = NodeTree(node_tree)
-
     def to_dict(self):
         return {
             "email": self.email,

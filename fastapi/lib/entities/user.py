@@ -4,24 +4,21 @@ class User:
         self.password = password
         self.options = Options(options)
 
-    def set_options(self, options: dict) -> None:
-        self.options = Options(options)
-
-    def to_dict(self):
+    def to_dict(self, include_pw=False):
         return {
             "email": self.email,
-            "password": self.password,
+            "password": self.password if include_pw else "***",
             "options": self.options.to_dict(),
         }
 
 
 class Options:
     def __init__(self, options: dict):
-        self.enabled = options["enabled"]
-        self.otp = options.get("otp", "")
+        self.enabled: bool = options["enabled"]
+        self.otp: str = options["otp"]
 
     def to_dict(self):
         return {
             "enabled": self.enabled,
-            "otp": self.otp if self.otp else None,
+            "otp": self.otp,
         }

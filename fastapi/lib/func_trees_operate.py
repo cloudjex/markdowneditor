@@ -1,4 +1,5 @@
 from lib.entities.node import Node
+from lib.entities.tree import NodeTree
 from lib.utilities import errors
 from lib.utilities.dynamodb_client import DynamoDBClient
 from lib.utilities.jwt_client import JwtClient
@@ -47,7 +48,7 @@ def put(params) -> dict:
     tree_handler = TreeHandler(tree.node_tree.to_dict())
     tree_handler.insert_node(node_id)
     new_node_tree = tree_handler.sort_tree()
-    tree.set_node_tree(new_node_tree)
+    tree.node_tree = NodeTree(new_node_tree)
 
     new_node = Node(email, node_id, "")
 
@@ -78,7 +79,7 @@ def delete(params) -> dict:
     children_ids = tree_handler.get_children_ids(node_id)
     tree_handler.delete_node(node_id)
     new_node_tree = tree_handler.sort_tree()
-    tree.set_node_tree(new_node_tree)
+    tree.node_tree = NodeTree(new_node_tree)
 
     for del_id in children_ids:
         db_client.delete_node(Node(email, del_id, ""))
