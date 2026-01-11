@@ -19,11 +19,11 @@ class NodeTree:
         self.id = id
         self.label = label
         self.children = [
-            NodeTree(c["id"], c["label"], c["children"],) for c in children if c
+            NodeTree(c["id"], c["label"], c["children"],) for c in children
         ]
 
     def to_dict(self):
-        children = [i.to_dict() for i in self.children if i]
+        children = [i.to_dict() for i in self.children]
         return {
             "id": self.id,
             "label": self.label,
