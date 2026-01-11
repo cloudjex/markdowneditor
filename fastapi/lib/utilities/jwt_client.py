@@ -7,9 +7,6 @@ from lib.utilities import errors
 
 
 class JwtClient:
-    def __init__(self):
-        pass
-
     def generate_jwt(self, email: str) -> str:
         claim = {
             "email": email,
@@ -19,27 +16,22 @@ class JwtClient:
             "exp": int(time.time()) + 3600,
         }
 
-        str_jwt = jwt.encode(
+        return jwt.encode(
             payload=claim,
             key=config.JWT_KEY,
             algorithm="HS256",
         )
-        return str_jwt
 
     def verify_id_token(self, id_token: str) -> dict:
         try:
-            id_token = id_token.replace("Bearer ", "")
-
-            json_payload: dict = jwt.decode(
-                jwt=id_token,
+            return jwt.decode(
+                jwt=id_token.removeprefix("Bearer "),
                 key=config.JWT_KEY,
                 algorithms="HS256",
                 audience=config.APP_URL,
                 issuer=config.APP_URL,
                 verify=True,
             )
-
-            return json_payload
 
         except Exception:
             raise errors.UnauthorizedError("JwtClient.invalid_credentials")

@@ -1,6 +1,10 @@
 class BaseExceptionClass(Exception):
-    status_code: int = 500
-    exception: str = "INTERNAL_SERVER_ERROR"
+    status_code: int = None
+    exception: str = None
+    error_code: str = None
+
+    def __init__(self, error_code: str):
+        self.error_code = error_code
 
 
 class BadRequestError(BaseExceptionClass):
@@ -26,3 +30,8 @@ class NotFoundError(BaseExceptionClass):
 class ConflictError(BaseExceptionClass):
     status_code = 409
     exception = "CONFLICT"
+
+
+class InternalServerError(BaseExceptionClass):
+    status_code = 500
+    exception = "INTERNAL_SERVER_ERROR"

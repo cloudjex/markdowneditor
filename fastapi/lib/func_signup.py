@@ -22,8 +22,7 @@ def main(params: dict) -> dict:
         if user and user.options.enabled:
             raise errors.ConflictError("func_signup.conflict_user")
 
-        bcrypt = BcryptHash()
-        password = bcrypt.bcrypt_hash(password)
+        password = BcryptHash().bcrypt_hash(password)
         options = {
             "otp": f"{secrets.randbelow(1000000):06d}",
             "enabled": False,

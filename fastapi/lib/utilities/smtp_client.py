@@ -45,7 +45,7 @@ class SmtpClient:
             self.smtp_host and
             self.smtp_port
         ):
-            print(f"Warning: SMTP is not configured. Cannot send email to {recipient}.")
+            print(f"Warning: SMTP is not configured. Can't send email to {recipient}.")
             return
 
         html = HTML.format(title=subject, body=body)

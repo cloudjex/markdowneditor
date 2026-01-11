@@ -17,8 +17,7 @@ def main(params: dict) -> dict:
         db_client = DynamoDBClient()
         user = db_client.get_user(email=email)
 
-        bcrypt = BcryptHash()
-        if not user or not bcrypt.bcrypt_verify(pw, user.password):
+        if not user or not BcryptHash().bcrypt_verify(pw, user.password):
             raise errors.UnauthorizedError("func_login.invalid_credentials")
 
         if not user.options.enabled:

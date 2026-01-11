@@ -1,8 +1,8 @@
 import os
 
 # jwt settings
-JWT_KEY = os.environ.get("JWT_KEY", "cloudjex.jwt.secret")
-APP_URL = os.environ.get("APP_URL", "cloudjex.com")
+JWT_KEY = os.environ.get("JWT_KEY", "local.test")
+APP_URL = "www.cloudjex.com"
 
 # dynamodb settings
 TABLE_NAME = "cloudjex-table"
