@@ -10,7 +10,7 @@ class Tree:
     def to_dict(self):
         return {
             "email": self.email,
-            "trees": self.node_tree.to_dict(),
+            "node_tree": self.node_tree.to_dict(),
         }
 
 
