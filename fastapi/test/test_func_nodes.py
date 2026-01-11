@@ -137,7 +137,7 @@ class TestSuccessPut:
         assert type(node) is dict
         assert node["text"] == text
         assert "email" in node
-        assert "node_id" in node
+        assert "id" in node
 
     def test_func_nodes_put_empty_text(self, id_token):
         # First, get the current text
@@ -174,7 +174,7 @@ class TestSuccessPut:
         assert type(node) is dict
         assert node["text"] == ""
         assert "email" in node
-        assert "node_id" in node
+        assert "id" in node
 
         # Restore previous text
         params = {

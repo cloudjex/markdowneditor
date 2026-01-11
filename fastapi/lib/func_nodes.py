@@ -65,9 +65,5 @@ def put(params) -> dict:
     db_client.put_node(node)
 
     return {
-        "node": {
-            "email": node.email,
-            "node_id": node.id,
-            "text": node.text,
-        }
+        "node": node.json
     }
