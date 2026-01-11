@@ -28,12 +28,11 @@ class User:
     def options(self, options):
         self._options = options
 
-    @property
-    def json(self):
+    def to_dict(self):
         return {
             "email": self._email,
             "password": self._password,
-            "options": self._options.json,
+            "options": self._options.to_dict(),
         }
 
     def set_options(self, options: dict) -> None:
@@ -61,8 +60,7 @@ class Options:
     def otp(self, otp):
         self._otp = otp
 
-    @property
-    def json(self):
+    def to_dict(self):
         return {
             "enabled": self._enabled,
             "otp": self._otp if self._otp else None,

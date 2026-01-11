@@ -19,11 +19,10 @@ class Tree:
     def node_tree(self, node_tree):
         self._node_tree = node_tree
 
-    @property
-    def json(self):
+    def to_dict(self):
         return {
             "email": self._email,
-            "trees": self._node_tree.json,
+            "trees": self._node_tree.to_dict(),
         }
 
     def set_node_tree(self, node_tree: dict) -> None:
@@ -56,15 +55,14 @@ class NodeTree:
 
     @property
     def children(self):
-        return [i.json for i in self._children if i]
+        return [i.to_dict() for i in self._children if i]
 
     @children.setter
     def children(self, children):
         self._children = children
 
-    @property
-    def json(self):
-        children = [i.json for i in self._children if i]
+    def to_dict(self):
+        children = [i.to_dict() for i in self._children if i]
         return {
             "id": self._id,
             "label": self._label,

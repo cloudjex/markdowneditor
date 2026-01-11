@@ -44,7 +44,7 @@ def put(params) -> dict:
     if not tree:
         raise errors.NotFoundError("func_trees_operate.not_found")
 
-    tree_handler = TreeHandler(tree.node_tree.json)
+    tree_handler = TreeHandler(tree.node_tree.to_dict())
     tree_handler.insert_node(node_id)
     new_node_tree = tree_handler.sort_tree()
     tree.set_node_tree(new_node_tree)
@@ -73,7 +73,7 @@ def delete(params) -> dict:
     if not tree:
         raise errors.NotFoundError("func_trees_operate.not_found")
 
-    tree_handler = TreeHandler(tree.node_tree.json)
+    tree_handler = TreeHandler(tree.node_tree.to_dict())
 
     children_ids = tree_handler.get_children_ids(node_id)
     tree_handler.delete_node(node_id)

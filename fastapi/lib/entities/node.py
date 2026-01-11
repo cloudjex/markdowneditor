@@ -28,8 +28,7 @@ class Node:
     def text(self, text):
         self._text = text
 
-    @property
-    def json(self):
+    def to_dict(self) -> dict:
         return {
             "email": self._email,
             "id": self._id,

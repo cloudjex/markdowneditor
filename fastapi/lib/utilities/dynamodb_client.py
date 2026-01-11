@@ -36,7 +36,7 @@ class DynamoDBClient:
                 "PK": f"EMAIL#{user.email}",
                 "SK": "PROFILE",
                 "password": user.password,
-                "options": user.options.json,
+                "options": user.options.to_dict(),
             }
         )
 
@@ -63,7 +63,7 @@ class DynamoDBClient:
             Item={
                 "PK": f"EMAIL#{tree.email}",
                 "SK": "TREE",
-                "node_tree": tree.node_tree.json,
+                "node_tree": tree.node_tree.to_dict(),
             }
         )
 

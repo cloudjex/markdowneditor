@@ -33,14 +33,14 @@ def get(params) -> dict:
         item = db_client.get_node(email, node_id)
         if not item:
             raise errors.NotFoundError("func_nodes.not_found")
-        ret = {"node": item.json}
+        ret = {"node": item.to_dict()}
 
     else:
         items = db_client.get_nodes(email)
         if not items:
             raise errors.NotFoundError("func_nodes.not_found")
 
-        json_items = [i.json for i in items]
+        json_items = [i.to_dict() for i in items]
         ret = {"nodes": json_items}
 
     return ret
@@ -65,5 +65,5 @@ def put(params) -> dict:
     db_client.put_node(node)
 
     return {
-        "node": node.json
+        "node": node.to_dict()
     }
