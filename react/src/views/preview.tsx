@@ -26,42 +26,46 @@ export default function Preview() {
   }, [preview_text]);
 
   return (
-    <Box sx={(theme) => ({
-      border: "1px solid #ddd",
-      borderRadius: "8px",
-      px: "30px",
-      py: "10px",
-      mx: "40px",
-      my: "10px",
+    <>
+      <title>Preview</title>
 
-      [theme.breakpoints.down("sm")]: {
-        border: 'none',
-        px: "2px",
-        py: "1px",
-        mx: "5px",
-        my: "1px",
-      }
-    })}
-    >
-      <ReactMarkdown
-        rehypePlugins={[
-          rehypeHighlight,
-          rehypeSlug,
-          [
-            rehypeAutoLintHeading, {
-              behavior: "prepend", content: () => ({
-                type: "element",
-                tagName: "span",
-                properties: { className: ["heading-anchor"] },
-                children: [{ type: "text", value: "#" }],
-              })
-            }
-          ],
-        ]}
-        remarkPlugins={[remarkGmf, remarkEmoji]}
+      <Box sx={(theme) => ({
+        border: "1px solid #ddd",
+        borderRadius: "8px",
+        px: "30px",
+        py: "10px",
+        mx: "40px",
+        my: "10px",
+
+        [theme.breakpoints.down("sm")]: {
+          border: 'none',
+          px: "2px",
+          py: "1px",
+          mx: "5px",
+          my: "1px",
+        }
+      })}
       >
-        {preview_text}
-      </ReactMarkdown>
-    </Box >
+        <ReactMarkdown
+          rehypePlugins={[
+            rehypeHighlight,
+            rehypeSlug,
+            [
+              rehypeAutoLintHeading, {
+                behavior: "prepend", content: () => ({
+                  type: "element",
+                  tagName: "span",
+                  properties: { className: ["heading-anchor"] },
+                  children: [{ type: "text", value: "#" }],
+                })
+              }
+            ],
+          ]}
+          remarkPlugins={[remarkGmf, remarkEmoji]}
+        >
+          {preview_text}
+        </ReactMarkdown>
+      </Box >
+    </>
   );
 }
