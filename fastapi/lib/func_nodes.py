@@ -26,11 +26,11 @@ def main(params: dict) -> dict:
 def get(params) -> dict:
     email: str = params["email"]
     query_params: dict = params["query_params"]
-    node_id: str = query_params.get("node_id")
+    id: str = query_params.get("id")
 
     db_client = DynamoDBClient()
-    if node_id:
-        item = db_client.get_node(email, node_id)
+    if id:
+        item = db_client.get_node(email, id)
         if not item:
             raise errors.NotFoundError("func_nodes.not_found")
         ret = {"node": item.to_dict()}
@@ -50,14 +50,14 @@ def put(params) -> dict:
     email: str = params["email"]
     body: dict = params["body"]
 
-    node_id = body.get("node_id")
+    id = body.get("id")
     text: str = body.get("text")
 
-    if not node_id or text is None:
+    if not id or text is None:
         raise errors.BadRequestError("func_nodes.missing_params")
 
     db_client = DynamoDBClient()
-    node = db_client.get_node(email, node_id)
+    node = db_client.get_node(email, id)
     if not node:
         raise errors.NotFoundError("func_nodes.not_found")
 

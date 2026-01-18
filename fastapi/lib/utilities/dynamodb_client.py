@@ -71,11 +71,11 @@ class DynamoDBClient:
     ###############################
     # For Node
     ###############################
-    def get_node(self, email: str, node_id) -> Node | None:
+    def get_node(self, email: str, id) -> Node | None:
         response = self._db_client.get_item(
             Key={
                 "PK": f"EMAIL#{email}",
-                "SK": f"NODE#{node_id}",
+                "SK": f"NODE#{id}",
             }
         )
         item = response.get("Item")

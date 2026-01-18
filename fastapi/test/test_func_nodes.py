@@ -2,7 +2,7 @@ import textwrap
 
 from lib import func_nodes
 
-from .conftest import logger
+from .conftest import ROOT_NODE_ID, logger
 
 
 class TestSuccessGET:
@@ -33,7 +33,7 @@ class TestSuccessGET:
                 "authorization": f"Bearer {id_token}"
             },
             "body": {},
-            "query_params": {"node_id": "/Nodes"},
+            "query_params": {"id": ROOT_NODE_ID},
         }
         response = func_nodes.main(params)
         logger(response)
@@ -97,7 +97,7 @@ class TestFailGet:
             },
             "body": {},
             "query_params": {
-                "node_id": "hogehogehogehoge"
+                "id": "hogehogehogehoge"
             },
         }
         response = func_nodes.main(params)
@@ -115,7 +115,7 @@ class TestSuccessPut:
                 "authorization": f"Bearer {id_token}"
             },
             "body": {},
-            "query_params": {"node_id": "/Nodes"},
+            "query_params": {"id": ROOT_NODE_ID},
         }
         response = func_nodes.main(params)
         assert response["status_code"] == 200
@@ -139,7 +139,7 @@ class TestSuccessPut:
                 "authorization": f"Bearer {id_token}"
             },
             "body": {
-                "node_id": "/Nodes",
+                "id": ROOT_NODE_ID,
                 "text": f"{text}",
             },
             "query_params": {},
@@ -161,7 +161,7 @@ class TestSuccessPut:
                 "authorization": f"Bearer {id_token}"
             },
             "body": {
-                "node_id": "/Nodes",
+                "id": ROOT_NODE_ID,
                 "text": f"{before}",
             },
             "query_params": {},
@@ -177,7 +177,7 @@ class TestSuccessPut:
                 "authorization": f"Bearer {id_token}"
             },
             "body": {},
-            "query_params": {"node_id": "/Nodes"},
+            "query_params": {"id": ROOT_NODE_ID},
         }
         response = func_nodes.main(params)
         assert response["status_code"] == 200
@@ -191,7 +191,7 @@ class TestSuccessPut:
                 "authorization": f"Bearer {id_token}"
             },
             "body": {
-                "node_id": "/Nodes",
+                "id": ROOT_NODE_ID,
                 "text": "",
             },
             "query_params": {},
@@ -213,7 +213,7 @@ class TestSuccessPut:
                 "authorization": f"Bearer {id_token}"
             },
             "body": {
-                "node_id": "/Nodes",
+                "id": ROOT_NODE_ID,
                 "text": f"{before}",
             },
             "query_params": {},
@@ -244,7 +244,7 @@ class TestFailPut:
                 "authorization": f"Bearer {id_token}"
             },
             "body": {
-                "node_id": "",
+                "id": "",
                 "text": "",
             },
             "query_params": {},
@@ -261,7 +261,7 @@ class TestFailPut:
                 "authorization": f"Bearer {id_token}"
             },
             "body": {
-                "node_id": "non_existing_node_id",
+                "id": "non_existing_id",
                 "text": "",
             },
             "query_params": {},

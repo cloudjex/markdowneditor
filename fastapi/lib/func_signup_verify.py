@@ -1,3 +1,5 @@
+import uuid
+
 from lib.entities.node import Node
 from lib.entities.tree import Tree
 from lib.utilities import errors
@@ -26,15 +28,14 @@ def main(params: dict) -> dict:
         user.options.otp = ""
         user.options.enabled = True
 
+        initial_id = str(uuid.uuid4())
         initial_tree = {
-            "id": "/Nodes",
+            "id": initial_id,
             "label": "Nodes",
             "children": [],
         }
         initial_tree = Tree(user.email, initial_tree)
-
-        initial_node_id = "/Nodes"
-        initial_node = Node(user.email, initial_node_id, "")
+        initial_node = Node(user.email, initial_id, "")
 
         db_client.put_user(user)
         db_client.put_tree(initial_tree)

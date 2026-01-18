@@ -17,15 +17,22 @@ export interface TreeResponse {
   node_tree: NodeTree;
 };
 
+export interface TreeOperateResponse {
+  node_tree: NodeTree;
+  id: string,
+};
+
 export interface NodeResponse {
-  node: {
-    id: string;
-    email: string;
-    text: string;
-  };
+  node: Node
 };
 
 // Object
+export interface Node {
+  id: string;
+  email: string;
+  text: string;
+};
+
 export interface NodeTree {
   id: string;
   label: string;

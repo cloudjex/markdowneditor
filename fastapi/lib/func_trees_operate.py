@@ -1,3 +1,5 @@
+import uuid
+
 from lib.entities.node import Node
 from lib.entities.tree import NodeTree
 from lib.utilities import errors
@@ -30,14 +32,11 @@ def main(params: dict) -> dict:
 def put(params) -> dict:
     email: str = params["email"]
     body: dict = params["body"]
-    node_id: str = body.get("node_id")
+    parent_id: str = body.get("parent_id")
+    label: str = body.get("label")
 
-    if not node_id:
+    if not parent_id or not label:
         raise errors.BadRequestError("func_trees_operate.missing_params")
-
-    label = node_id.split("/")[-1]
-    if not label:
-        raise errors.BadRequestError("func_trees_operate.invalid_params")
 
     db_client = DynamoDBClient()
 
@@ -45,32 +44,41 @@ def put(params) -> dict:
     if not tree:
         raise errors.NotFoundError("func_trees_operate.not_found")
 
+    insert_id = str(uuid.uuid4())
+    insert_node = {
+        "id": insert_id,
+        "label": label,
+        "children": [],
+    }
+
     tree_handler = TreeHandler(tree.node_tree.to_dict())
-    tree_handler.insert_node(node_id)
+    tree_handler.insert_node(parent_id, insert_node)
     new_node_tree = tree_handler.sort_tree()
+
     tree.node_tree = NodeTree(
         new_node_tree["id"],
         new_node_tree["label"],
         new_node_tree["children"]
     )
 
-    new_node = Node(email, node_id, "")
+    new_node = Node(email, insert_id, "")
 
     db_client.put_tree(tree)
     db_client.put_node(new_node)
-    return {"node_tree": new_node_tree}
+
+    return {
+        "node_tree": new_node_tree,
+        "id": insert_id,
+    }
 
 
 def delete(params) -> dict:
     email: str = params["email"]
     query_params: dict = params["query_params"]
-    node_id: str = query_params.get("node_id")
+    id: str = query_params.get("id")
 
-    if not node_id:
+    if not id:
         raise errors.BadRequestError("func_trees_operate.missing_params")
-
-    if node_id == "/Nodes":
-        raise errors.ForbiddenError("func_trees_operate.cant_delete")
 
     db_client = DynamoDBClient()
 
@@ -80,19 +88,27 @@ def delete(params) -> dict:
 
     tree_handler = TreeHandler(tree.node_tree.to_dict())
 
-    children_ids = tree_handler.get_children_ids(node_id)
-    tree_handler.delete_node(node_id)
+    node = tree_handler.get_node(id)
+    if node["label"] == "Nodes":
+        raise errors.ForbiddenError("func_trees_operate.cant_delete")
+
+    del_targets = tree_handler.get_children_ids(id)
+    del_targets.append(id)
+
+    tree_handler.del_node(id)
     new_node_tree = tree_handler.sort_tree()
+
     tree.node_tree = NodeTree(
         new_node_tree["id"],
         new_node_tree["label"],
         new_node_tree["children"]
     )
 
-    for del_id in children_ids:
+    for del_id in del_targets:
         db_client.delete_node(Node(email, del_id, ""))
-
-    db_client.delete_node(Node(email, node_id, ""))
     db_client.put_tree(tree)
 
-    return {"node_tree": new_node_tree}
+    return {
+        "node_tree": new_node_tree,
+        "id": id,
+    }

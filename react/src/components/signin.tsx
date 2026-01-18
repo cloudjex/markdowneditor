@@ -7,11 +7,11 @@ import loadingState from "../store/loading_store";
 import userStore from '../store/user_store';
 import request_utils from "../utils/request_utils";
 
-import type { SigninForm, SigninResponse } from "../types/types";
+import type { SigninForm, SigninResponse, TreeResponse } from "../types/types";
 
 function Signin() {
   const navigate = useNavigate();
-  const { setEmail, setIdToken, resetUserState } = userStore();
+  const { setEmail, setIdToken, resetUserState, setNodeTree } = userStore();
   const { setLoading, resetLoadingState } = loadingState();
 
   const [signinError, setSigninError] = useState<boolean>(false);
@@ -31,7 +31,7 @@ function Signin() {
     setLoading(true);
     setSigninError(false);
 
-    const res_promise = request_utils.requests<SigninResponse>(
+    const signin_res_promise = request_utils.requests<SigninResponse>(
       `${import.meta.env.VITE_API_HOST}/api/signin`,
       "POST",
       {},
@@ -40,18 +40,34 @@ function Signin() {
         password: data.password,
       }
     );
-    const res = await res_promise;
+    const signin_res = await signin_res_promise;
 
-    setLoading(false);
 
-    if (res.status != 200) {
+    if (signin_res.status != 200) {
       setSigninError(true);
+      setLoading(false);
       throw new Error(`signin error`);
     };
 
-    setEmail(res.body.email);
-    setIdToken(res.body.id_token);
-    navigate("/main?node_id=/Nodes");
+    const signin_body = signin_res.body;
+    const id_token = signin_body.id_token;
+    const email = signin_body.email;
+
+    const res_promise2 = request_utils.requests<TreeResponse>(
+      `${import.meta.env.VITE_API_HOST}/api/trees`,
+      "GET",
+      { authorization: `Bearer ${id_token}` },
+      {}
+    );
+    const res2 = await res_promise2;
+
+    setLoading(false);
+
+    const node_tree = res2.body.node_tree;
+    setNodeTree(node_tree);
+    setIdToken(id_token);
+    setEmail(email);
+    navigate(`/main?id=${node_tree.id}`);
   };
 
   return (
@@ -84,7 +100,7 @@ function Signin() {
           type="submit"
           fullWidth
           variant="contained"
-          sx={{ marginTop: "5%" }}
+          sx={{ mt: 3 }}
         >
           Sign In
         </Button>

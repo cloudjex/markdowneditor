@@ -73,7 +73,7 @@ function Verify() {
       >
         <Typography
           variant="body1"
-          sx={{ marginBottom: 5 }}
+          sx={{ mb: 3 }}
         >
           メールアドレスに添付された認証コードを入力し、ユーザ登録を完了してください
         </Typography>
@@ -91,7 +91,7 @@ function Verify() {
             type="submit"
             fullWidth
             variant="contained"
-            sx={{ marginTop: "5%" }}
+            sx={{ mt: 5 }}
           >
             Sign Up
           </Button>

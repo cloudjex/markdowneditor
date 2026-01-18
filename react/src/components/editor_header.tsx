@@ -1,33 +1,34 @@
-import CloudUploadOutlinedIcon from '@mui/icons-material/CloudUploadOutlined';
-import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
-import SaveAltOutlinedIcon from '@mui/icons-material/SaveAltOutlined';
-import { Box, IconButton } from '@mui/material';
-import "../css/editor_header.css";
+import { Box, Button } from '@mui/material';
 import fileDownload from 'js-file-download';
 import { useLocation } from 'react-router-dom';
 
 import loadingState from "../store/loading_store";
 import userStore from '../store/user_store';
 import request_utils from "../utils/request_utils";
+import tree_utils from '../utils/tree_utils';
 
 function EditorHeader(props: { markdownValue: string }) {
   const markdownValue = props.markdownValue;
   const location = useLocation();
 
-  const { id_token, setPreviewText } = userStore();
+  const { id_token, node_tree, setPreviewText } = userStore();
   const { setLoading } = loadingState();
 
   const searchParams = new URLSearchParams(location.search);
-  const url_node_id = searchParams.get('node_id') as string;
+  const url_node_id = searchParams.get('id') || "";
 
   function preview() {
     setPreviewText(markdownValue);
-    window.open(`/preview?node_id=local`, '_blank');
+    window.open(`/preview?id=local`, '_blank');
   };
 
   function download() {
-    const file_name = url_node_id.split("/").pop();
-    fileDownload(markdownValue, `${file_name}.md`);
+    const node = tree_utils.get_node(node_tree, url_node_id);
+    if (!node) {
+      throw new Error(`node is null`);
+    }
+    const label = node.label;
+    fileDownload(markdownValue, `${label}.md`);
   };
 
   async function upload() {
@@ -37,7 +38,7 @@ function EditorHeader(props: { markdownValue: string }) {
       `${import.meta.env.VITE_API_HOST}/api/nodes`,
       "PUT",
       { authorization: `Bearer ${id_token}` },
-      { node_id: url_node_id, text: markdownValue }
+      { id: url_node_id, text: markdownValue }
     );
     await res_promise;
 
@@ -46,18 +47,34 @@ function EditorHeader(props: { markdownValue: string }) {
 
   return (
     <>
-      <Box sx={{ mb: 1, mr: 3 }}>
-        <IconButton id="save" sx={{ ml: 1 }} onClick={preview}>
-          <RemoveRedEyeIcon />
-        </IconButton>
+      <Box
+        sx={{ mb: 1 }}
+      >
+        <Button
+          variant='outlined'
+          size='small'
+          onClick={preview}
+        >
+          プレビュー
+        </Button>
 
-        <IconButton id="download" sx={{ ml: 1 }} onClick={download}>
-          <SaveAltOutlinedIcon />
-        </IconButton>
+        <Button
+          variant='outlined'
+          size='small'
+          sx={{ ml: 1 }}
+          onClick={download}
+        >
+          ファイル取得
+        </Button>
 
-        <IconButton id="save" sx={{ ml: 1 }} onClick={upload}>
-          <CloudUploadOutlinedIcon />
-        </IconButton>
+        <Button
+          variant='outlined'
+          size='small'
+          sx={{ ml: 1 }}
+          onClick={upload}
+        >
+          保存
+        </Button>
       </Box>
     </>
   );

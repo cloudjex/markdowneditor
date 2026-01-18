@@ -14,13 +14,13 @@ import request_utils from "../utils/request_utils";
 import type { NodeResponse } from "../types/types";
 import type { Options } from "easymde";
 
-export const Editor = () => {
+function Editor() {
   const { id_token } = userStore();
   const { setLoading } = loadingState();
 
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
-  const url_node_id = searchParams.get('node_id');
+  const url_node_id = searchParams.get('id');
 
   const [markdownValue, setMarkdownValue] = useState<string>("");
 
@@ -32,7 +32,7 @@ export const Editor = () => {
         `${import.meta.env.VITE_API_HOST}/api/nodes`,
         "GET",
         { authorization: `Bearer ${id_token}` },
-        { node_id: url_node_id }
+        { id: url_node_id }
       );
 
       let text = "";
@@ -53,7 +53,7 @@ export const Editor = () => {
     placeholder: "",
     lineNumbers: true,
     sideBySideFullscreen: false,
-    toolbar: ["heading", "bold", "italic", "quote", "unordered-list", "ordered-list", "link",]
+    toolbar: false
   }), []);
 
   return (
@@ -64,7 +64,6 @@ export const Editor = () => {
       </Box>
 
       <SimpleMde
-        id="simple-mde"
         value={markdownValue}
         onChange={setMarkdownValue}
         options={options}

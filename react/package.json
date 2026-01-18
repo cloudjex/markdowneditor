@@ -15,7 +15,6 @@
     "@mui/icons-material": "^7.3.6",
     "@mui/material": "^7.3.6",
     "@mui/x-tree-view": "^8.22.0",
-    "dompurify": "^3.3.1",
     "easymde": "^2.20.0",
     "highlight.js": "^11.11.1",
     "js-file-download": "^0.4.12",

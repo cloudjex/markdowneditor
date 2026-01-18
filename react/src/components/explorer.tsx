@@ -19,25 +19,33 @@ function Explorer() {
   const [expandedItems, setExpandedItems] = useState<string[]>(["/Nodes"]);
 
   const searchParams = new URLSearchParams(location.search);
-  const url_node_id = searchParams.get('node_id') || "/Nodes";
+  const url_node_id = searchParams.get('id') || "/Nodes";
 
-  const parents = tree_utils.get_parent_node_ids(url_node_id);
-  const displayedExpanded = [...new Set([...expandedItems, ...parents])];
+  const parents = tree_utils.get_parent_node_ids(node_tree, url_node_id);
+  let displayedExpanded: string[];
+  if (parents){
+    displayedExpanded = [...new Set([...expandedItems, ...parents])];
+  } else {
+    displayedExpanded = [...new Set([...expandedItems])];
+  }
+
 
   const handleItemClick = (_: React.MouseEvent<Element, MouseEvent>, itemId: string) => {
-    navigate(`/main?node_id=${itemId}`);
+    navigate(`/main?id=${itemId}`);
   };
 
   if (id_token && node_tree) {
     return (
       <>
-        <Typography variant="h5" sx={{ my: 2 }}>
+        <Typography variant="h5" sx={{ mt: 2 }}>
           Explorer
         </Typography>
 
+        <TreeUpdate currentNodeId={url_node_id} />
+
         <Box >
           <RichTreeView
-            sx={{ backgroundColor: "rgba(245, 245, 245, 1)", borderRadius: 3 }}
+            sx={{ backgroundColor: "rgba(245, 245, 245)" }}
             items={[node_tree]}
             onItemClick={handleItemClick}
             selectedItems={url_node_id}
@@ -49,7 +57,6 @@ function Explorer() {
               endIcon: ArticleOutlinedIcon,
             }}
           />
-          <TreeUpdate currentNodeId={url_node_id} />
         </Box>
       </>
     );

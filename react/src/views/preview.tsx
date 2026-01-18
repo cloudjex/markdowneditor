@@ -29,22 +29,24 @@ export default function Preview() {
     <>
       <title>Preview</title>
 
-      <Box sx={(theme) => ({
-        border: "1px solid #ddd",
-        borderRadius: "8px",
-        px: "30px",
-        py: "10px",
-        mx: "40px",
-        my: "10px",
+      <Box
+        id="preview"
+        sx={(theme) => ({
+          border: "1px solid #ddd",
+          borderRadius: 3,
+          px: 5,
+          py: 2,
+          mx: 7,
+          my: 5,
 
-        [theme.breakpoints.down("sm")]: {
-          border: 'none',
-          px: "2px",
-          py: "1px",
-          mx: "5px",
-          my: "1px",
-        }
-      })}
+          [theme.breakpoints.down("sm")]: {
+            border: 'none',
+            px: 1,
+            py: 1,
+            mx: 1,
+            my: 1,
+          }
+        })}
       >
         <ReactMarkdown
           rehypePlugins={[

@@ -97,7 +97,7 @@ function Signup() {
           type="submit"
           fullWidth
           variant="contained"
-          sx={{ marginTop: "5%" }}
+          sx={{ mt: 3 }}
         >
           Sign Up
         </Button>

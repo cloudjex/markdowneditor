@@ -14,7 +14,7 @@ _logger.addHandler(_console_handler)
 
 EMAIL = "test@gmail.com"
 NONUSER_EMAIL = "nonuser@gmail.com"
-
+ROOT_NODE_ID = "1b92557a-74cb-4553-a791-529286d3b795"
 
 def logger(x):
     res = json.dumps(x, indent=2, ensure_ascii=False)

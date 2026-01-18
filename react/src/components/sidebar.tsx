@@ -19,7 +19,6 @@ function Sidebar() {
         edge="start"
         onClick={handleDrawerToggle}
         size='large'
-        sx={{ mr: 2 }}
       >
         <Tooltip title="Menu">
           <MenuIcon

@@ -1,5 +1,3 @@
-import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
-import NoteAddOutlinedIcon from '@mui/icons-material/NoteAddOutlined';
 import {
   Alert, Button, Container, Dialog, DialogActions, DialogContent, DialogTitle, TextField
 } from "@mui/material";
@@ -11,21 +9,22 @@ import userStore from '../store/user_store';
 import request_utils from "../utils/request_utils";
 import tree_utils from "../utils/tree_utils";
 
-import type { NodeTree, TreeResponse } from "../types/types";
+import type { TreeOperateResponse } from "../types/types";
 
 function TreeUpdate(props: { currentNodeId: string }) {
   const navigate = useNavigate();
 
   const { id_token, node_tree, setNodeTree } = userStore();
+  const root_node_id = node_tree.id;
   const { setLoading } = loadingState();
 
   const [postModalOpen, setPostModalOpen] = useState<boolean>(false);
   const [delModalOpen, setDelModalOpen] = useState<boolean>(false);
   const [isInvalidId, setIsInvalidId] = useState<boolean>(false);
-  const [newContentName, setNewContentName] = useState<string>("");
+  const [newNodeLabel, setNewNodeLabel] = useState<string>("");
 
   const onClickPostModal = () => {
-    setNewContentName("");
+    setNewNodeLabel("");
     setPostModalOpen(true);
   };
 
@@ -34,36 +33,26 @@ function TreeUpdate(props: { currentNodeId: string }) {
   };
 
   const closeModal = () => {
-    setNewContentName("");
+    setNewNodeLabel("");
     setIsInvalidId(false);
     setPostModalOpen(false);
     setDelModalOpen(false);
   };
 
   const clickCreateNewContent = async () => {
-    if (!node_tree) {
-      throw new Error(`tree is null`);
-    };
-
-    if (!newContentName) {
+    if (!newNodeLabel) {
       setIsInvalidId(true);
       throw new Error(`tree or newContentName is invalid`);
-    };
-
-    const parent = tree_utils.get_node(node_tree, props.currentNodeId) as NodeTree;
-    if (parent.children.some((child) => child.label === newContentName)) {
-      setIsInvalidId(true);
-      throw new Error(`same node already exists`);
     };
 
     closeModal();
     setLoading(true);
 
-    const res_promise = request_utils.requests<TreeResponse>(
+    const res_promise = request_utils.requests<TreeOperateResponse>(
       `${import.meta.env.VITE_API_HOST}/api/trees/operate`,
       "PUT",
       { authorization: `Bearer ${id_token}` },
-      { node_id: `${props.currentNodeId}/${newContentName}` }
+      { parent_id: `${props.currentNodeId}`, label: newNodeLabel }
     );
     const res = await res_promise;
 
@@ -76,34 +65,51 @@ function TreeUpdate(props: { currentNodeId: string }) {
     setLoading(true);
 
     const delete_node_id = props.currentNodeId;
-    const next_current_id = tree_utils.get_parent_node_id(delete_node_id);
+    const parent_node = tree_utils.get_parent_node(node_tree, delete_node_id);
+    if (!parent_node) {
+      throw new Error(`parent_node is null`);
+    }
+    const parent_id = parent_node.id;
 
-    const res_promise = request_utils.requests<TreeResponse>(
+    const res_promise = request_utils.requests<TreeOperateResponse>(
       `${import.meta.env.VITE_API_HOST}/api/trees/operate`,
       "DELETE",
       { authorization: `Bearer ${id_token}` },
-      { node_id: delete_node_id }
+      { id: delete_node_id }
     );
     const res = await res_promise;
 
     setLoading(false);
     setNodeTree(res.body.node_tree);
-    navigate(`/main?node_id=${next_current_id}`);
+    navigate(`/main?id=${parent_id}`);
   };
 
   return (
     <>
       <Container sx={{
-        m: 3,
-        display: "flex"
+        my: 2,
+        display: "flex",
+        justifyContent: "center"
       }}>
 
-        <Button onClick={onClickPostModal} disabled={props.currentNodeId === ""}>
-          <NoteAddOutlinedIcon />
+        <Button
+          onClick={onClickPostModal}
+          size="small"
+          disabled={props.currentNodeId === ""}
+          variant="outlined"
+          sx={{ mr: 1 }}
+        >
+          追加
         </Button>
 
-        <Button onClick={onClickDelModal} disabled={props.currentNodeId === "" || props.currentNodeId === '/Nodes'} sx={{ color: "red" }}>
-          <DeleteOutlineOutlinedIcon />
+        <Button
+          onClick={onClickDelModal}
+          size="small"
+          disabled={props.currentNodeId === root_node_id}
+          variant="outlined"
+          color="error"
+        >
+          削除
         </Button>
 
       </Container>
@@ -130,8 +136,8 @@ function TreeUpdate(props: { currentNodeId: string }) {
             id="outlined-basic"
             label="Node"
             variant="outlined"
-            value={newContentName}
-            onChange={(e) => setNewContentName(e.target.value)}
+            value={newNodeLabel}
+            onChange={(e) => setNewNodeLabel(e.target.value)}
           />
         </Container>
 
