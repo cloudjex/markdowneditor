@@ -19,9 +19,8 @@ function EditorHeader(props: { node_id: string, node_tree: NodeTree, markdown: s
   async function upload() {
     setLoading(true);
 
-    const res_promise = requests.send(
+    const res_promise = requests.put(
       `${import.meta.env.VITE_API_HOST}/api/nodes`,
-      "PUT",
       { id: props.node_id, text: props.markdown }
     );
     await res_promise;

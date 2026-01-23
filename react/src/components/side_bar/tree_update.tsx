@@ -41,9 +41,8 @@ function TreeUpdate(props: { node_id: string, node_tree: NodeTree }) {
     closeModal();
     setLoading(true);
 
-    const res_promise = requests.send<TreeOperateResponse>(
+    const res_promise = requests.post<TreeOperateResponse>(
       `${import.meta.env.VITE_API_HOST}/api/trees/operate`,
-      "POST",
       { parent_id: props.node_id, label: newNodeLabel }
     );
     const res = await res_promise;
@@ -60,9 +59,8 @@ function TreeUpdate(props: { node_id: string, node_tree: NodeTree }) {
     const parent_node = tree_handler.getParentNode(delete_node_id);
     const next_node = parent_node?.id || props.node_tree.id;
 
-    const res_promise = requests.send<TreeOperateResponse>(
+    const res_promise = requests.delete<TreeOperateResponse>(
       `${import.meta.env.VITE_API_HOST}/api/trees/operate`,
-      "DELETE",
       { id: delete_node_id }
     );
     const res = await res_promise;

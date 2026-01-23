@@ -35,9 +35,8 @@ function Signup() {
 
     setLoading(true);
 
-    const res_promise = requests.send(
+    const res_promise = requests.post(
       `${import.meta.env.VITE_API_HOST}/api/signup`,
-      "POST",
       { email: data.email, password: data.password }
     );
     const res = await res_promise;

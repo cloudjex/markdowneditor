@@ -1,5 +1,5 @@
 // Response
-export interface BaseAPIResponse<T> {
+export interface APIResponse<T> {
   status: number;
   headers: Headers;
   body: T;

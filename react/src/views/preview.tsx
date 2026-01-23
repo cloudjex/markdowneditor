@@ -36,9 +36,8 @@ export default function Preview() {
 
       setLoading(true);
 
-      const res_promise = requests.send<NodeResponse>(
+      const res_promise = requests.get<NodeResponse>(
         `${import.meta.env.VITE_API_HOST}/api/nodes`,
-        "GET",
         { id: url_node_id }
       );
       const res = await res_promise;

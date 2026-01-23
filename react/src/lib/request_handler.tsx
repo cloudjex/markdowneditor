@@ -1,4 +1,4 @@
-import type { BaseAPIResponse } from './types';
+import type { APIResponse } from './types';
 
 class RequestHandler {
   public id_token: string | null;
@@ -7,13 +7,33 @@ class RequestHandler {
     this.id_token = id_token;
   }
 
-  async send<T = unknown>(
-    url: string,
-    method: string,
-    params: unknown = {},
-  ): Promise<BaseAPIResponse<T>> {
+  async get<T>(url: string, params: Record<string, unknown> = {}): Promise<APIResponse<T>> {
+    return this.send("GET", url, params);
+  }
 
-    const headers = {Authorization: this.id_token ? `Bearer ${this.id_token}` : ""};
+  async put<T>(url: string, params: Record<string, unknown> = {}): Promise<APIResponse<T>> {
+    return this.send("PUT", url, params);
+  }
+
+  async post<T>(url: string, params: Record<string, unknown> = {}): Promise<APIResponse<T>> {
+    return this.send("POST", url, params);
+  }
+
+  async delete<T>(url: string, params: Record<string, unknown> = {}): Promise<APIResponse<T>> {
+    return this.send("DELETE", url, params);
+  }
+
+  private async send<T>(
+    method: string,
+    url: string,
+    params: Record<string, unknown> = {},
+  ): Promise<APIResponse<T>> {
+
+    const headers = {
+      "Content-Type": "application/json",
+      "Accept": "application/json",
+      "Authorization": this.id_token ? `Bearer ${this.id_token}` : ""
+    };
 
     console.group("API Request", `[${method}]: ${url}`);
     console.log("Headers", headers);
@@ -36,7 +56,7 @@ class RequestHandler {
     }
 
     const res = await fetch(url, detail);
-    const result: BaseAPIResponse<T> = {
+    const result: APIResponse<T> = {
       status: res.status,
       headers: res.headers,
       body: await res.json(),

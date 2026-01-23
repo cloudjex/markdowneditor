@@ -19,9 +19,8 @@ function Profile() {
   async function clickSignout() {
     setLoading(true);
 
-    const res_promise = requests.send(
+    const res_promise = requests.post(
       `${import.meta.env.VITE_API_HOST}/api/signout`,
-      "POST",
     );
     await res_promise;
 
