@@ -1,24 +1,10 @@
-import json
-import logging
-
 import pytest
 
 from funcs.utilities.jwt_client import JwtClient
 
-_logger = logging.getLogger('Logger')
-_logger.setLevel(logging.INFO)
-_console_handler = logging.StreamHandler()
-_formatter = logging.Formatter('[%(levelname)s][%(filename)s:%(lineno)d] %(message)s')
-_console_handler.setFormatter(_formatter)
-_logger.addHandler(_console_handler)
-
 EMAIL = "test@gmail.com"
 NONUSER_EMAIL = "nonuser@gmail.com"
 ROOT_NODE_ID = "1b92557a-74cb-4553-a791-529286d3b795"
-
-def logger(x):
-    res = json.dumps(x, indent=2, ensure_ascii=False)
-    _logger.info(res, stacklevel=2)
 
 
 @pytest.fixture

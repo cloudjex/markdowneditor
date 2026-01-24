@@ -1,23 +1,19 @@
-from funcs import func_trees
+import app
+from fastapi.testclient import TestClient
 
-from .conftest import logger
+client = TestClient(app.app)
 
 
 class TestSuccessGET:
     def test_func_trees_get_normal(self, id_token):
-        params = {
-            "method": "GET",
-            "headers": {
-                "content-type": "application/json",
-                "authorization": f"Bearer {id_token}"
-            },
-            "body": {},
-            "query_params": {},
-        }
-        response = func_trees.main(params)
-        logger(response)
-        assert response["status_code"] == 200
-        tree = response["body"]["node_tree"]
+        res = client.get(
+            url="/api/trees",
+            headers={"Authorization": f"Bearer {id_token}"},
+        )
+        assert res.status_code == 200
+
+        body = res.json()
+        tree = body["node_tree"]
         assert "id" in tree
         assert "label" in tree
         assert "children" in tree
@@ -25,43 +21,21 @@ class TestSuccessGET:
 
 class TestFailGet:
     def test_func_trees_get_no_token(self):
-        params = {
-            "method": "GET",
-            "headers": {
-                "content-type": "application/json",
-                "authorization": ""
-            },
-            "body": {},
-            "query_params": {},
-        }
-        response = func_trees.main(params)
-        logger(response)
-        assert response["status_code"] == 401
-
-    def test_func_trees_get_nonuser_token(self, nonuser_id_token):
-        params = {
-            "method": "GET",
-            "headers": {
-                "content-type": "application/json",
-                "authorization": f"Bearer {nonuser_id_token}"
-            },
-            "body": {},
-            "query_params": {},
-        }
-        response = func_trees.main(params)
-        logger(response)
-        assert response["status_code"] == 404
+        res = client.get(
+            url="/api/trees",
+        )
+        assert res.status_code == 401
 
     def test_func_trees_get_invalid_token(self, invalid_id_token):
-        params = {
-            "method": "GET",
-            "headers": {
-                "content-type": "application/json",
-                "authorization": f"Bearer {invalid_id_token}"
-            },
-            "body": {},
-            "query_params": {},
-        }
-        response = func_trees.main(params)
-        logger(response)
-        assert response["status_code"] == 401
+        res = client.get(
+            url="/api/trees",
+            headers={"Authorization": f"Bearer {invalid_id_token}"},
+        )
+        assert res.status_code == 401
+
+    def test_func_trees_get_nonuser_token(self, nonuser_id_token):
+        res = client.get(
+            url="/api/trees",
+            headers={"Authorization": f"Bearer {nonuser_id_token}"},
+        )
+        assert res.status_code == 404

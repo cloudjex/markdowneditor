@@ -1,36 +1,11 @@
 from funcs.utilities import errors
 from funcs.utilities.dynamodb_client import DynamoDBClient
-from funcs.utilities.jwt_client import JwtClient
-from funcs.utilities.response_handler import ResponseHandler
 
 
-def main(params: dict) -> dict:
-    try:
-        headers: dict = params["headers"]
-        id_token: str = headers.get("authorization")
-
-        decoded = JwtClient().verify_id_token(id_token)
-        params.update({"email": decoded["email"]})
-
-        method: str = params["method"]
-        if method == "GET":
-            res = get(params)
-        elif method == "PUT":
-            res = put(params)
-        return ResponseHandler().response(body=res, status_code=200)
-
-    except Exception as e:
-        return ResponseHandler().error_response(e)
-
-
-def get(params) -> dict:
-    email: str = params["email"]
-    query_params: dict = params["query_params"]
-    id: str = query_params.get("id")
-
+def get(email: str, node_id: str | None) -> dict:
     db_client = DynamoDBClient()
-    if id:
-        item = db_client.get_node(email, id)
+    if node_id:
+        item = db_client.get_node(email, node_id)
         if not item:
             raise errors.NotFoundError("func_nodes.not_found")
         ret = {"node": item.to_dict()}
@@ -46,18 +21,9 @@ def get(params) -> dict:
     return ret
 
 
-def put(params) -> dict:
-    email: str = params["email"]
-    body: dict = params["body"]
-
-    id = body.get("id")
-    text: str = body.get("text")
-
-    if not id or text is None:
-        raise errors.BadRequestError("func_nodes.missing_params")
-
+def put(email: str, node_id: str, text: str) -> dict:
     db_client = DynamoDBClient()
-    node = db_client.get_node(email, id)
+    node = db_client.get_node(email, node_id)
     if not node:
         raise errors.NotFoundError("func_nodes.not_found")
 

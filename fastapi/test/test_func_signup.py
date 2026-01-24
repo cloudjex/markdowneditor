@@ -1,54 +1,39 @@
-from funcs import func_signup
+import app
+from fastapi.testclient import TestClient
 
-from .conftest import logger
+client = TestClient(app.app)
 
 
 class TestSuccessPost:
     def test_func_signup_post_normal(self):
         email = "pytest@gmail.com"
-        params = {
-            "method": "POST",
-            "headers": {
-                "content-type": "application/json",
-            },
-            "body": {
+        res = client.post(
+            url="/api/signup",
+            json={
                 "email": email,
                 "password": "pytest",
-            },
-            "query_params": {},
-        }
-        response = func_signup.main(params)
-        logger(response)
-        assert response["status_code"] == 200
-        assert response["body"]["email"] == email
+            }
+        )
+        assert res.status_code == 200
+
+        body = res.json()
+        assert body["email"] == email
 
 
 class TestFailPost:
     def test_func_signup_post_no_params(self):
-        params = {
-            "method": "POST",
-            "headers": {
-                "content-type": "application/json",
-            },
-            "body": {},
-            "query_params": {},
-        }
-        response = func_signup.main(params)
-        logger(response)
-        assert response["status_code"] == 400
+        res = client.post(
+            url="/api/signup",
+            json={}
+        )
+        assert res.status_code == 422
 
     def test_func_signup_post_duplicate_user(self):
-        params = {
-            "method": "POST",
-            "headers": {
-                "content-type": "application/json",
-            },
-            "body": {
+        res = client.post(
+            url="/api/signup",
+            json={
                 "email": "test@gmail.com",
                 "password": "test",
-            },
-            "query_params": {},
-        }
-        response = func_signup.main(params)
-        logger(response)
-        assert response["status_code"] == 409
+            }
+        )
+        assert res.status_code == 409

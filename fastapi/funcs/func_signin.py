@@ -2,36 +2,24 @@ from funcs.utilities import errors
 from funcs.utilities.bcrypt_hash import BcryptHash
 from funcs.utilities.dynamodb_client import DynamoDBClient
 from funcs.utilities.jwt_client import JwtClient
-from funcs.utilities.response_handler import ResponseHandler
 
 
-def main(params: dict) -> dict:
-    try:
-        body: dict = params["body"]
-        email: str = body.get("email")
-        pw: str = body.get("password")
+def post(email: str, password: str) -> dict:
+    db_client = DynamoDBClient()
+    user = db_client.get_user(email=email)
 
-        if not email or not pw:
-            raise errors.BadRequestError("func_login.missing_params")
+    if not user or not BcryptHash().bcrypt_verify(password, user.password):
+        raise errors.UnauthorizedError("func_login.invalid_credentials")
 
-        db_client = DynamoDBClient()
-        user = db_client.get_user(email=email)
+    if not user.options.enabled:
+        raise errors.ForbiddenError("func_login.not_enabled")
 
-        if not user or not BcryptHash().bcrypt_verify(pw, user.password):
-            raise errors.UnauthorizedError("func_login.invalid_credentials")
+    id_token = JwtClient().generate_jwt(email)
 
-        if not user.options.enabled:
-            raise errors.ForbiddenError("func_login.not_enabled")
+    res = {
+        "email": email,
+        "options": user.options.to_dict(),
+        "id_token": id_token,
+    }
 
-        id_token = JwtClient().generate_jwt(email)
-
-        res = {
-            "email": email,
-            "options": user.options.to_dict(),
-            "id_token": id_token,
-        }
-
-        return ResponseHandler().response(body=res, status_code=200)
-
-    except Exception as e:
-        return ResponseHandler().error_response(e)
+    return res

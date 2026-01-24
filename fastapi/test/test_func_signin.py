@@ -1,90 +1,53 @@
-from funcs import func_signin
+import app
+from fastapi.testclient import TestClient
 
-from .conftest import logger
+from .conftest import EMAIL
+
+client = TestClient(app.app)
 
 
 class TestSuccessPost:
     def test_func_signin_normal(self):
-        email = "test@gmail.com"
-        params = {
-            "method": "POST",
-            "headers": {
-                "content-type": "application/json"
-            },
-            "body": {
-                "email": email,
+        res = client.post(
+            url="/api/signin",
+            json={
+                "email": EMAIL,
                 "password": "test"
-            },
-            "query_params": {},
-        }
-        response = func_signin.main(params)
-        logger(response)
-        assert response["status_code"] == 200
-        body: dict = response["body"]
+            }
+        )
+        assert res.status_code == 200
+        body: dict = res.json()
+
         assert body.get("id_token") != None
-        assert body.get("email") == email
+        assert body.get("email") == EMAIL
         assert type(body["options"]) is dict
         assert body["options"].get("enabled") == True
 
 
 class TestFailPost:
     def test_func_signin_no_params(self):
-        params = {
-            "method": "POST",
-            "headers": {
-                "content-type": "application/json"
-            },
-            "body": {
+        res = client.post(
+            url="/api/signin",
+            json={
                 "email": "",
                 "password": ""
-            },
-            "query_params": {},
-        }
-        response = func_signin.main(params)
-        logger(response)
-        assert response["status_code"] == 400
-
-    def test_func_signin_omit_params(self):
-        params = {
-            "method": "POST",
-            "headers": {
-                "content-type": "application/json"
-            },
-            "body": {},
-            "query_params": {},
-        }
-        response = func_signin.main(params)
-        logger(response)
-        assert response["status_code"] == 400
+            }
+        )
+        assert res.status_code == 401
 
     def test_func_signin_invalid_pw(self):
-        params = {
-            "method": "POST",
-            "headers": {
-                "content-type": "application/json"
-            },
-            "body": {
+        res = client.post(
+            url="/api/signin",
+            json={
                 "email": "test@gmail.com",
                 "password": "invalid_password"
-            },
-            "query_params": {},
-        }
-        response = func_signin.main(params)
-        logger(response)
-        assert response["status_code"] == 401
+            }
+        )
+        assert res.status_code == 401
 
-    def test_func_signin_invalid_id_and_pw(self):
-        params = {
-            "method": "POST",
-            "headers": {
-                "content-type": "application/json"
-            },
-            "body": {
-                "email": "hogehoge@gmail.com",
-                "password": "hogehoge"
-            },
-            "query_params": {},
-        }
-        response = func_signin.main(params)
-        logger(response)
-        assert response["status_code"] == 401
+    def test_func_signin_omit_params(self):
+        res = client.post(
+            url="/api/signin",
+            json={}
+        )
+        assert res.status_code == 422

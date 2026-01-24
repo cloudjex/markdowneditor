@@ -1,37 +1,28 @@
-from funcs import func_signout
+import app
+from fastapi.testclient import TestClient
 
-from .conftest import logger
+client = TestClient(app.app)
 
 
 class TestSuccessPost:
     def test_func_signout_normal(self, id_token):
-        params = {
-            "method": "POST",
-            "headers": {
-                "content-type": "application/json",
-                "authorization": f"Bearer {id_token}"
-            },
-            "body": {},
-            "query_params": {},
-        }
-        response = func_signout.main(params)
-        logger(response)
-        assert response["status_code"] == 200
-        body: dict = response["body"]
-        assert body.get("result") == "success"
+        res = client.post(
+            url="/api/signout",
+            headers={"Authorization": f"Bearer {id_token}"}
+        )
+        assert res.status_code == 200
 
 
 class TestFailPost:
     def test_func_signout_no_token(self):
-        params = {
-            "method": "POST",
-            "headers": {
-                "content-type": "application/json",
-                "authorization": ""
-            },
-            "body": {},
-            "query_params": {},
-        }
-        response = func_signout.main(params)
-        logger(response)
-        assert response["status_code"] == 400
+        res = client.post(
+            url="/api/signout",
+        )
+        assert res.status_code == 401
+
+    def test_func_signout_invalid_token(self, invalid_id_token):
+        res = client.post(
+            url="/api/signout",
+            headers={"Authorization": f"Bearer {invalid_id_token}"}
+        )
+        assert res.status_code == 401
