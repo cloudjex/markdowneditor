@@ -4,10 +4,10 @@ from .conftest import ROOT_NODE_ID, fa_client
 
 
 class TestSuccessPost:
-    def test_func_trees_operate_post_normal(self, id_token):
+    def test_func_tree_operate_post_normal(self, id_token):
         new_node_label = str(time.time())
         res = fa_client.post(
-            url="/api/trees/operate",
+            url="/api/tree/operate",
             headers={"Authorization": id_token},
             json={
                 "parent_id": ROOT_NODE_ID,
@@ -31,22 +31,22 @@ class TestSuccessPost:
 
 
 class TestFailPost:
-    def test_func_trees_operate_post_no_token(self):
+    def test_func_tree_operate_post_no_token(self):
         res = fa_client.post(
-            url="/api/trees/operate",
+            url="/api/tree/operate",
         )
         assert res.status_code == 401
 
-    def test_func_trees_operate_post_invalid_token(self, invalid_id_token):
+    def test_func_tree_operate_post_invalid_token(self, invalid_id_token):
         res = fa_client.post(
-            url="/api/trees/operate",
+            url="/api/tree/operate",
             headers={"Authorization": invalid_id_token}
         )
         assert res.status_code == 401
 
-    def test_func_trees_operate_post_nonuser_token(self, nonuser_id_token):
+    def test_func_tree_operate_post_nonuser_token(self, nonuser_id_token):
         res = fa_client.post(
-            url="/api/trees/operate",
+            url="/api/tree/operate",
             headers={"Authorization": nonuser_id_token},
             json={
                 "parent_id": "invalid",
@@ -55,9 +55,9 @@ class TestFailPost:
         )
         assert res.status_code == 404
 
-    def test_func_trees_operate_post_no_params(self, id_token):
+    def test_func_tree_operate_post_no_params(self, id_token):
         res = fa_client.post(
-            url="/api/trees/operate",
+            url="/api/tree/operate",
             headers={"Authorization": id_token},
             json={}
         )
@@ -65,12 +65,12 @@ class TestFailPost:
 
 
 class TestSuccessPut:
-    def test_func_trees_operate_put_normal(self, id_token):
+    def test_func_tree_operate_put_normal(self, id_token):
         global new_node
         put_node_id = new_node["id"]
         new_label = str(time.time())
         res = fa_client.put(
-            url=f"/api/trees/operate/{put_node_id}",
+            url=f"/api/tree/operate/{put_node_id}",
             headers={"Authorization": id_token},
             json={
                 "label": new_label,
@@ -92,22 +92,22 @@ class TestSuccessPut:
 
 
 class TestFailPut:
-    def test_func_trees_operate_put_no_token(self):
+    def test_func_tree_operate_put_no_token(self):
         res = fa_client.put(
-            url="/api/trees/operate/test",
+            url="/api/tree/operate/test",
         )
         assert res.status_code == 401
 
-    def test_func_trees_operate_put_invalid_token(self, invalid_id_token):
+    def test_func_tree_operate_put_invalid_token(self, invalid_id_token):
         res = fa_client.put(
-            url="/api/trees/operate/test",
+            url="/api/tree/operate/test",
             headers={"Authorization": invalid_id_token}
         )
         assert res.status_code == 401
 
-    def test_func_trees_operate_put_nonuser_token(self, nonuser_id_token):
+    def test_func_tree_operate_put_nonuser_token(self, nonuser_id_token):
         res = fa_client.put(
-            url="/api/trees/operate/test",
+            url="/api/tree/operate/test",
             headers={"Authorization": nonuser_id_token},
             json={
                 "label": "invalid",
@@ -115,9 +115,9 @@ class TestFailPut:
         )
         assert res.status_code == 404
 
-    def test_func_trees_operate_put_no_params(self, id_token):
+    def test_func_tree_operate_put_no_params(self, id_token):
         res = fa_client.put(
-            url="/api/trees/operate/test",
+            url="/api/tree/operate/test",
             headers={"Authorization": id_token},
             json={}
         )
@@ -125,11 +125,11 @@ class TestFailPut:
 
 
 class TestSuccessDelete:
-    def test_func_trees_operate_delete_normal(self, id_token):
+    def test_func_tree_operate_delete_normal(self, id_token):
         global new_node
         del_node_id = new_node["id"]
         res = fa_client.delete(
-            url=f"/api/trees/operate/{del_node_id}",
+            url=f"/api/tree/operate/{del_node_id}",
             headers={"Authorization": id_token},
         )
         assert res.status_code == 200
@@ -144,36 +144,36 @@ class TestSuccessDelete:
 
 
 class TestFailDelete:
-    def test_func_trees_operate_delete_no_token(self):
+    def test_func_tree_operate_delete_no_token(self):
         res = fa_client.delete(
-            url="/api/trees/operate/test",
+            url="/api/tree/operate/test",
         )
         assert res.status_code == 401
 
-    def test_func_trees_operate_delete_invalid_token(self, invalid_id_token):
+    def test_func_tree_operate_delete_invalid_token(self, invalid_id_token):
         res = fa_client.delete(
-            url="/api/trees/operate/test",
+            url="/api/tree/operate/test",
             headers={"Authorization": invalid_id_token}
         )
         assert res.status_code == 401
 
-    def test_func_trees_operate_delete_nonuser_token(self, nonuser_id_token):
+    def test_func_tree_operate_delete_nonuser_token(self, nonuser_id_token):
         res = fa_client.delete(
-            url="/api/trees/operate/test",
+            url="/api/tree/operate/test",
             headers={"Authorization": nonuser_id_token},
         )
         assert res.status_code == 404
 
-    def test_func_trees_operate_delete_root(self, id_token):
+    def test_func_tree_operate_delete_root(self, id_token):
         res = fa_client.delete(
-            url=f"/api/trees/operate/{ROOT_NODE_ID}",
+            url=f"/api/tree/operate/{ROOT_NODE_ID}",
             headers={"Authorization": id_token},
         )
         assert res.status_code == 403
 
-    def test_func_trees_operate_delete_non_exist(self, id_token):
+    def test_func_tree_operate_delete_non_exist(self, id_token):
         res = fa_client.delete(
-            url="/api/trees/operate/non_exist_node",
+            url="/api/tree/operate/non_exist_node",
             headers={"Authorization": id_token},
         )
         assert res.status_code == 404

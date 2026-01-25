@@ -9,7 +9,7 @@ from fastapi import Depends, FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from funcs import (func_nodes, func_signin, func_signout, func_signup,
-                   func_signup_verify, func_trees, func_trees_operate)
+                   func_signup_verify, func_tree, func_tree_operate)
 from funcs.utilities import errors
 from funcs.utilities.jwt_client import JwtClient
 
@@ -148,7 +148,7 @@ async def handle_signout(jwt: dict = Depends(verify_token)):
 
 
 @app.get(
-    path="/api/trees",
+    path="/api/tree",
     tags=["Tree"],
     summary="Get tree",
     response_model=schema.Tree,
@@ -156,12 +156,12 @@ async def handle_signout(jwt: dict = Depends(verify_token)):
         401: {"description": "UnauthorizedError"},
     },
 )
-async def handle_trees(jwt: dict = Depends(verify_token)):
-    return func_trees.get(jwt["email"])
+async def handle_tree(jwt: dict = Depends(verify_token)):
+    return func_tree.get(jwt["email"])
 
 
 @app.post(
-    path="/api/trees/operate",
+    path="/api/tree/operate",
     tags=["Tree"],
     summary="Update tree, Insert node",
     response_model=schema.Tree,
@@ -169,12 +169,12 @@ async def handle_trees(jwt: dict = Depends(verify_token)):
         401: {"description": "UnauthorizedError"},
     },
 )
-async def handle_trees_operate(req: schema.TreePostReq, jwt: dict = Depends(verify_token),):
-    return func_trees_operate.post(jwt["email"], req.parent_id, req.label)
+async def handle_tree_operate(req: schema.TreePostReq, jwt: dict = Depends(verify_token),):
+    return func_tree_operate.post(jwt["email"], req.parent_id, req.label)
 
 
 @app.put(
-    path="/api/trees/operate/{id}",
+    path="/api/tree/operate/{id}",
     tags=["Tree"],
     summary="Update tree, Update node",
     response_model=schema.Tree,
@@ -182,12 +182,12 @@ async def handle_trees_operate(req: schema.TreePostReq, jwt: dict = Depends(veri
         401: {"description": "UnauthorizedError"},
     },
 )
-async def handle_trees_operate(id, req: schema.TreePutReq, jwt: dict = Depends(verify_token),):
-    return func_trees_operate.put(jwt["email"], id, req.label)
+async def handle_tree_operate(id, req: schema.TreePutReq, jwt: dict = Depends(verify_token),):
+    return func_tree_operate.put(jwt["email"], id, req.label)
 
 
 @app.delete(
-    path="/api/trees/operate/{id}",
+    path="/api/tree/operate/{id}",
     tags=["Tree"],
     summary="Update tree, Delete node",
     response_model=schema.Tree,
@@ -196,7 +196,7 @@ async def handle_trees_operate(id, req: schema.TreePutReq, jwt: dict = Depends(v
     },
 )
 async def handle_delete_tree(id: str, jwt: dict = Depends(verify_token)):
-    return func_trees_operate.delete(jwt["email"], id)
+    return func_tree_operate.delete(jwt["email"], id)
 
 
 @app.get(

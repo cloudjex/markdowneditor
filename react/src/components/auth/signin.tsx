@@ -42,7 +42,7 @@ function Signin() {
 
     requests.id_token = signin_res.body.id_token;
     const tree_res_promise = requests.get<Tree>(
-      `${import.meta.env.VITE_API_HOST}/api/trees`,
+      `${import.meta.env.VITE_API_HOST}/api/tree`,
     );
     const tree_res = await tree_res_promise;
 

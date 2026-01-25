@@ -43,7 +43,7 @@ function TreeUpdate(props: { node_id: string, tree: Tree }) {
     setLoading(true);
 
     const res_promise = requests.post<Tree>(
-      `${import.meta.env.VITE_API_HOST}/api/trees/operate`,
+      `${import.meta.env.VITE_API_HOST}/api/tree/operate`,
       { parent_id: props.node_id, label: newNodeLabel }
     );
     const res = await res_promise;
@@ -61,7 +61,7 @@ function TreeUpdate(props: { node_id: string, tree: Tree }) {
     const next_node = parent_node?.id || props.tree.id;
 
     const res_promise = requests.delete<Tree>(
-      `${import.meta.env.VITE_API_HOST}/api/trees/operate/${delete_node_id}`,
+      `${import.meta.env.VITE_API_HOST}/api/tree/operate/${delete_node_id}`,
     );
     const res = await res_promise;
 
