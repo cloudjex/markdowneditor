@@ -1,36 +1,27 @@
-import json
-import logging
-
 import pytest
 
-from lib.utilities.jwt_client import JwtClient
-
-_logger = logging.getLogger('Logger')
-_logger.setLevel(logging.INFO)
-_console_handler = logging.StreamHandler()
-_formatter = logging.Formatter('[%(levelname)s][%(filename)s:%(lineno)d] %(message)s')
-_console_handler.setFormatter(_formatter)
-_logger.addHandler(_console_handler)
+import app
+from fastapi.testclient import TestClient
+from funcs.utilities.jwt_client import JwtClient
 
 EMAIL = "test@gmail.com"
 NONUSER_EMAIL = "nonuser@gmail.com"
+ROOT_NODE_ID = "1b92557a-74cb-4553-a791-529286d3b795"
 
 
-def logger(x):
-    res = json.dumps(x, indent=2, ensure_ascii=False)
-    _logger.info(res, stacklevel=2)
+fa_client = TestClient(app.app)
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def id_token():
-    return JwtClient().generate_jwt(EMAIL)
+    return f"Bearer {JwtClient().encode(EMAIL)}"
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def invalid_id_token():
-    return "invalid_token"
+    return "Bearer invalid_token"
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def nonuser_id_token():
-    return JwtClient().generate_jwt(NONUSER_EMAIL)
+    return f"Bearer {JwtClient().encode(NONUSER_EMAIL)}"

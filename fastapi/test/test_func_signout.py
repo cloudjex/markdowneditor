@@ -1,37 +1,28 @@
-from lib import func_signout
-
-from .conftest import logger
+from .conftest import fa_client
 
 
 class TestSuccessPost:
     def test_func_signout_normal(self, id_token):
-        params = {
-            "method": "POST",
-            "headers": {
-                "content-type": "application/json",
-                "authorization": f"Bearer {id_token}"
-            },
-            "body": {},
-            "query_params": {},
-        }
-        response = func_signout.main(params)
-        logger(response)
-        assert response["status_code"] == 200
-        body: dict = response["body"]
-        assert body.get("result") == "success"
+        res = fa_client.post(
+            url="/api/signout",
+            headers={"Authorization": id_token}
+        )
+        assert res.status_code == 200
+
+        body = res.json()
+        assert body["result"] == "success"
 
 
 class TestFailPost:
     def test_func_signout_no_token(self):
-        params = {
-            "method": "POST",
-            "headers": {
-                "content-type": "application/json",
-                "authorization": ""
-            },
-            "body": {},
-            "query_params": {},
-        }
-        response = func_signout.main(params)
-        logger(response)
-        assert response["status_code"] == 400
+        res = fa_client.post(
+            url="/api/signout",
+        )
+        assert res.status_code == 401
+
+    def test_func_signout_invalid_token(self, invalid_id_token):
+        res = fa_client.post(
+            url="/api/signout",
+            headers={"Authorization": invalid_id_token}
+        )
+        assert res.status_code == 401

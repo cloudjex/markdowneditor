@@ -4,11 +4,10 @@
 [![CICD Workflow](https://github.com/cloudjex/markdowneditor/actions/workflows/cicd.yaml/badge.svg)](https://github.com/cloudjex/markdowneditor/actions/workflows/cicd.yaml)
 
 ## Summary
-markdown管理アプリ用のPublicRepository。  
-Serverless Architectureを使用した、シンプルなFrontend/Backend構成。  
-Serverlessを採用し、安価に構築/運用。OSS Applicationとして公開中。
-
-App: [cloudjex.com](https://www.cloudjex.com)
+- markdown管理アプリ用のPublicRepository
+- Serverless Architectureを使用した、シンプルなFrontend/Backend構成
+- App URL: https://www.cloudjex.com
+- OpenAPI: https://api.cloudjex.com/docs#
 
 ## System Overview
 以下のFramework/技術要素を使用
@@ -19,8 +18,6 @@ App: [cloudjex.com](https://www.cloudjex.com)
 | React              | TypeScript | Frontend |
 | GithubActions      | yaml       | CICD     |
 | Terraform          | tf         | CICD     |
-
-<br>
 
 以下のサービスを使用
 
@@ -38,8 +35,8 @@ App: [cloudjex.com](https://www.cloudjex.com)
 
 NoSQL(ドキュメント指向DB)を使用し、Itemは単一テーブルに格納  
 
-主キー: `PK`  
-ソートキー: `SK`
+- 主キー: `PK`  
+- ソートキー: `SK`
 
 ### user item
 | key       | type   | desctiption            | description        |
@@ -51,12 +48,15 @@ NoSQL(ドキュメント指向DB)を使用し、Itemは単一テーブルに格�
 | ├ enabled | bool   | active/inactive        |                    |
 | └ otp     | str    | otp                    | only inactive user |
 
-### tree item
-| key  | type   | desctiption            | description  |
-| ---- | ------ | ---------------------- | ------------ |
-| PK   | str    | value: `EMAIL#{email}` | PartitionKey |
-| SK   | str    | value: `TREE`          | SortKey      |
-| tree | object | tree content           |              |
+### tree info item
+| key        | type   | desctiption            | description           |
+| ---------- | ------ | ---------------------- | --------------------- |
+| PK         | str    | value: `EMAIL#{email}` | PartitionKey          |
+| SK         | str    | value: `TREE_INFO`     | SortKey               |
+| tree       | object | tree content           |                       |
+| ├ id       | str    | node id                |                       |
+| ├ label    | str    | node label             |                       |
+| └ children | object | node children          | have tree recursively |
 
 ### node item
 | key  | type | desctiption             | description  |
@@ -64,3 +64,17 @@ NoSQL(ドキュメント指向DB)を使用し、Itemは単一テーブルに格�
 | PK   | str  | value: `EMAIL#{email}`  | PartitionKey |
 | SK   | str  | value: `NODE#{node id}` | SortKey      |
 | text | str  | text                    |              |
+
+## For Developer
+FastAPI in local
+```sh
+cd ./fastapi
+pip install -r requirements.txt
+uvicorn app:app --reload
+```
+React in local
+```sh
+cd ./react
+npm i
+npm run dev
+```

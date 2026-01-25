@@ -1,0 +1,49 @@
+#preview {
+
+  /* Header */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    border-bottom: 1px solid rgb(202, 202, 202);
+
+    a {
+      text-decoration: none;
+      color: gray;
+
+      .heading-anchor {
+        margin-right: 5px;
+        color: gray;
+      }
+    }
+  }
+
+  /* Link */
+  a {
+    color: blue
+  }
+
+  /* Table */
+  table {
+    border-collapse: collapse;
+
+    th {
+      background-color: rgb(240, 240, 240);
+    }
+
+    td,
+    th {
+      padding: 7px;
+      border: 1px solid black;
+    }
+  }
+
+  /* Code */
+  code {
+    padding: 7px;
+    font-size: larger;
+    border-radius: 5px;
+  }
+}

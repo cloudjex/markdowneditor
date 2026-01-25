@@ -1,112 +1,75 @@
 import textwrap
 
-from lib import func_nodes
-
-from .conftest import logger
+from .conftest import ROOT_NODE_ID, fa_client
 
 
 class TestSuccessGET:
     def test_func_nodes_get_normal(self, id_token):
-        params = {
-            "method": "GET",
-            "headers": {
-                "content-type": "application/json",
-                "authorization": f"Bearer {id_token}"
-            },
-            "body": {},
-            "query_params": {},
-        }
-        response = func_nodes.main(params)
-        logger(response)
-        assert response["status_code"] == 200
-        nodes = response["body"]["nodes"]
+        res = fa_client.get(
+            url="/api/nodes",
+            headers={"Authorization": id_token}
+        )
+        assert res.status_code == 200
+
+        body: dict = res.json()
+        nodes = body["nodes"]
         assert type(nodes) is list
-        assert "email" in nodes[0]
-        assert "id" in nodes[0]
-        assert "text" in nodes[0]
+        assert type(nodes[0]["id"]) is str
+        assert type(nodes[0]["email"]) is str
+        assert type(nodes[0]["text"]) is str
 
-    def test_func_nodes_get_normal_with_params(self, id_token):
-        params = {
-            "method": "GET",
-            "headers": {
-                "content-type": "application/json",
-                "authorization": f"Bearer {id_token}"
-            },
-            "body": {},
-            "query_params": {"node_id": "/Nodes"},
-        }
-        response = func_nodes.main(params)
-        logger(response)
-        assert response["status_code"] == 200
-        node = response["body"]["node"]
-        assert type(node) is dict
-        assert "email" in node
-        assert "id" in node
-        assert "text" in node
+    def test_func_nodes_get_normal_with_id(self, id_token):
+        res = fa_client.get(
+            url=f"/api/nodes/{ROOT_NODE_ID}",
+            headers={"Authorization": id_token},
+        )
+        assert res.status_code == 200
 
+        body: dict = res.json()
+        assert type(body["id"]) is str
+        assert type(body["email"]) is str
+        assert type(body["text"]) is str
 
 class TestFailGet:
     def test_func_node_get_no_token(self):
-        params = {
-            "method": "GET",
-            "headers": {
-                "content-type": "application/json",
-                "authorization": ""
-            },
-            "body": {},
-            "query_params": {},
-        }
-        response = func_nodes.main(params)
-        logger(response)
-        assert response["status_code"] == 401
+        res = fa_client.get(
+            url="/api/nodes",
+        )
+        assert res.status_code == 401
 
     def test_func_node_get_invalid_token(self, invalid_id_token):
-        params = {
-            "method": "GET",
-            "headers": {
-                "content-type": "application/json",
-                "authorization": f"Bearer {invalid_id_token}"
-            },
-            "body": {},
-            "query_params": {},
-        }
-        response = func_nodes.main(params)
-        logger(response)
-        assert response["status_code"] == 401
+        res = fa_client.get(
+            url="/api/nodes",
+            headers={"Authorization": invalid_id_token},
+        )
+        assert res.status_code == 401
 
     def test_func_node_get_nonuser_token(self, nonuser_id_token):
-        params = {
-            "method": "GET",
-            "headers": {
-                "content-type": "application/json",
-                "authorization": f"Bearer {nonuser_id_token}"
-            },
-            "body": {},
-            "query_params": {},
-        }
-        response = func_nodes.main(params)
-        logger(response)
-        assert response["status_code"] == 404
+        res = fa_client.get(
+            url="/api/nodes",
+            headers={"Authorization": nonuser_id_token},
+        )
+        assert res.status_code == 404
 
-    def test_func_node_get_with_params_nonuser_token(self, nonuser_id_token):
-        params = {
-            "method": "GET",
-            "headers": {
-                "content-type": "application/json",
-                "authorization": f"Bearer {nonuser_id_token}"
-            },
-            "body": {},
-            "query_params": {
-                "node_id": "hogehogehogehoge"
-            },
-        }
-        response = func_nodes.main(params)
-        logger(response)
-        assert response["status_code"] == 404
+    def test_func_node_get_with_id_nonuser_token(self, nonuser_id_token):
+        res = fa_client.get(
+            url="/api/nodes/hogehogehoge",
+            headers={"Authorization": nonuser_id_token},
+        )
+        assert res.status_code == 404
 
 
 class TestSuccessPut:
     def test_func_nodes_put_normal(self, id_token):
+        # First, get the current text
+        res = fa_client.get(
+            url=f"/api/nodes/{ROOT_NODE_ID}",
+            headers={"Authorization": id_token},
+        )
+        assert res.status_code == 200
+        before = res.json()["text"]
+
+        # Test
         text = """
             # MarkdownEditor
 
@@ -118,125 +81,87 @@ class TestSuccessPut:
         """
         text = textwrap.dedent(text).strip("\n")
 
-        params = {
-            "method": "PUT",
-            "headers": {
-                "content-type": "application/json",
-                "authorization": f"Bearer {id_token}"
-            },
-            "body": {
-                "node_id": "/Nodes",
+        res = fa_client.put(
+            url=f"/api/nodes/{ROOT_NODE_ID}",
+            headers={"Authorization": id_token},
+            json={
                 "text": f"{text}",
-            },
-            "query_params": {},
-        }
-        response = func_nodes.main(params)
-        logger(response)
-        assert response["status_code"] == 200
-        node = response["body"]["node"]
-        assert type(node) is dict
-        assert node["text"] == text
-        assert "email" in node
-        assert "node_id" in node
+            }
+        )
+        assert res.status_code == 200
+
+        body = res.json()
+        assert type(body) is dict
+        assert body["text"] == text
+        assert type(body["id"]) is str
+        assert type(body["email"]) is str
+
+        # Restore previous text
+        res = fa_client.put(
+            url=f"/api/nodes/{ROOT_NODE_ID}",
+            headers={"Authorization": id_token},
+            json={
+                "text": f"{before}",
+            }
+        )
+        assert res.status_code == 200
 
     def test_func_nodes_put_empty_text(self, id_token):
         # First, get the current text
-        params = {
-            "method": "GET",
-            "headers": {
-                "content-type": "application/json",
-                "authorization": f"Bearer {id_token}"
-            },
-            "body": {},
-            "query_params": {"node_id": "/Nodes"},
-        }
-        response = func_nodes.main(params)
-        assert response["status_code"] == 200
-        before = response["body"]["node"]["text"]
+        res = fa_client.get(
+            url=f"/api/nodes/{ROOT_NODE_ID}",
+            headers={"Authorization": id_token},
+        )
+        assert res.status_code == 200
+        before = res.json()["text"]
 
-        # Update with empty text
-        params = {
-            "method": "PUT",
-            "headers": {
-                "content-type": "application/json",
-                "authorization": f"Bearer {id_token}"
-            },
-            "body": {
-                "node_id": "/Nodes",
+        # Test
+        res = fa_client.put(
+            url=f"/api/nodes/{ROOT_NODE_ID}",
+            headers={"Authorization": id_token},
+            json={
                 "text": "",
-            },
-            "query_params": {},
-        }
-        response = func_nodes.main(params)
-        logger(response)
-        assert response["status_code"] == 200
-        node = response["body"]["node"]
-        assert type(node) is dict
-        assert node["text"] == ""
-        assert "email" in node
-        assert "node_id" in node
+            }
+        )
+        assert res.status_code == 200
+
+        body = res.json()
+        assert type(body) is dict
+        assert body["text"] == ""
+        assert type(body["id"]) is str
+        assert type(body["email"]) is str
 
         # Restore previous text
-        params = {
-            "method": "PUT",
-            "headers": {
-                "content-type": "application/json",
-                "authorization": f"Bearer {id_token}"
-            },
-            "body": {
-                "node_id": "/Nodes",
+        res = fa_client.put(
+            url=f"/api/nodes/{ROOT_NODE_ID}",
+            headers={"Authorization": id_token},
+            json={
                 "text": f"{before}",
-            },
-            "query_params": {},
-        }
-        func_nodes.main(params)
+            }
+        )
+        assert res.status_code == 200
 
 
 class TestFailPut:
     def test_func_nodes_put_no_token(self):
-        params = {
-            "method": "PUT",
-            "headers": {
-                "content-type": "application/json",
-                "authorization": ""
-            },
-            "body": {},
-            "query_params": {},
-        }
-        response = func_nodes.main(params)
-        logger(response)
-        assert response["status_code"] == 401
+        res = fa_client.put(
+            url="/api/nodes/test",
+        )
+        assert res.status_code == 401
 
-    def test_func_nodes_put_no_params(self, id_token):
-        params = {
-            "method": "PUT",
-            "headers": {
-                "content-type": "application/json",
-                "authorization": f"Bearer {id_token}"
-            },
-            "body": {
-                "node_id": "",
-                "text": "",
-            },
-            "query_params": {},
-        }
-        response = func_nodes.main(params)
-        logger(response)
-        assert response["status_code"] == 400
+    def test_func_node_put_invalid_token(self, invalid_id_token):
+        res = fa_client.put(
+            url="/api/nodes/test",
+            headers={"Authorization": invalid_id_token},
+        )
+        assert res.status_code == 401
 
     def test_func_nodes_put_no_exist_node(self, id_token):
-        params = {
-            "method": "PUT",
-            "headers": {
-                "content-type": "application/json",
-                "authorization": f"Bearer {id_token}"
-            },
-            "body": {
-                "node_id": "non_existing_node_id",
+        res = fa_client.put(
+            url="/api/nodes/non_existing_id",
+            headers={"Authorization": id_token},
+            json={
                 "text": "",
-            },
-            "query_params": {},
-        }
-        response = func_nodes.main(params)
-        logger(response)
-        assert response["status_code"] == 404
+            }
+        )
+        assert res.status_code == 404

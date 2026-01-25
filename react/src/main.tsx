@@ -2,25 +2,21 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
-import Loading from './components/loading';
-import Information from './views/information';
-import Main from './views/main';
-import Top from './views/top';
-import Verify from './views/verify';
+import Loading from '@/src/components/loading/loading';
+import Main from '@/src/views/main';
+import Preview from '@/src/views/preview';
+import Top from '@/src/views/top';
+import Verify from '@/src/views/verify';
 
-function NotFound() {
-  return <h1>404</h1>;
-}
 
 export default function App() {
   return (
     <Router>
       <Routes>
         <Route path="/" element={<Top />} />
-        <Route path="/main" element={<Main />} />
-        <Route path="/information" element={<Information />} />
+        <Route path="/main/:id" element={<Main />} />
+        <Route path="/preview/:id" element={<Preview />} />
         <Route path="/verify" element={<Verify />} />
-        <Route path="*" element={<NotFound />} />
       </Routes>
     </Router>
   );

@@ -4,31 +4,32 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 
-import Header from "../components/header";
-import loadingState from "../store/loading_store";
-import userStore from '../store/user_store';
-import request_utils from "../utils/request_utils";
+import Header from "@/src/components/header/header";
+import RequestHandler from "@/src/lib/request_handler";
+import loadingState from "@/src/store/loading_store";
+import userStore from '@/src/store/user_store';
+
 
 function Verify() {
   const navigate = useNavigate();
   const { setLoading } = loadingState();
   const { email } = userStore();
 
-  const [otp, setOtp] = useState<string>('');
-  const [verifyError, setVerifyError] = useState<boolean>(false);
+  const [otp, setOtp] = useState('');
+  const [verifyError, setVerifyError] = useState(false);
+
+  const requests = new RequestHandler();
 
   const handleChange = (newValue: string) => {
     setOtp(newValue);
   };
 
-  const {
-    handleSubmit,
-  } = useForm();
+  const { handleSubmit } = useForm();
 
-  const onSubmit = async () => {
+  async function onSubmit() {
     if (otp.length < 6) {
       setVerifyError(true);
-      throw new Error(`invalid otp`);
+      throw new Error("invalid otp");
     }
 
     setVerifyError(false);
@@ -36,14 +37,9 @@ function Verify() {
 
     const normalized_otp = otp.replace(/[０-９]/g, s => String.fromCharCode(s.charCodeAt(0) - 0xFEE0));
 
-    const res_promise = request_utils.requests(
+    const res_promise = requests.post(
       `${import.meta.env.VITE_API_HOST}/api/signup/verify`,
-      "POST",
-      {},
-      {
-        email: email,
-        otp: normalized_otp,
-      }
+      { email: email, otp: normalized_otp }
     );
     const res = await res_promise;
 
@@ -51,7 +47,7 @@ function Verify() {
 
     if (res.status != 200) {
       setVerifyError(true);
-      throw new Error(`signup error`);
+      throw new Error("signup error");
     };
 
     navigate("/");
@@ -73,7 +69,7 @@ function Verify() {
       >
         <Typography
           variant="body1"
-          sx={{ marginBottom: 5 }}
+          sx={{ mb: 3 }}
         >
           メールアドレスに添付された認証コードを入力し、ユーザ登録を完了してください
         </Typography>
@@ -91,9 +87,9 @@ function Verify() {
             type="submit"
             fullWidth
             variant="contained"
-            sx={{ marginTop: "5%" }}
+            sx={{ mt: 5 }}
           >
-            Sign Up
+            送信
           </Button>
 
           {verifyError && (

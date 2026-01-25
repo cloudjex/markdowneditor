@@ -1,240 +1,119 @@
-from lib import func_trees_operate
+import time
 
-from .conftest import logger
+from .conftest import ROOT_NODE_ID, fa_client
 
 
-class TestSuccessPut:
-    def test_func_trees_operate_put_normal(self, id_token):
-        new_node_id = "/Nodes/test_new_node"
-        params = {
-            "method": "PUT",
-            "headers": {
-                "content-type": "application/json",
-                "authorization": f"Bearer {id_token}"
-            },
-            "body": {"node_id": new_node_id},
-            "query_params": {},
-        }
-        response = func_trees_operate.main(params)
-        logger(response)
-        assert response["status_code"] == 200
-        tree = response["body"]["tree"]
-        children = tree["children"]
+class TestSuccessPost:
+    def test_func_trees_operate_post_normal(self, id_token):
+        new_node_label = str(time.time())
+        res = fa_client.post(
+            url="/api/trees/operate",
+            headers={"Authorization": id_token},
+            json={
+                "parent_id": ROOT_NODE_ID,
+                "label": new_node_label,
+            }
+        )
+        assert res.status_code == 200
+
+        body = res.json()
+        children = body["children"]
+
+        global new_node
         new_node = None
         for child in children:
-            if child["id"] == new_node_id:
+            if child["label"] == new_node_label:
                 new_node = child
         assert new_node is not None
-        assert "id" in new_node
-        assert "label" in new_node
-        assert "children" in new_node
+        assert type(new_node["id"]) is str
+        assert type(new_node["label"]) is str
+        assert type(new_node["children"]) is list
 
 
-class TestFailPut:
-    def test_func_trees_operate_put_no_token(self):
-        params = {
-            "method": "PUT",
-            "headers": {
-                "content-type": "application/json",
-                "authorization": ""
-            },
-            "body": {},
-            "query_params": {},
-        }
-        response = func_trees_operate.main(params)
-        logger(response)
-        assert response["status_code"] == 401
+class TestFailPost:
+    def test_func_trees_operate_post_no_token(self):
+        res = fa_client.post(
+            url="/api/trees/operate",
+        )
+        assert res.status_code == 401
 
-    def test_func_trees_operate_put_invalid_token(self, invalid_id_token):
-        params = {
-            "method": "PUT",
-            "headers": {
-                "content-type": "application/json",
-                "authorization": f"Bearer {invalid_id_token}"
-            },
-            "body": {},
-            "query_params": {},
-        }
-        response = func_trees_operate.main(params)
-        logger(response)
-        assert response["status_code"] == 401
+    def test_func_trees_operate_post_invalid_token(self, invalid_id_token):
+        res = fa_client.post(
+            url="/api/trees/operate",
+            headers={"Authorization": invalid_id_token}
+        )
+        assert res.status_code == 401
 
-    def test_func_trees_operate_put_nonuser_token(self, nonuser_id_token):
-        params = {
-            "method": "PUT",
-            "headers": {
-                "content-type": "application/json",
-                "authorization": f"Bearer {nonuser_id_token}"
-            },
-            "body": {"node_id": "test"},
-            "query_params": {},
-        }
-        response = func_trees_operate.main(params)
-        logger(response)
-        assert response["status_code"] == 404
+    def test_func_trees_operate_post_nonuser_token(self, nonuser_id_token):
+        res = fa_client.post(
+            url="/api/trees/operate",
+            headers={"Authorization": nonuser_id_token},
+            json={
+                "parent_id": "invalid",
+                "label": "invalid",
+            }
+        )
+        assert res.status_code == 404
 
-    def test_func_trees_operate_put_no_params(self, id_token):
-        params = {
-            "method": "PUT",
-            "headers": {
-                "content-type": "application/json",
-                "authorization": f"Bearer {id_token}"
-            },
-            "body": {"node_id": ""},
-            "query_params": {},
-        }
-        response = func_trees_operate.main(params)
-        logger(response)
-        assert response["status_code"] == 400
-
-    def test_func_trees_operate_put_invalid_node_id(self, id_token):
-        params = {
-            "method": "PUT",
-            "headers": {
-                "content-type": "application/json",
-                "authorization": f"Bearer {id_token}"
-            },
-            "body": {"node_id": "/Nodes/"},
-            "query_params": {},
-        }
-        response = func_trees_operate.main(params)
-        logger(response)
-        assert response["status_code"] == 400
-
-    def test_func_trees_operate_put_duplicate(self, id_token):
-        params = {
-            "method": "PUT",
-            "headers": {
-                "content-type": "application/json",
-                "authorization": f"Bearer {id_token}"
-            },
-            "body": {"node_id": "/Nodes/test_new_node"},
-            "query_params": {},
-        }
-        response = func_trees_operate.main(params)
-        logger(response)
-        assert response["status_code"] == 409
+    def test_func_trees_operate_post_no_params(self, id_token):
+        res = fa_client.post(
+            url="/api/trees/operate",
+            headers={"Authorization": id_token},
+            json={}
+        )
+        assert res.status_code == 422
 
 
 class TestSuccessDelete:
     def test_func_trees_operate_delete_normal(self, id_token):
-        new_node_id = "/Nodes/test_new_node"
-        params = {
-            "method": "DELETE",
-            "headers": {
-                "content-type": "application/json",
-                "authorization": f"Bearer {id_token}"
-            },
-            "body": {},
-            "query_params": {"node_id": new_node_id},
-        }
-        response = func_trees_operate.main(params)
-        logger(response)
-        assert response["status_code"] == 200
-        tree = response["body"]["tree"]
-        children = tree["children"]
+        global new_node
+        del_node_id = new_node["id"]
+        res = fa_client.delete(
+            url=f"/api/trees/operate/{del_node_id}",
+            headers={"Authorization": id_token},
+        )
+        assert res.status_code == 200
+
+        body = res.json()
+        children = body["children"]
         new_node = None
         for child in children:
-            if child["id"] == new_node_id:
+            if child["id"] == del_node_id:
                 new_node = child
         assert new_node is None
 
 
 class TestFailDelete:
     def test_func_trees_operate_delete_no_token(self):
-        params = {
-            "method": "DELETE",
-            "headers": {
-                "content-type": "application/json",
-                "authorization": ""
-            },
-            "body": {},
-            "query_params": {},
-        }
-        response = func_trees_operate.main(params)
-        logger(response)
-        assert response["status_code"] == 401
+        res = fa_client.delete(
+            url="/api/trees/operate/test",
+        )
+        assert res.status_code == 401
 
     def test_func_trees_operate_delete_invalid_token(self, invalid_id_token):
-        params = {
-            "method": "DELETE",
-            "headers": {
-                "content-type": "application/json",
-                "authorization": f"Bearer {invalid_id_token}"
-            },
-            "body": {},
-            "query_params": {},
-        }
-        response = func_trees_operate.main(params)
-        logger(response)
-        assert response["status_code"] == 401
+        res = fa_client.delete(
+            url="/api/trees/operate/test",
+            headers={"Authorization": invalid_id_token}
+        )
+        assert res.status_code == 401
 
     def test_func_trees_operate_delete_nonuser_token(self, nonuser_id_token):
-        params = {
-            "method": "DELETE",
-            "headers": {
-                "content-type": "application/json",
-                "authorization": f"Bearer {nonuser_id_token}"
-            },
-            "body": {},
-            "query_params": {"node_id": "test"},
-        }
-        response = func_trees_operate.main(params)
-        logger(response)
-        assert response["status_code"] == 404
-
-    def test_func_trees_operate_delete_no_params(self, id_token):
-        params = {
-            "method": "DELETE",
-            "headers": {
-                "content-type": "application/json",
-                "authorization": f"Bearer {id_token}"
-            },
-            "body": {},
-            "query_params": {},
-        }
-        response = func_trees_operate.main(params)
-        logger(response)
-        assert response["status_code"] == 400
+        res = fa_client.delete(
+            url="/api/trees/operate/test",
+            headers={"Authorization": nonuser_id_token},
+        )
+        assert res.status_code == 404
 
     def test_func_trees_operate_delete_root(self, id_token):
-        params = {
-            "method": "DELETE",
-            "headers": {
-                "content-type": "application/json",
-                "authorization": f"Bearer {id_token}"
-            },
-            "body": {},
-            "query_params": {"node_id": "/Nodes"},
-        }
-        response = func_trees_operate.main(params)
-        logger(response)
-        assert response["status_code"] == 403
+        res = fa_client.delete(
+            url=f"/api/trees/operate/{ROOT_NODE_ID}",
+            headers={"Authorization": id_token},
+        )
+        assert res.status_code == 403
 
-    def test_func_trees_operate_delete_non_exist1(self, id_token):
-        params = {
-            "method": "DELETE",
-            "headers": {
-                "content-type": "application/json",
-                "authorization": f"Bearer {id_token}"
-            },
-            "body": {},
-            "query_params": {"node_id": "/Nodes/non_exist_node"},
-        }
-        response = func_trees_operate.main(params)
-        logger(response)
-        assert response["status_code"] == 404
-
-    def test_func_trees_operate_delete_non_exist2(self, id_token):
-        params = {
-            "method": "DELETE",
-            "headers": {
-                "content-type": "application/json",
-                "authorization": f"Bearer {id_token}"
-            },
-            "body": {},
-            "query_params": {"node_id": "/non_exist_node"},
-        }
-        response = func_trees_operate.main(params)
-        logger(response)
-        assert response["status_code"] == 404
+    def test_func_trees_operate_delete_non_exist(self, id_token):
+        res = fa_client.delete(
+            url="/api/trees/operate/non_exist_node",
+            headers={"Authorization": id_token},
+        )
+        assert res.status_code == 404
