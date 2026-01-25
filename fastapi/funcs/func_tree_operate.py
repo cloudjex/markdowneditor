@@ -70,7 +70,7 @@ def delete(email: str, node_id: str) -> dict:
     tree_handler = TreeHandler(tree_info.tree.to_dict())
 
     node = tree_handler.get_node(node_id)
-    if node["label"] == "Nodes":
+    if node["id"] == tree_info.tree.id:
         raise errors.ForbiddenError("func_tree_operate.cant_delete")
 
     del_targets = tree_handler.get_children_ids(node_id)
