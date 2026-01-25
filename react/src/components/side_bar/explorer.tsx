@@ -41,7 +41,7 @@ function Explorer(props: { node_id: string, tree: Tree }) {
     <>
       <Box >
         <RichTreeView
-          sx={{ backgroundColor: "rgba(245, 245, 245)" }}
+          sx={{}}
           items={[props.tree]}
           onItemClick={(_, id) => {
             navigate(`/main/${id}`);
