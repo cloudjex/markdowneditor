@@ -18,6 +18,7 @@ function Profile() {
   const requests = new RequestHandler(id_token);
 
   async function clickSignout() {
+    setIsMenuOpen(null);
     setLoading(true);
 
     const res_promise = requests.post(
