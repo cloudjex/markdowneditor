@@ -88,7 +88,7 @@ function EditorHeader(props: { node_id: string, tree: Tree, markdown: string }) 
               fileDownload(props.markdown, `${label}.md`);
             }}
           >
-            ファイルダウンロード
+            ダウンロード
           </MenuItem>
 
         </Menu>

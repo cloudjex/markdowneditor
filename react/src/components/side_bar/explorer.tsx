@@ -1,3 +1,6 @@
+import ArticleOutlinedIcon from '@mui/icons-material/ArticleOutlined';
+import FolderIcon from '@mui/icons-material/Folder';
+import FolderOpenIcon from '@mui/icons-material/FolderOpen';
 import { Box } from "@mui/material";
 import { RichTreeView } from '@mui/x-tree-view/RichTreeView';
 import { useState } from 'react';
@@ -28,7 +31,7 @@ function Explorer(props: { node_id: string, tree: Tree }) {
     setLoading(true);
 
     const res_promise = requests.put<Tree>(
-      `${import.meta.env.VITE_API_HOST}/api/tree/operate/${node_id}`,
+      `${import.meta.env.VITE_API_HOST}/api/tree/node/label/${node_id}`,
       { label: label }
     );
     const res = await res_promise;
@@ -51,6 +54,11 @@ function Explorer(props: { node_id: string, tree: Tree }) {
           onExpandedItemsChange={(_, ids) => setExpandedItems(ids)}
           isItemEditable
           onItemLabelChange={(itemId, label) => updateLabel(itemId, label)}
+          slots={{
+            expandIcon: FolderIcon,
+            collapseIcon: FolderOpenIcon,
+            endIcon: ArticleOutlinedIcon,
+          }}
         />
       </Box>
     </>

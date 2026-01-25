@@ -12,7 +12,7 @@ def post(email: str, parent_id: str, label: str) -> dict:
 
     tree_info = db_client.get_tree_info(email)
     if not tree_info:
-        raise errors.NotFoundError("func_tree_operate.not_found")
+        raise errors.NotFoundError("func_tree_node.not_found")
 
     insert_id = str(uuid.uuid4())
     insert_node = {
@@ -39,39 +39,18 @@ def post(email: str, parent_id: str, label: str) -> dict:
     return new_tree
 
 
-def put(email: str, node_id: str, label: str) -> dict:
-    db_client = DynamoDBClient()
-
-    tree_info = db_client.get_tree_info(email)
-    if not tree_info:
-        raise errors.NotFoundError("func_tree_operate.not_found")
-
-    tree_handler = TreeHandler(tree_info.tree.to_dict())
-    tree_handler.update_node_label(node_id, label)
-    new_tree = tree_handler.sort_tree()
-
-    tree_info.tree = Tree(
-        new_tree["id"],
-        new_tree["label"],
-        new_tree["children"]
-    )
-
-    db_client.put_tree_info(tree_info)
-    return new_tree
-
-
 def delete(email: str, node_id: str) -> dict:
     db_client = DynamoDBClient()
 
     tree_info = db_client.get_tree_info(email)
     if not tree_info:
-        raise errors.NotFoundError("func_tree_operate.not_found")
+        raise errors.NotFoundError("func_tree_node.not_found")
 
     tree_handler = TreeHandler(tree_info.tree.to_dict())
 
     node = tree_handler.get_node(node_id)
     if node["id"] == tree_info.tree.id:
-        raise errors.ForbiddenError("func_tree_operate.cant_delete")
+        raise errors.ForbiddenError("func_tree_node.cant_delete")
 
     del_targets = tree_handler.get_children_ids(node_id)
     del_targets.append(node_id)
