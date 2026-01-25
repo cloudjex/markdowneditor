@@ -1,5 +1,7 @@
-import { Box, Button } from '@mui/material';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import { Box, Button, IconButton, Menu, MenuItem } from '@mui/material';
 import fileDownload from 'js-file-download';
+import { useState } from 'react';
 
 import type { Tree } from '@/src/lib/types';
 
@@ -12,6 +14,7 @@ import userStore from '@/src/store/user_store';
 function EditorHeader(props: { node_id: string, tree: Tree, markdown: string }) {
   const { id_token, setPreviewText } = userStore();
   const { setLoading } = loadingState();
+  const [isMenuOpen, setIsMenuOpen] = useState<null | HTMLElement>(null);
 
   const requests = new RequestHandler(id_token);
   const tree_handler = new TreeHandler(props.tree);
@@ -49,21 +52,46 @@ function EditorHeader(props: { node_id: string, tree: Tree, markdown: string }) 
           variant='outlined'
           size='small'
           sx={{ ml: 1 }}
-          onClick={() => {
-            fileDownload(props.markdown, `${label}.md`);
-          }}
-        >
-          ファイル取得
-        </Button>
-
-        <Button
-          variant='outlined'
-          size='small'
-          sx={{ ml: 1 }}
           onClick={upload}
         >
           保存
         </Button>
+
+        <IconButton
+          color="info"
+          sx={{ ml: 1 }}
+          onClick={(event: React.MouseEvent<HTMLElement>) => {
+            setIsMenuOpen(event.currentTarget);
+          }}
+        >
+          <MoreVertIcon />
+        </IconButton>
+
+        <Menu
+          anchorEl={isMenuOpen}
+          open={Boolean(isMenuOpen)}
+          onClose={() => {
+            setIsMenuOpen(null);
+          }}
+          anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+          transformOrigin={{ vertical: "top", horizontal: "right" }}
+          slotProps={{
+            list: {
+              'aria-labelledby': 'basic-button',
+            },
+          }}
+        >
+
+          <MenuItem
+            sx={{ fontSize: "80%" }}
+            onClick={() => {
+              fileDownload(props.markdown, `${label}.md`);
+            }}
+          >
+            ファイルダウンロード
+          </MenuItem>
+
+        </Menu>
       </Box>
     </>
   );
