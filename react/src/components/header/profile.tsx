@@ -21,10 +21,9 @@ function Profile() {
     setIsMenuOpen(null);
     setLoading(true);
 
-    const res_promise = requests.post(
+    await requests.post(
       `${import.meta.env.VITE_API_HOST}/api/signout`,
     );
-    await res_promise;
 
     setLoading(false);
     navigate("/");

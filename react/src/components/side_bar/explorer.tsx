@@ -30,11 +30,10 @@ function Explorer(props: { node_id: string, tree: Tree }) {
   async function updateLabel(node_id: string, label: string) {
     setLoading(true);
 
-    const res_promise = requests.put<Tree>(
+    const res = await requests.put<Tree>(
       `${import.meta.env.VITE_API_HOST}/api/tree/node/label/${node_id}`,
       { label: label }
     );
-    const res = await res_promise;
 
     setTree(res.body);
     setLoading(false);

@@ -28,11 +28,10 @@ function Signin() {
     setLoading(true);
     setSigninError(false);
 
-    const signin_res_promise = requests.post<SigninResponse>(
+    const signin_res = await requests.post<SigninResponse>(
       `${import.meta.env.VITE_API_HOST}/api/signin`,
       { email: data.email, password: data.password }
     );
-    const signin_res = await signin_res_promise;
 
     if (signin_res.status != 200) {
       setSigninError(true);
@@ -41,10 +40,9 @@ function Signin() {
     };
 
     requests.id_token = signin_res.body.id_token;
-    const tree_res_promise = requests.get<Tree>(
+    const tree_res = await requests.get<Tree>(
       `${import.meta.env.VITE_API_HOST}/api/tree`,
     );
-    const tree_res = await tree_res_promise;
 
     setLoading(false);
     setIdToken(signin_res.body.id_token);

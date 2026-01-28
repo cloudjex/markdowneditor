@@ -29,10 +29,9 @@ function Editor() {
     const fetchNode = async () => {
       setLoading(true);
 
-      const res_promise = requests.get<Node>(
+      const res = await requests.get<Node>(
         `${import.meta.env.VITE_API_HOST}/api/nodes/${url_node_id}`,
       );
-      const res = await res_promise;
 
       setMarkdownValue(res.body.text);
       setLoading(false);

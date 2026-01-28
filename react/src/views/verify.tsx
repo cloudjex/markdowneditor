@@ -37,11 +37,10 @@ function Verify() {
 
     const normalized_otp = otp.replace(/[０-９]/g, s => String.fromCharCode(s.charCodeAt(0) - 0xFEE0));
 
-    const res_promise = requests.post(
+    const res = await requests.post(
       `${import.meta.env.VITE_API_HOST}/api/signup/verify`,
       { email: email, otp: normalized_otp }
     );
-    const res = await res_promise;
 
     setLoading(false);
 
