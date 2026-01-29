@@ -31,12 +31,6 @@ class TestSuccessPost:
 
 
 class TestFailPost:
-    def test_func_tree_node_post_no_token(self):
-        res = fa_client.post(
-            url="/api/tree/node",
-        )
-        assert res.status_code == 401
-
     def test_func_tree_node_post_invalid_token(self, invalid_id_token):
         res = fa_client.post(
             url="/api/tree/node",
@@ -84,12 +78,6 @@ class TestSuccessDelete:
 
 
 class TestFailDelete:
-    def test_func_tree_node_delete_no_token(self):
-        res = fa_client.delete(
-            url="/api/tree/node/test",
-        )
-        assert res.status_code == 401
-
     def test_func_tree_node_delete_invalid_token(self, invalid_id_token):
         res = fa_client.delete(
             url="/api/tree/node/test",

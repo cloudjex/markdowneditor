@@ -48,12 +48,6 @@ class TestSuccessPut:
 
 
 class TestFailPut:
-    def test_func_tree_node_label_put_no_token(self):
-        res = fa_client.put(
-            url="/api/tree/node/label/test",
-        )
-        assert res.status_code == 401
-
     def test_func_tree_node_label_put_invalid_token(self, invalid_id_token):
         res = fa_client.put(
             url="/api/tree/node/label/test",

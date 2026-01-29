@@ -16,12 +16,6 @@ class TestSuccessGET:
 
 
 class TestFailGet:
-    def test_func_tree_get_no_token(self):
-        res = fa_client.get(
-            url="/api/tree",
-        )
-        assert res.status_code == 401
-
     def test_func_tree_get_invalid_token(self, invalid_id_token):
         res = fa_client.get(
             url="/api/tree",

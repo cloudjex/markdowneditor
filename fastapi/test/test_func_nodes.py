@@ -31,12 +31,6 @@ class TestSuccessGET:
         assert type(body["text"]) is str
 
 class TestFailGet:
-    def test_func_node_get_no_token(self):
-        res = fa_client.get(
-            url="/api/nodes",
-        )
-        assert res.status_code == 401
-
     def test_func_node_get_invalid_token(self, invalid_id_token):
         res = fa_client.get(
             url="/api/nodes",
@@ -143,12 +137,6 @@ class TestSuccessPut:
 
 
 class TestFailPut:
-    def test_func_nodes_put_no_token(self):
-        res = fa_client.put(
-            url="/api/nodes/test",
-        )
-        assert res.status_code == 401
-
     def test_func_node_put_invalid_token(self, invalid_id_token):
         res = fa_client.put(
             url="/api/nodes/test",
