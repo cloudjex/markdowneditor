@@ -57,7 +57,7 @@ function Editor() {
     <>
       <Box display="flex" justifyContent="space-between">
         <Breadcrumb node_id={url_node_id} tree={tree} />
-        <EditorHeader node_id={url_node_id} tree={tree} markdown={markdownValue} />
+        <EditorHeader node_id={url_node_id} tree={tree} text={markdownValue} />
       </Box>
 
       <SimpleMde
