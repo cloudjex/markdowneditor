@@ -4,17 +4,14 @@ import type { Tree } from "@/src/lib/types";
 
 import Profile from '@/src/components/header/profile';
 import Sidebar from '@/src/components/side_bar/sidebar';
-import userStore from '@/src/store/user_store';
 
 
-function Header(props: { tree: Tree, node_id: string }) {
-  const { id_token } = userStore();
-
+function Header(props: { tree?: Tree, node_id?: string }) {
   return (
     <AppBar position="static">
       <Toolbar style={{ display: "flex" }}>
 
-        {id_token &&
+        {props.tree && props.node_id &&
           <Sidebar tree={props.tree} node_id={props.node_id} />
         }
 
@@ -24,7 +21,7 @@ function Header(props: { tree: Tree, node_id: string }) {
           cloudjex.com
         </Typography>
 
-        {id_token &&
+        {props.tree && props.node_id &&
           <Profile />
         }
 
