@@ -83,6 +83,25 @@ class TreeHandler {
     collect(target);
     return result;
   }
+
+  getNodeList(): Record<string, string>[] {
+    const list: Record<string, string>[] = [];
+
+    function dfs(node: Tree, parentLabel: string | null) {
+      const fullLabel = parentLabel ? `${parentLabel} / ${node.label}` : node.label;
+
+      list.push({ id: node.id, label: fullLabel });
+
+      if (node.children) {
+        for (const child of node.children) {
+          dfs(child, fullLabel);
+        }
+      }
+    }
+
+    dfs(this.tree, null);
+    return list;
+  }
 }
 
 export default TreeHandler;

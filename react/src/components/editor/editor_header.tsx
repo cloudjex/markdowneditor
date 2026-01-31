@@ -1,5 +1,5 @@
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import { Alert, Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Menu, MenuItem, TextField } from '@mui/material';
+import { Alert, Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Menu, MenuItem, Select, TextField } from '@mui/material';
 import fileDownload from 'js-file-download';
 import { useState } from 'react';
 
@@ -16,13 +16,15 @@ function EditorHeader(props: { node_id: string, tree: Tree, text: string }) {
   const { setLoading } = loadingState();
 
   const [isMenuOpen, setIsMenuOpen] = useState<null | HTMLElement>(null);
-  // 0: null, 1: label update
+  // 0: null, 1: label update, 2: move page
   const [modalKind, setModalKind] = useState(0);
   const [newLabel, setNewLabel] = useState("");
-  const [isInvalidLabel, setIsInvalidLabel] = useState(false);
+  const [isInvalid, setIsInvalid] = useState(false);
+  const [destination, setDestination] = useState("");
 
   const requests = new RequestHandler(id_token);
   const tree_handler = new TreeHandler(props.tree);
+  const node_list = tree_handler.getNodeList();
   const label = tree_handler.getNode(props.node_id)?.label;
 
   async function upload() {
@@ -38,14 +40,14 @@ function EditorHeader(props: { node_id: string, tree: Tree, text: string }) {
 
   function closeModal() {
     setNewLabel("");
-    setIsInvalidLabel(false);
+    setIsInvalid(false);
     setModalKind(0);
     setIsMenuOpen(null);
   };
 
-  async function updateLabel(node_id: string, label: string) {
+  async function updateNodeLabel(node_id: string, label: string) {
     if (!label) {
-      setIsInvalidLabel(true);
+      setIsInvalid(true);
       throw new Error("label is invalid");
     }
 
@@ -55,6 +57,24 @@ function EditorHeader(props: { node_id: string, tree: Tree, text: string }) {
     const res = await requests.put<Tree>(
       `${import.meta.env.VITE_API_HOST}/api/tree/node/label/${node_id}`,
       { label: label }
+    );
+
+    setTree(res.body);
+    setLoading(false);
+  }
+
+  async function updateMoveNode(node_id: string, parent_id: string = "") {
+    if (!parent_id) {
+      setIsInvalid(true);
+      throw new Error("destination is invalid");
+    }
+
+    closeModal();
+    setLoading(true);
+
+    const res = await requests.put<Tree>(
+      `${import.meta.env.VITE_API_HOST}/api/tree/node/move/${node_id}`,
+      { parent_id: parent_id }
     );
 
     setTree(res.body);
@@ -128,6 +148,14 @@ function EditorHeader(props: { node_id: string, tree: Tree, text: string }) {
           >
             ラベル更新
           </MenuItem>
+          <MenuItem
+            sx={{ fontSize: "80%" }}
+            onClick={() => {
+              setModalKind(2);
+            }}
+          >
+            ページ移動
+          </MenuItem>
 
         </Menu>
 
@@ -147,10 +175,11 @@ function EditorHeader(props: { node_id: string, tree: Tree, text: string }) {
             variant="standard"
             value={newLabel}
             onChange={(e) => setNewLabel(e.target.value)}
+            sx={{ width: 300 }}
           />
         </DialogContent>
 
-        {isInvalidLabel &&
+        {isInvalid &&
           <Alert severity="error" sx={{ mx: 3 }}>
             ラベルを入力してください。
           </Alert>
@@ -159,10 +188,66 @@ function EditorHeader(props: { node_id: string, tree: Tree, text: string }) {
         <DialogActions>
           <Button
             autoFocus
-            onClick={() => updateLabel(props.node_id, newLabel)}
+            onClick={() => updateNodeLabel(props.node_id, newLabel)}
           >
             OK
           </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog
+        onClose={() => closeModal()}
+        open={modalKind == 2}
+      >
+        <DialogTitle>
+          ページ移動
+        </DialogTitle>
+
+        <DialogContent>
+          <Select
+            value={destination}
+            onChange={(e) => setDestination(e.target.value)}
+            sx={{ width: 300 }}
+          >
+            {node_list.map((node) => (
+              <MenuItem key={node.id} value={node.id}>
+                {node.label}
+              </MenuItem>
+            ))}
+          </Select>
+        </DialogContent>
+
+        {isInvalid &&
+          <Alert severity="error" sx={{ mx: 3 }}>
+            移動先を選択してください。
+          </Alert>
+        }
+
+        <DialogActions>
+          <Button
+            autoFocus
+            onClick={() => updateMoveNode(props.node_id, destination)}
+          >
+            OK
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog
+        onClose={() => closeModal()}
+        open={modalKind == 2}
+      >
+        <DialogTitle>
+          ページ移動
+        </DialogTitle>
+
+        <DialogContent>
+          
+        </DialogContent>
+
+
+        <DialogActions>
+          
         </DialogActions>
       </Dialog>
     </>
