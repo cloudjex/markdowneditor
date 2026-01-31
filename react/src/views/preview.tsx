@@ -25,7 +25,7 @@ function Preview() {
   const requests = new RequestHandler(id_token);
 
   const location = useLocation();
-  const node_id = useParams<{ id: string }>().id || "";
+  const node_id = useParams<{ node_id: string }>().node_id || "";
 
   useEffect(() => {
     async function fetchPreview() {

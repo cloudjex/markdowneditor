@@ -16,7 +16,7 @@ function TreeUpdate(props: { node_id: string, tree: Tree }) {
   const navigate = useNavigate();
   const { id_token, setTree } = userStore();
   const { setLoading } = loadingState();
-  const root_node_id = props.tree.id;
+  const root_node_id = props.tree.node_id;
 
   // 0: null, 1: post, 2: del
   const [modalKind, setModalKind] = useState(0);
@@ -57,7 +57,7 @@ function TreeUpdate(props: { node_id: string, tree: Tree }) {
 
     const del_node_id = props.node_id;
     const parent_node = tree_handler.getParentNode(del_node_id);
-    const next_node_id = parent_node?.id || props.tree.id;
+    const next_node_id = parent_node?.node_id || props.tree.node_id;
 
     const res = await requests.delete<Tree>(
       `${import.meta.env.VITE_API_HOST}/api/tree/node/${del_node_id}`,

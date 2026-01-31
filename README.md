@@ -54,7 +54,7 @@ NoSQL(ドキュメント指向DB)を使用し、Itemは単一テーブルに格�
 | PK         | str    | value: `EMAIL#{email}` | PartitionKey          |
 | SK         | str    | value: `TREE_INFO`     | SortKey               |
 | tree       | object | tree content           |                       |
-| ├ id       | str    | node id                |                       |
+| ├ node_id  | str    | node id                |                       |
 | ├ label    | str    | node label             |                       |
 | └ children | object | node children          | have tree recursively |
 
@@ -62,7 +62,7 @@ NoSQL(ドキュメント指向DB)を使用し、Itemは単一テーブルに格�
 | key  | type | desctiption             | description  |
 | ---- | ---- | ----------------------- | ------------ |
 | PK   | str  | value: `EMAIL#{email}`  | PartitionKey |
-| SK   | str  | value: `NODE#{node id}` | SortKey      |
+| SK   | str  | value: `NODE#{node_id}` | SortKey      |
 | text | str  | text                    |              |
 
 ## For Developer

@@ -168,7 +168,7 @@ async def func_tree_node_post(req: schema.TreeNodePostReq, jwt: dict = Depends(v
 
 
 @app.delete(
-    path="/api/tree/node/{id}",
+    path="/api/tree/node/{node_id}",
     tags=["Tree"],
     summary="Update tree, Delete node",
     response_model=schema.Tree,
@@ -177,23 +177,23 @@ async def func_tree_node_post(req: schema.TreeNodePostReq, jwt: dict = Depends(v
         403: {"description": "ForbiddenError"}
     },
 )
-async def func_tree_node_delete(id: str, jwt: dict = Depends(verify_token)):
-    return func_tree_node.delete(jwt["email"], id)
+async def func_tree_node_delete(node_id: str, jwt: dict = Depends(verify_token)):
+    return func_tree_node.delete(jwt["email"], node_id)
 
 
 @app.put(
-    path="/api/tree/node/label/{id}",
+    path="/api/tree/node/label/{node_id}",
     tags=["Tree"],
     summary="Update tree, Update label of node",
     response_model=schema.Tree,
     responses={401: {"description": "UnauthorizedError"}},
 )
-async def func_tree_node_label_put(id: str, req: schema.TreeNodeLabelPutReq, jwt: dict = Depends(verify_token),):
-    return func_tree_node_label.put(jwt["email"], id, req.label)
+async def func_tree_node_label_put(node_id: str, req: schema.TreeNodeLabelPutReq, jwt: dict = Depends(verify_token),):
+    return func_tree_node_label.put(jwt["email"], node_id, req.label)
 
 
 @app.put(
-    path="/api/tree/node/move/{id}",
+    path="/api/tree/node/move/{node_id}",
     tags=["Tree"],
     summary="Update tree, Move node",
     response_model=schema.Tree,
@@ -202,8 +202,8 @@ async def func_tree_node_label_put(id: str, req: schema.TreeNodeLabelPutReq, jwt
         403: {"description": "ForbiddenError"}
     },
 )
-async def func_tree_node_move_put(id: str, req: schema.TreeNodeMovePutReq, jwt: dict = Depends(verify_token),):
-    return func_tree_node_move.put(jwt["email"], id, req.parent_id)
+async def func_tree_node_move_put(node_id: str, req: schema.TreeNodeMovePutReq, jwt: dict = Depends(verify_token),):
+    return func_tree_node_move.put(jwt["email"], node_id, req.parent_id)
 
 
 @app.get(
@@ -218,22 +218,22 @@ async def func_get_nodes(jwt: dict = Depends(verify_token)):
 
 
 @app.get(
-    path="/api/nodes/{id}",
+    path="/api/nodes/{node_id}",
     tags=["Node"],
     summary="Get node",
     response_model=schema.NodeRes,
     responses={401: {"description": "UnauthorizedError"}},
 )
-async def func_get_node(id: str,  jwt: dict = Depends(verify_token)):
-    return func_nodes.get(jwt["email"], id)
+async def func_get_node(node_id: str,  jwt: dict = Depends(verify_token)):
+    return func_nodes.get(jwt["email"], node_id)
 
 
 @app.put(
-    path="/api/nodes/{id}",
+    path="/api/nodes/{node_id}",
     tags=["Node"],
     summary="Put node",
     response_model=schema.NodeRes,
     responses={401: {"description": "UnauthorizedError"}},
 )
-async def func_update_nodes(id: str, req: schema.NodePutReq, jwt: dict = Depends(verify_token)):
-    return func_nodes.put(jwt["email"], id, req.text)
+async def func_update_nodes(node_id: str, req: schema.NodePutReq, jwt: dict = Depends(verify_token)):
+    return func_nodes.put(jwt["email"], node_id, req.text)

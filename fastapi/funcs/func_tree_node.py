@@ -16,7 +16,7 @@ def post(email: str, parent_id: str, label: str) -> dict:
 
     insert_id = str(uuid.uuid4())
     insert_node = {
-        "id": insert_id,
+        "node_id": insert_id,
         "label": label,
         "children": [],
     }
@@ -26,7 +26,7 @@ def post(email: str, parent_id: str, label: str) -> dict:
     new_tree = tree_handler.sort_tree()
 
     tree_info.tree = Tree(
-        new_tree["id"],
+        new_tree["node_id"],
         new_tree["label"],
         new_tree["children"]
     )
@@ -49,7 +49,7 @@ def delete(email: str, node_id: str) -> dict:
     tree_handler = TreeHandler(tree_info.tree.to_dict())
 
     node = tree_handler.get_node(node_id)
-    if node["id"] == tree_info.tree.id:
+    if node["node_id"] == tree_info.tree.node_id:
         raise errors.ForbiddenError("func_tree_node.cant_delete")
 
     del_targets = tree_handler.get_children_ids(node_id)
@@ -59,7 +59,7 @@ def delete(email: str, node_id: str) -> dict:
     new_tree = tree_handler.sort_tree()
 
     tree_info.tree = Tree(
-        new_tree["id"],
+        new_tree["node_id"],
         new_tree["label"],
         new_tree["children"]
     )

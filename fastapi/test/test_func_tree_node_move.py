@@ -43,10 +43,10 @@ class TestSuccessPut:
 
         # Test
         res = fa_client.put(
-            url=f"/api/tree/node/move/{first_new_node['id']}",
+            url=f"/api/tree/node/move/{first_new_node['node_id']}",
             headers={"Authorization": id_token},
             json={
-                "parent_id": second_new_node["id"],
+                "parent_id": second_new_node["node_id"],
             }
         )
         assert res.status_code == 200
@@ -55,19 +55,19 @@ class TestSuccessPut:
         children = body["children"]
         parent_node = None
         for child in children:
-            if child["id"] == second_new_node["id"]:
+            if child["node_id"] == second_new_node["node_id"]:
                 parent_node = child
         assert parent_node is not None
 
         moved_new_node = None
         for child in parent_node["children"]:
-            if child["id"] == first_new_node["id"]:
+            if child["node_id"] == first_new_node["node_id"]:
                 moved_new_node = child
         assert moved_new_node is not None
 
         # Clean up
         res = fa_client.delete(
-            url=f"/api/tree/node/{second_new_node['id']}",
+            url=f"/api/tree/node/{second_new_node['node_id']}",
             headers={"Authorization": id_token},
         )
         assert res.status_code == 200

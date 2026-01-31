@@ -26,7 +26,7 @@ const userStore = create<UserState>()(
     email: "",
     password: "",
     id_token: "",
-    tree: { children: [], id: "", label: "" },
+    tree: { children: [], node_id: "", label: "" },
     preview_text: "",
 
     setEmail: (email: string): void => { set({ email }); },
@@ -39,7 +39,7 @@ const userStore = create<UserState>()(
       email: "",
       password: "",
       id_token: "",
-      tree: { children: [], id: "", label: "" },
+      tree: { children: [], node_id: "", label: "" },
     }),
   }),
     { name: "user-store", }

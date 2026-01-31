@@ -14,7 +14,7 @@ class TestSuccessGET:
         body: dict = res.json()
         nodes = body["nodes"]
         assert type(nodes) is list
-        assert type(nodes[0]["id"]) is str
+        assert type(nodes[0]["node_id"]) is str
         assert type(nodes[0]["email"]) is str
         assert type(nodes[0]["text"]) is str
 
@@ -26,7 +26,7 @@ class TestSuccessGET:
         assert res.status_code == 200
 
         body: dict = res.json()
-        assert type(body["id"]) is str
+        assert type(body["node_id"]) is str
         assert type(body["email"]) is str
         assert type(body["text"]) is str
 
@@ -87,7 +87,7 @@ class TestSuccessPut:
         body = res.json()
         assert type(body) is dict
         assert body["text"] == text
-        assert type(body["id"]) is str
+        assert type(body["node_id"]) is str
         assert type(body["email"]) is str
 
         # Restore previous text
@@ -122,7 +122,7 @@ class TestSuccessPut:
         body = res.json()
         assert type(body) is dict
         assert body["text"] == ""
-        assert type(body["id"]) is str
+        assert type(body["node_id"]) is str
         assert type(body["email"]) is str
 
         # Restore previous text

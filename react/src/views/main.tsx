@@ -8,7 +8,7 @@ import userStore from '@/src/store/user_store';
 
 function Main() {
   const { tree } = userStore();
-  const node_id = useParams<{ id: string }>().id || "";
+  const node_id = useParams<{ node_id: string }>().node_id || "";
 
   return (
     <>

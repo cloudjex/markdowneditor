@@ -16,7 +16,7 @@ def put(email: str, node_id: str, label: str) -> dict:
     new_tree = tree_handler.sort_tree()
 
     tree_info.tree = Tree(
-        new_tree["id"],
+        new_tree["node_id"],
         new_tree["label"],
         new_tree["children"]
     )

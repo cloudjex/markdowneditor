@@ -14,8 +14,8 @@ export default function App() {
     <Router>
       <Routes>
         <Route path="/" element={<Top />} />
-        <Route path="/main/:id" element={<Main />} />
-        <Route path="/preview/:id" element={<Preview />} />
+        <Route path="/main/:node_id" element={<Main />} />
+        <Route path="/preview/:node_id" element={<Preview />} />
         <Route path="/verify" element={<Verify />} />
       </Routes>
     </Router>

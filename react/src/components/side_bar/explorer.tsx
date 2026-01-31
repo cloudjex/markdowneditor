@@ -15,8 +15,12 @@ function Explorer(props: { node_id: string, tree: Tree }) {
   const tree_handler = new TreeHandler(props.tree);
   const parents = tree_handler.getParentNodeIds(props.node_id);
   const displayedExpanded = [
-    ...new Set([props.tree.id, ...expandedItems, ...parents]),
+    ...new Set([props.tree.node_id, ...expandedItems, ...parents]),
   ];
+
+  function getItemId(item: Tree) {
+    return item.node_id;
+  }
 
   return (
     <>
@@ -24,8 +28,9 @@ function Explorer(props: { node_id: string, tree: Tree }) {
         <RichTreeView
           sx={{}}
           items={[props.tree]}
-          onItemClick={(_, id) => {
-            navigate(`/main/${id}`);
+          getItemId={getItemId}
+          onItemClick={(_, node_id) => {
+            navigate(`/main/${node_id}`);
           }}
           selectedItems={props.node_id}
           expandedItems={displayedExpanded}

@@ -13,7 +13,7 @@ class TestSuccessPut:
         assert res.status_code == 200
 
         body = res.json()
-        root_id = body["id"]
+        root_id = body["node_id"]
         root_label = body["label"]
 
         # Test
@@ -29,7 +29,7 @@ class TestSuccessPut:
 
         body = res.json()
         assert body["label"] == new_label
-        assert type(body["id"]) is str
+        assert type(body["node_id"]) is str
         assert type(body["label"]) is str
         assert type(body["children"]) is list
 

@@ -21,8 +21,8 @@ def root_node_id(id_token):
 
     body: dict = res.json()
     assert type(body) is dict
-    assert type(body["id"]) is str
-    return body["id"]
+    assert type(body["node_id"]) is str
+    return body["node_id"]
 
 
 @pytest.fixture(scope="session")

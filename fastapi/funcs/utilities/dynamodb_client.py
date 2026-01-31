@@ -71,11 +71,11 @@ class DynamoDBClient:
     ###############################
     # For Node
     ###############################
-    def get_node(self, email: str, id) -> Node | None:
+    def get_node(self, email: str, node_id: str) -> Node | None:
         response = self._db_client.get_item(
             Key={
                 "PK": f"EMAIL#{email}",
-                "SK": f"NODE#{id}",
+                "SK": f"NODE#{node_id}",
             }
         )
         item = response.get("Item")
@@ -110,7 +110,7 @@ class DynamoDBClient:
         self._db_client.put_item(
             Item={
                 "PK": f"EMAIL#{node.email}",
-                "SK": f"NODE#{node.id}",
+                "SK": f"NODE#{node.node_id}",
                 "text": node.text,
             }
         )
@@ -119,6 +119,6 @@ class DynamoDBClient:
         self._db_client.delete_item(
             Key={
                 "PK": f"EMAIL#{node.email}",
-                "SK": f"NODE#{node.id}",
+                "SK": f"NODE#{node.node_id}",
             }
         )

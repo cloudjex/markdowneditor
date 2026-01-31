@@ -25,7 +25,7 @@ class TestSuccessPost:
             if child["label"] == new_node_label:
                 new_node = child
         assert new_node is not None
-        assert type(new_node["id"]) is str
+        assert type(new_node["node_id"]) is str
         assert type(new_node["label"]) is str
         assert type(new_node["children"]) is list
 
@@ -61,7 +61,7 @@ class TestFailPost:
 class TestSuccessDelete:
     def test_func_tree_node_delete_normal(self, id_token):
         global new_node
-        del_node_id = new_node["id"]
+        del_node_id = new_node["node_id"]
         res = fa_client.delete(
             url=f"/api/tree/node/{del_node_id}",
             headers={"Authorization": id_token},
@@ -72,7 +72,7 @@ class TestSuccessDelete:
         children = body["children"]
         new_node = None
         for child in children:
-            if child["id"] == del_node_id:
+            if child["node_id"] == del_node_id:
                 new_node = child
         assert new_node is None
 

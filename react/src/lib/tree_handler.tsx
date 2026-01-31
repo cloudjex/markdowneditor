@@ -10,7 +10,7 @@ class TreeHandler {
 
   getNode(nodeId: string): Tree | null {
     const recursive = (node: Tree): Tree | null => {
-      if (node.id === nodeId) {
+      if (node.node_id === nodeId) {
         return node;
       }
       for (const child of node.children) {
@@ -28,7 +28,7 @@ class TreeHandler {
   getParentNode(nodeId: string): Tree | null {
     const findParent = (node: Tree): Tree | null => {
       for (const child of node.children) {
-        if (child.id === nodeId) {
+        if (child.node_id === nodeId) {
           return node;
         }
         const result = findParent(child);
@@ -46,16 +46,16 @@ class TreeHandler {
     const result: string[] = [];
     let currentId = nodeId;
 
-    if (this.tree.id === currentId) {
+    if (this.tree.node_id === currentId) {
       return result;
     }
 
     while (true) {
       const parent = this.getParentNode(currentId);
       if (parent) {
-        result.push(parent.id);
-        currentId = parent.id;
-        if (parent.id === this.tree.id) {
+        result.push(parent.node_id);
+        currentId = parent.node_id;
+        if (parent.node_id === this.tree.node_id) {
           break;
         }
       } else {
@@ -75,7 +75,7 @@ class TreeHandler {
 
     const collect = (node: Tree) => {
       for (const child of node.children) {
-        result.push(child.id);
+        result.push(child.node_id);
         collect(child);
       }
     };
@@ -90,7 +90,7 @@ class TreeHandler {
     function dfs(node: Tree, parentLabel: string | null) {
       const fullLabel = parentLabel ? `${parentLabel} / ${node.label}` : node.label;
 
-      list.push({ id: node.id, label: fullLabel });
+      list.push({ node_id: node.node_id, label: fullLabel });
 
       if (node.children) {
         for (const child of node.children) {

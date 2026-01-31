@@ -48,14 +48,14 @@ class ResultRes(BaseModel):
 
 
 class Tree(BaseModel):
-    id: str
+    node_id: str
     label: str
     children: List[Tree] = []
 
 
 class NodeRes(BaseModel):
     email: str
-    id: str
+    node_id: str
     text: str
 
 

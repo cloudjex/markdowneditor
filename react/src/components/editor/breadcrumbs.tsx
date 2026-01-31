@@ -10,7 +10,7 @@ function Breadcrumb(props: { node_id: string, tree: Tree }) {
 
   let parentNodes: Tree[] = [];
   const parents = tree_handler.getParentNodeIds(props.node_id);
-  parentNodes = parents.map((id) => tree_handler.getNode(id)).filter(node => node != null);
+  parentNodes = parents.map((node_id) => tree_handler.getNode(node_id)).filter(node => node != null);
   const this_node = tree_handler.getNode(props.node_id);
   if (this_node) parentNodes.push(this_node);
 
@@ -18,10 +18,10 @@ function Breadcrumb(props: { node_id: string, tree: Tree }) {
     <Breadcrumbs separator="›" aria-label="breadcrumb">
       {parentNodes.map((node, index) => (
         <Link
-          key={node.id}
+          key={node.node_id}
           underline="none"
           color={index === parentNodes.length - 1 ? "textDisabled" : "textSecondary"}
-          href={index === parentNodes.length - 1 ? undefined : `/main/${node.id}`}
+          href={index === parentNodes.length - 1 ? undefined : `/main/${node.node_id}`}
           aria-current={index === parentNodes.length - 1 ? "page" : undefined}
         >
           {node.label}

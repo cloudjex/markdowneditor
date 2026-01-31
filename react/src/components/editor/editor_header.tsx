@@ -153,7 +153,7 @@ function EditorHeader(props: { node_id: string, tree: Tree, text: string }) {
             onClick={() => {
               setModalKind(2);
             }}
-            disabled={props.node_id === props.tree.id}
+            disabled={props.node_id === props.tree.node_id}
           >
             ページ移動
           </MenuItem>
@@ -211,7 +211,7 @@ function EditorHeader(props: { node_id: string, tree: Tree, text: string }) {
             sx={{ width: 300 }}
           >
             {node_list.map((node) => (
-              <MenuItem key={node.id} value={node.id}>
+              <MenuItem key={node.node_id} value={node.node_id}>
                 {node.label}
               </MenuItem>
             ))}

@@ -48,7 +48,7 @@ function Signin() {
     setIdToken(signin_res.body.id_token);
     setEmail(data.email);
     setTree(tree_res.body);
-    navigate(`/main/${tree_res.body.id}`);
+    navigate(`/main/${tree_res.body.node_id}`);
   };
 
   return (

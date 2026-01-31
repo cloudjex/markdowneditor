@@ -7,7 +7,7 @@ class TreeHandler:
 
     def get_node(self, node_id: str) -> dict:
         def recursive(node: dict) -> dict | None:
-            if node["id"] == node_id:
+            if node["node_id"] == node_id:
                 return node
             for child in node["children"]:
                 result = recursive(child)
@@ -23,7 +23,7 @@ class TreeHandler:
     def get_parent_node(self, node_id: str) -> dict:
         def find_parent(node: dict) -> dict | None:
             for child in node["children"]:
-                if child["id"] == node_id:
+                if child["node_id"] == node_id:
                     return node
                 result = find_parent(child)
                 if result is not None:
@@ -41,7 +41,7 @@ class TreeHandler:
 
         def collect(node: dict):
             for child in node["children"]:
-                result.append(child["id"])
+                result.append(child["node_id"])
                 collect(child)
 
         collect(target)
@@ -66,7 +66,7 @@ class TreeHandler:
         parent_node = self.get_parent_node(node_id)
         children: list = parent_node["children"]
         for i, child in enumerate(children):
-            if child["id"] == node_id:
+            if child["node_id"] == node_id:
                 del children[i]
                 return
         raise errors.NotFoundError("TreeHandler.not_found")

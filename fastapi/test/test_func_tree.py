@@ -10,7 +10,7 @@ class TestSuccessGET:
         assert res.status_code == 200
 
         body = res.json()
-        assert type(body["id"]) is str
+        assert type(body["node_id"]) is str
         assert type(body["label"]) is str
         assert type(body["children"]) is list
 

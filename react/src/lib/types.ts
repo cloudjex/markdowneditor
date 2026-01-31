@@ -11,13 +11,13 @@ export interface SigninResponse {
 
 // Object
 export interface Node {
-  id: string;
+  node_id: string;
   email: string;
   text: string;
 };
 
 export interface Tree {
-  id: string;
+  node_id: string;
   label: string;
   children: Tree[];
 };
