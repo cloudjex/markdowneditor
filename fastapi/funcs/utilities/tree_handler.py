@@ -52,6 +52,12 @@ class TreeHandler:
         parent_children: list[dict] = parent_node["children"]
         parent_children.append(new_node)
 
+    def move_node(self, parent_id: str, node_id: str):
+        parent_node = self.get_node(parent_id)
+        target_node = self.get_node(node_id)
+        self.del_node(node_id)
+        parent_node["children"].append(target_node)
+
     def update_node_label(self, node_id: str, label: dict):
         node = self.get_node(node_id)
         node["label"] = label

@@ -21,13 +21,17 @@ class SignUpVerifyReq(BaseModel):
     otp: str
 
 
-class TreePostReq(BaseModel):
+class TreeNodePostReq(BaseModel):
     parent_id: str
     label: str
 
 
-class TreePutReq(BaseModel):
+class TreeNodeLabelPutReq(BaseModel):
     label: str
+
+
+class TreeNodeMovePutReq(BaseModel):
+    parent_id: str
 
 
 class NodePutReq(BaseModel):
