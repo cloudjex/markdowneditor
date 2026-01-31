@@ -5,7 +5,7 @@
 
 ## Summary
 - markdown管理アプリ用のPublicRepository
-- Serverless Architectureを使用した、シンプルなFrontend/Backend構成
+- Frontend/Backend共にServerless Architectureを使用
 - App URL: https://www.cloudjex.com
 - OpenAPI: https://api.cloudjex.com/docs#
 
