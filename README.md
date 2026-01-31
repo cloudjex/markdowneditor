@@ -72,6 +72,7 @@ cd ./fastapi
 pip install -r requirements.txt
 uvicorn app:app --reload
 ```
+
 React in local
 ```sh
 cd ./react
