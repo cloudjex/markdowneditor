@@ -104,7 +104,10 @@ async def conflict_exception_handler(_, exc: errors.ConflictError):
     tags=["Auth"],
     summary="Sign in",
     response_model=schema.SignInRes,
-    responses={401: {"description": "UnauthorizedError"}},
+    responses={
+        401: {"description": "UnauthorizedError"},
+        403: {"description": "ForbiddenError"}
+    },
 )
 async def func_signin_post(req: schema.SignInReq):
     return func_signin.post(req.email, req.password)
@@ -169,7 +172,10 @@ async def func_tree_node_post(req: schema.TreeNodePostReq, jwt: dict = Depends(v
     tags=["Tree"],
     summary="Update tree, Delete node",
     response_model=schema.Tree,
-    responses={401: {"description": "UnauthorizedError"}},
+    responses={
+        401: {"description": "UnauthorizedError"},
+        403: {"description": "ForbiddenError"}
+    },
 )
 async def func_tree_node_delete(id: str, jwt: dict = Depends(verify_token)):
     return func_tree_node.delete(jwt["email"], id)
@@ -191,7 +197,10 @@ async def func_tree_node_label_put(id: str, req: schema.TreeNodeLabelPutReq, jwt
     tags=["Tree"],
     summary="Update tree, Move node",
     response_model=schema.Tree,
-    responses={401: {"description": "UnauthorizedError"}},
+    responses={
+        401: {"description": "UnauthorizedError"},
+        403: {"description": "ForbiddenError"}
+    },
 )
 async def func_tree_node_move_put(id: str, req: schema.TreeNodeMovePutReq, jwt: dict = Depends(verify_token),):
     return func_tree_node_move.put(jwt["email"], id, req.parent_id)

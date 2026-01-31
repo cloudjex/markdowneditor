@@ -11,6 +11,10 @@ def put(email: str, id: str, parent_id: str) -> dict:
     if not tree_info:
         raise errors.NotFoundError("func_tree_node.not_found")
 
+    root_node_id = tree_info.tree.id
+    if id == root_node_id:
+        raise errors.ForbiddenError("func_tree_node.cant_move_root")
+
     tree_handler = TreeHandler(tree_info.tree.to_dict())
     tree_handler.move_node(parent_id, id)
     new_tree = tree_handler.sort_tree()
