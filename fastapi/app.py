@@ -10,7 +10,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from funcs import (func_nodes, func_signin, func_signout, func_signup,
                    func_signup_verify, func_tree, func_tree_node,
-                   func_tree_node_label)
+                   func_tree_node_label, func_tree_node_move)
 from funcs.utilities import errors
 from funcs.utilities.jwt_client import JwtClient
 
@@ -106,7 +106,7 @@ async def conflict_exception_handler(_, exc: errors.ConflictError):
     response_model=schema.SignInRes,
     responses={401: {"description": "UnauthorizedError"}},
 )
-async def handle_signin(req: schema.SignInReq):
+async def func_signin_post(req: schema.SignInReq):
     return func_signin.post(req.email, req.password)
 
 
@@ -116,7 +116,7 @@ async def handle_signin(req: schema.SignInReq):
     summary="Sign up",
     response_model=schema.ResultRes,
 )
-async def handle_signup(req: schema.SignUpReq):
+async def func_signup_post(req: schema.SignUpReq):
     return func_signup.post(req.email, req.password)
 
 
@@ -127,7 +127,7 @@ async def handle_signup(req: schema.SignUpReq):
     response_model=schema.ResultRes,
     responses={401: {"description": "UnauthorizedError"}},
 )
-async def handle_signup_verify(req: schema.SignUpVerifyReq):
+async def func_signup_verify_post(req: schema.SignUpVerifyReq):
     return func_signup_verify.post(req.email, req.otp)
 
 
@@ -138,7 +138,7 @@ async def handle_signup_verify(req: schema.SignUpVerifyReq):
     response_model=schema.ResultRes,
     responses={401: {"description": "UnauthorizedError"}},
 )
-async def handle_signout(jwt: dict = Depends(verify_token)):
+async def func_signout_post(jwt: dict = Depends(verify_token)):
     return func_signout.post()
 
 
@@ -149,7 +149,7 @@ async def handle_signout(jwt: dict = Depends(verify_token)):
     response_model=schema.Tree,
     responses={401: {"description": "UnauthorizedError"}},
 )
-async def handle_tree(jwt: dict = Depends(verify_token)):
+async def func_tree_get(jwt: dict = Depends(verify_token)):
     return func_tree.get(jwt["email"])
 
 
@@ -160,7 +160,7 @@ async def handle_tree(jwt: dict = Depends(verify_token)):
     response_model=schema.Tree,
     responses={401: {"description": "UnauthorizedError"}},
 )
-async def handle_tree_operate(req: schema.TreePostReq, jwt: dict = Depends(verify_token),):
+async def func_tree_node_post(req: schema.TreeNodePostReq, jwt: dict = Depends(verify_token),):
     return func_tree_node.post(jwt["email"], req.parent_id, req.label)
 
 
@@ -171,7 +171,7 @@ async def handle_tree_operate(req: schema.TreePostReq, jwt: dict = Depends(verif
     response_model=schema.Tree,
     responses={401: {"description": "UnauthorizedError"}},
 )
-async def handle_delete_tree(id: str, jwt: dict = Depends(verify_token)):
+async def func_tree_node_delete(id: str, jwt: dict = Depends(verify_token)):
     return func_tree_node.delete(jwt["email"], id)
 
 
@@ -182,8 +182,19 @@ async def handle_delete_tree(id: str, jwt: dict = Depends(verify_token)):
     response_model=schema.Tree,
     responses={401: {"description": "UnauthorizedError"}},
 )
-async def handle_tree_operate(id, req: schema.TreePutReq, jwt: dict = Depends(verify_token),):
+async def func_tree_node_label_put(id: str, req: schema.TreeNodeLabelPutReq, jwt: dict = Depends(verify_token),):
     return func_tree_node_label.put(jwt["email"], id, req.label)
+
+
+@app.put(
+    path="/api/tree/node/move/{id}",
+    tags=["Tree"],
+    summary="Update tree, Move node",
+    response_model=schema.Tree,
+    responses={401: {"description": "UnauthorizedError"}},
+)
+async def func_tree_node_move_put(id: str, req: schema.TreeNodeMovePutReq, jwt: dict = Depends(verify_token),):
+    return func_tree_node_move.put(jwt["email"], id, req.parent_id)
 
 
 @app.get(
@@ -193,7 +204,7 @@ async def handle_tree_operate(id, req: schema.TreePutReq, jwt: dict = Depends(ve
     response_model=schema.NodesRes,
     responses={401: {"description": "UnauthorizedError"}},
 )
-async def handle_get_nodes(jwt: dict = Depends(verify_token)):
+async def func_get_nodes(jwt: dict = Depends(verify_token)):
     return func_nodes.get(jwt["email"], None)
 
 
@@ -204,7 +215,7 @@ async def handle_get_nodes(jwt: dict = Depends(verify_token)):
     response_model=schema.NodeRes,
     responses={401: {"description": "UnauthorizedError"}},
 )
-async def handle_get_node(id: str,  jwt: dict = Depends(verify_token)):
+async def func_get_node(id: str,  jwt: dict = Depends(verify_token)):
     return func_nodes.get(jwt["email"], id)
 
 
@@ -215,5 +226,5 @@ async def handle_get_node(id: str,  jwt: dict = Depends(verify_token)):
     response_model=schema.NodeRes,
     responses={401: {"description": "UnauthorizedError"}},
 )
-async def handle_update_nodes(id: str, req: schema.NodePutReq, jwt: dict = Depends(verify_token)):
+async def func_update_nodes(id: str, req: schema.NodePutReq, jwt: dict = Depends(verify_token)):
     return func_nodes.put(jwt["email"], id, req.text)
