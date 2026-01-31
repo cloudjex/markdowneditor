@@ -153,6 +153,7 @@ function EditorHeader(props: { node_id: string, tree: Tree, text: string }) {
             onClick={() => {
               setModalKind(2);
             }}
+            disabled={props.node_id === props.tree.id}
           >
             ページ移動
           </MenuItem>
