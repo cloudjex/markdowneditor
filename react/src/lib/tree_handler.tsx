@@ -8,39 +8,31 @@ class TreeHandler {
     this.tree = tree;
   }
 
-  getNode(nodeId: string): Tree | null {
-    const recursive = (node: Tree): Tree | null => {
-      if (node.node_id === nodeId) {
+  getNode(nodeId: string, node: Tree = this.tree): Tree | null {
+    if (node.node_id === nodeId) {
+      return node;
+    }
+
+    for (const child of node.children) {
+      const found = this.getNode(nodeId, child);
+      if (found) return found;
+    }
+
+    return null;
+  }
+
+  getParentNode(nodeId: string, node: Tree = this.tree): Tree | null {
+    for (const child of node.children) {
+      if (child.node_id === nodeId) {
         return node;
       }
-      for (const child of node.children) {
-        const result = recursive(child);
-        if (result !== null) {
-          return result;
-        }
+      const parent = this.getParentNode(nodeId, child);
+      if (parent !== null) {
+        return parent;
       }
-      return null;
-    };
-
-    return recursive(this.tree);
-  }
-
-  getParentNode(nodeId: string): Tree | null {
-    const findParent = (node: Tree): Tree | null => {
-      for (const child of node.children) {
-        if (child.node_id === nodeId) {
-          return node;
-        }
-        const result = findParent(child);
-        if (result !== null) {
-          return result;
-        }
-      }
-      return null;
-    };
-
-    return findParent(this.tree);
-  }
+    }
+    return null;
+  };
 
   getParentNodeIds(nodeId: string): string[] {
     const result: string[] = [];
@@ -53,9 +45,9 @@ class TreeHandler {
     while (true) {
       const parent = this.getParentNode(currentId);
       if (parent) {
-        result.push(parent.node_id);
         currentId = parent.node_id;
-        if (parent.node_id === this.tree.node_id) {
+        result.push(currentId);
+        if (this.tree.node_id === currentId) {
           break;
         }
       } else {
@@ -73,7 +65,7 @@ class TreeHandler {
       return result;
     }
 
-    const collect = (node: Tree) => {
+    function collect(node: Tree) {
       for (const child of node.children) {
         result.push(child.node_id);
         collect(child);
@@ -84,7 +76,7 @@ class TreeHandler {
     return result;
   }
 
-  getNodeList(current_node_id: string): Record<string, string>[] {
+  moveNodeList(current_node_id: string): Record<string, string>[] {
     const list: Record<string, string>[] = [];
 
     function dfs(node: Tree, parentLabel: string | null) {

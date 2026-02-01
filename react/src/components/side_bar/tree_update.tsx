@@ -22,14 +22,14 @@ function TreeUpdate(props: { node_id: string, tree: Tree }) {
     isInvalid: false,
   });
   // 0: null, 1: post, 2: del
-  const [modalKind, setModalKind] = useState(0);
+  const [dialogKind, setDialogKind] = useState(0);
 
   const requests = new RequestHandler(id_token);
   const tree_handler = new TreeHandler(props.tree);
 
-  function closeModal() {
+  function closeDialog() {
     setLabelInput({ label: "", isInvalid: false, });
-    setModalKind(0);
+    setDialogKind(0);
   };
 
   async function clickCreateNewContent(label: string) {
@@ -38,7 +38,7 @@ function TreeUpdate(props: { node_id: string, tree: Tree }) {
       throw new Error("newContentName is invalid");
     };
 
-    closeModal();
+    closeDialog();
     setLoading(true);
 
     const res = await requests.post<Tree>(
@@ -51,7 +51,7 @@ function TreeUpdate(props: { node_id: string, tree: Tree }) {
   };
 
   async function clickDeleteContent() {
-    closeModal();
+    closeDialog();
     setLoading(true);
 
     const del_node_id = props.node_id;
@@ -76,7 +76,7 @@ function TreeUpdate(props: { node_id: string, tree: Tree }) {
       }}>
 
         <Button
-          onClick={() => setModalKind(1)}
+          onClick={() => setDialogKind(1)}
           size="small"
           variant="outlined"
           sx={{ mr: 1 }}
@@ -85,7 +85,7 @@ function TreeUpdate(props: { node_id: string, tree: Tree }) {
         </Button>
 
         <Button
-          onClick={() => setModalKind(2)}
+          onClick={() => setDialogKind(2)}
           size="small"
           disabled={props.node_id === props.tree.node_id}
           variant="outlined"
@@ -96,7 +96,7 @@ function TreeUpdate(props: { node_id: string, tree: Tree }) {
 
       </Container>
 
-      <Dialog onClose={closeModal} open={modalKind == 1}>
+      <Dialog onClose={closeDialog} open={dialogKind == 1}>
         <DialogTitle>
           ページを作成
         </DialogTitle>
@@ -139,12 +139,14 @@ function TreeUpdate(props: { node_id: string, tree: Tree }) {
 
       </Dialog>
 
-      <Dialog onClose={closeModal} open={modalKind == 2}>
+      <Dialog onClose={closeDialog} open={dialogKind == 2}>
         <DialogTitle>
           ページを削除
         </DialogTitle>
 
-        <DialogContent>
+        <DialogContent
+          sx={{fontSize: "80%"}}
+        >
           現在のページとその配下のページを削除します。よろしいですか？
         </DialogContent>
 

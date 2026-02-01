@@ -17,7 +17,7 @@ function EditorHeader(props: { node_id: string, tree: Tree, text: string }) {
 
   const [isMenuOpen, setIsMenuOpen] = useState<null | HTMLElement>(null);
   // 0: null, 1: label update, 2: move page
-  const [modalKind, setModalKind] = useState(0);
+  const [dialogKind, setDialogKind] = useState(0);
 
   const [labelInput, setLabelInput] = useState({
     label: "",
@@ -30,7 +30,7 @@ function EditorHeader(props: { node_id: string, tree: Tree, text: string }) {
 
   const requests = new RequestHandler(id_token);
   const tree_handler = new TreeHandler(props.tree);
-  const node_list = tree_handler.getNodeList(props.node_id);
+  const node_list = tree_handler.moveNodeList(props.node_id);
   const label = tree_handler.getNode(props.node_id)?.label;
 
   async function upload() {
@@ -44,10 +44,10 @@ function EditorHeader(props: { node_id: string, tree: Tree, text: string }) {
     setLoading(false);
   };
 
-  function closeModal() {
+  function closeDialog() {
     setLabelInput({ label: "", isInvalid: false, });
     setMoveInput({ parent_id: "", isInvalid: false, });
-    setModalKind(0);
+    setDialogKind(0);
     setIsMenuOpen(null);
   };
 
@@ -57,7 +57,7 @@ function EditorHeader(props: { node_id: string, tree: Tree, text: string }) {
       throw new Error("label is invalid");
     }
 
-    closeModal();
+    closeDialog();
     setLoading(true);
 
     const res = await requests.put<Tree>(
@@ -75,7 +75,7 @@ function EditorHeader(props: { node_id: string, tree: Tree, text: string }) {
       throw new Error("destination is invalid");
     }
 
-    closeModal();
+    closeDialog();
     setLoading(true);
 
     const res = await requests.put<Tree>(
@@ -126,7 +126,7 @@ function EditorHeader(props: { node_id: string, tree: Tree, text: string }) {
           anchorEl={isMenuOpen}
           open={Boolean(isMenuOpen)}
           onClose={() => {
-            closeModal();
+            closeDialog();
           }}
           anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
           transformOrigin={{ vertical: "top", horizontal: "right" }}
@@ -141,7 +141,7 @@ function EditorHeader(props: { node_id: string, tree: Tree, text: string }) {
             sx={{ fontSize: "80%" }}
             onClick={() => {
               fileDownload(props.text, `${label}.md`);
-              closeModal();
+              closeDialog();
             }}
           >
             エクスポート
@@ -149,7 +149,7 @@ function EditorHeader(props: { node_id: string, tree: Tree, text: string }) {
           <MenuItem
             sx={{ fontSize: "80%" }}
             onClick={() => {
-              setModalKind(1);
+              setDialogKind(1);
             }}
           >
             ラベル更新
@@ -157,7 +157,7 @@ function EditorHeader(props: { node_id: string, tree: Tree, text: string }) {
           <MenuItem
             sx={{ fontSize: "80%" }}
             onClick={() => {
-              setModalKind(2);
+              setDialogKind(2);
             }}
             disabled={props.node_id === props.tree.node_id}
           >
@@ -169,8 +169,8 @@ function EditorHeader(props: { node_id: string, tree: Tree, text: string }) {
       </Box>
 
       <Dialog
-        onClose={() => closeModal()}
-        open={modalKind == 1}
+        onClose={() => closeDialog()}
+        open={dialogKind == 1}
       >
         <DialogTitle>
           ラベル更新
@@ -203,14 +203,18 @@ function EditorHeader(props: { node_id: string, tree: Tree, text: string }) {
       </Dialog>
 
       <Dialog
-        onClose={() => closeModal()}
-        open={modalKind == 2}
+        onClose={() => closeDialog()}
+        open={dialogKind == 2}
       >
         <DialogTitle>
           ページ移動
         </DialogTitle>
 
         <DialogContent>
+          <Box sx={{ mb: 1, fontSize: "80%" }}>
+            現在のページと配下のページを移動します。移動先を選択してください。
+          </Box>
+
           <Select
             value={moveInput.parent_id}
             onChange={(e) => setMoveInput({ ...moveInput, parent_id: e.target.value })}

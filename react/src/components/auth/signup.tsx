@@ -25,7 +25,7 @@ function Signup() {
   const [signupError, setSignupError] = useState(false);
   const [verifyError, setVerifyError] = useState(false);
   // 0: null, 1: verify
-  const [modalKind, setModalKind] = useState(0);
+  const [dialogKind, setDialogKind] = useState(0);
 
   const requests = new RequestHandler();
 
@@ -57,7 +57,7 @@ function Signup() {
       throw new Error("signup error");
     };
 
-    setModalKind(1);
+    setDialogKind(1);
   };
 
   async function onVerifySubmit() {
@@ -67,7 +67,7 @@ function Signup() {
     }
 
     setVerifyError(false);
-    setModalKind(0);
+    setDialogKind(0);
     setLoading(true);
 
     const normalized_otp = newUser.otp.replace(/[０-９]/g, s => String.fromCharCode(s.charCodeAt(0) - 0xFEE0));
@@ -80,7 +80,7 @@ function Signup() {
     setLoading(false);
 
     if (res.status != 200) {
-      setModalKind(1);
+      setDialogKind(1);
       setVerifyError(true);
       throw new Error("signup error");
     };
@@ -149,7 +149,7 @@ function Signup() {
       </form>
 
       <Dialog
-        open={modalKind == 1}
+        open={dialogKind == 1}
       >
         <Container>
           <DialogTitle
