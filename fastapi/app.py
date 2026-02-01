@@ -10,7 +10,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from funcs import (func_nodes, func_signin, func_signout, func_signup,
                    func_signup_verify, func_tree, func_tree_node,
-                   func_tree_node_label, func_tree_node_move)
+                   func_tree_node_label, func_tree_node_move, func_users)
 from funcs.utilities import errors
 from funcs.utilities.jwt_client import JwtClient
 
@@ -106,7 +106,7 @@ async def conflict_exception_handler(_, exc: errors.ConflictError):
     response_model=schema.SignInRes,
     responses={
         401: {"description": "UnauthorizedError"},
-        403: {"description": "ForbiddenError"}
+        403: {"description": "ForbiddenError"},
     },
 )
 async def func_signin_post(req: schema.SignInReq):
@@ -119,7 +119,7 @@ async def func_signin_post(req: schema.SignInReq):
     summary="Sign up",
     response_model=schema.ResultRes,
     responses={
-        409: {"description": "ConflictError"}
+        409: {"description": "ConflictError"},
     },
 )
 async def func_signup_post(req: schema.SignUpReq):
@@ -145,10 +145,26 @@ async def func_signup_verify_post(req: schema.SignUpVerifyReq):
     tags=["Auth"],
     summary="Sign out",
     response_model=schema.ResultRes,
-    responses={401: {"description": "UnauthorizedError"}},
+    responses={
+        401: {"description": "UnauthorizedError"},
+    },
 )
 async def func_signout_post(jwt: dict = Depends(verify_token)):
     return func_signout.post()
+
+
+@app.get(
+    path="/api/users/me",
+    tags=["User"],
+    summary="Get your user info",
+    response_model=schema.UserGetReq,
+    responses={
+        401: {"description": "UnauthorizedError"},
+        404: {"description": "NotFoundError"},
+    },
+)
+async def func_users_get(jwt: dict = Depends(verify_token)):
+    return func_users.get(jwt["email"])
 
 
 @app.get(
