@@ -30,7 +30,7 @@ function EditorHeader(props: { node_id: string, tree: Tree, text: string }) {
 
   const requests = new RequestHandler(id_token);
   const tree_handler = new TreeHandler(props.tree);
-  const node_list = tree_handler.getNodeList();
+  const node_list = tree_handler.getNodeList(props.node_id);
   const label = tree_handler.getNode(props.node_id)?.label;
 
   async function upload() {

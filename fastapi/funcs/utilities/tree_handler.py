@@ -5,38 +5,37 @@ class TreeHandler:
     def __init__(self, tree):
         self._tree = tree
 
-    def get_node(self, node_id: str) -> dict:
-        def recursive(node: dict) -> dict | None:
-            if node["node_id"] == node_id:
+    def recursive_get(self, node_id: str, node: dict = None) -> dict | None:
+        if node is None:
+            node = self._tree
+
+        if node["node_id"] == node_id:
+            return node
+        for child in node["children"]:
+            result = self.recursive_get(node_id, child)
+            if result is not None:
+                return result
+        return None
+
+    def get_parent_node(self, node_id: str, node: dict = None) -> dict | None:
+        if node is None:
+            node = self._tree
+
+        for child in node["children"]:
+            if child["node_id"] == node_id:
                 return node
-            for child in node["children"]:
-                result = recursive(child)
-                if result is not None:
-                    return result
-            return None
 
-        result = recursive(self._tree)
-        if result is None:
-            raise errors.NotFoundError("TreeHandler.not_found")
-        return result
+            result = self.get_parent_node(node_id, child)
+            if result is not None:
+                return result
 
-    def get_parent_node(self, node_id: str) -> dict:
-        def find_parent(node: dict) -> dict | None:
-            for child in node["children"]:
-                if child["node_id"] == node_id:
-                    return node
-                result = find_parent(child)
-                if result is not None:
-                    return result
-            return None
-
-        parent = find_parent(self._tree)
-        if parent is None:
-            raise errors.NotFoundError("TreeHandler.not_found")
-        return parent
+        return None
 
     def get_children_ids(self, node_id: str) -> list[str]:
-        target = self.get_node(node_id)
+        target = self.recursive_get(node_id)
+        if not target:
+            raise errors.NotFoundError("TreeHandler.not_found")
+
         result = []
 
         def collect(node: dict):
@@ -48,28 +47,41 @@ class TreeHandler:
         return result
 
     def insert_node(self, parent_id: str, new_node: dict):
-        parent_node = self.get_node(parent_id)
-        parent_children: list[dict] = parent_node["children"]
-        parent_children.append(new_node)
+        parent_node = self.recursive_get(parent_id)
+        if parent_node is None:
+            raise errors.NotFoundError("TreeHandler.not_found")
+
+        parent_node["children"].append(new_node)
 
     def move_node(self, parent_id: str, node_id: str):
-        parent_node = self.get_node(parent_id)
-        target_node = self.get_node(node_id)
+        target_node = self.recursive_get(node_id)
+        parent_node = self.recursive_get(parent_id)
+        if target_node is None or parent_node is None:
+            raise errors.NotFoundError("TreeHandler.not_found")
+
+        if self.recursive_get(parent_id, target_node) is not None:
+            raise errors.ForbiddenError("TreeHandler.cant_move_to_children")
+
         self.del_node(node_id)
         parent_node["children"].append(target_node)
 
     def update_node_label(self, node_id: str, label: dict):
-        node = self.get_node(node_id)
+        node = self.recursive_get(node_id)
+        if node is None:
+            raise errors.NotFoundError("TreeHandler.not_found")
+
         node["label"] = label
 
     def del_node(self, node_id: str):
         parent_node = self.get_parent_node(node_id)
+        if not parent_node:
+            raise errors.NotFoundError("TreeHandler.not_found")
+
         children: list = parent_node["children"]
         for i, child in enumerate(children):
             if child["node_id"] == node_id:
                 del children[i]
                 return
-        raise errors.NotFoundError("TreeHandler.not_found")
 
     def sort_tree(self, tree: dict | None = None) -> dict:
         if tree is None:

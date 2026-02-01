@@ -84,12 +84,15 @@ class TreeHandler {
     return result;
   }
 
-  getNodeList(): Record<string, string>[] {
+  getNodeList(current_node_id: string): Record<string, string>[] {
     const list: Record<string, string>[] = [];
 
     function dfs(node: Tree, parentLabel: string | null) {
-      const fullLabel = parentLabel ? `${parentLabel} / ${node.label}` : node.label;
+      if (node.node_id === current_node_id) {
+        return;
+      }
 
+      const fullLabel = parentLabel ? `${parentLabel} / ${node.label}` : node.label;
       list.push({ node_id: node.node_id, label: fullLabel });
 
       if (node.children) {

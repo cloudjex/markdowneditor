@@ -94,6 +94,64 @@ class TestFailPut:
         )
         assert res.status_code == 403
 
+    def test_func_tree_node_move_put_move_to_child(self, id_token, root_node_id):
+        # First, create node
+        res = fa_client.post(
+            url=f"/api/tree/node",
+            headers={"Authorization": id_token},
+            json={
+                "parent_id": root_node_id,
+                "label": "test",
+            }
+        )
+        assert res.status_code == 200
+
+        body = res.json()
+        children = body["children"]
+        first_new_node = None
+        for child in children:
+            if child["label"] == "test":
+                first_new_node = child
+        assert first_new_node is not None
+
+        # Second, create another node to child
+        res = fa_client.post(
+            url=f"/api/tree/node",
+            headers={"Authorization": id_token},
+            json={
+                "parent_id": first_new_node["node_id"],
+                "label": "test",
+            }
+        )
+        assert res.status_code == 200
+
+        body = res.json()
+        children = body["children"]
+        for child in children:
+            if child["node_id"] == first_new_node["node_id"]:
+                first_new_node = child
+        for child in first_new_node["children"]:
+            if child["label"] == "test":
+                second_new_node = child
+        assert second_new_node is not None
+
+        # Test
+        res = fa_client.put(
+            url=f"/api/tree/node/move/{first_new_node['node_id']}",
+            headers={"Authorization": id_token},
+            json={
+                "parent_id": second_new_node["node_id"],
+            }
+        )
+        assert res.status_code == 403
+
+        # Clean up
+        res = fa_client.delete(
+            url=f"/api/tree/node/{first_new_node['node_id']}",
+            headers={"Authorization": id_token},
+        )
+        assert res.status_code == 200
+
     def test_func_tree_node_move_put_nonuser_token(self, nonuser_id_token):
         res = fa_client.put(
             url="/api/tree/node/move/test",

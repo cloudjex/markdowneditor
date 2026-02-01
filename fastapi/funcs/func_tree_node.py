@@ -48,7 +48,9 @@ def delete(email: str, node_id: str) -> dict:
 
     tree_handler = TreeHandler(tree_info.tree.to_dict())
 
-    node = tree_handler.get_node(node_id)
+    node = tree_handler.recursive_get(node_id)
+    if not node:
+        raise errors.NotFoundError("func_tree_node.not_found")
     if node["node_id"] == tree_info.tree.node_id:
         raise errors.ForbiddenError("func_tree_node.cant_delete")
 
