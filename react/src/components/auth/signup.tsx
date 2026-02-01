@@ -1,31 +1,45 @@
-import { Alert, Button, TextField } from "@mui/material";
+import { Alert, Button, Container, Dialog, DialogTitle, TextField } from "@mui/material";
+import { MuiOtpInput } from 'mui-one-time-password-input';
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
 
 import type { SignupForm } from "@/src/lib/types";
 
 import RequestHandler from "@/src/lib/request_handler";
 import loadingState from "@/src/store/loading_store";
-import userStore from '@/src/store/user_store';
 
 
 function Signup() {
-  const navigate = useNavigate();
-  const { setEmail } = userStore();
   const { setLoading } = loadingState();
-  const [pwMatchError, setPwMatchError] = useState(false);
-  const [signupError, setSignupError] = useState(false);
+
+  const [newUser, setNewUser] = useState({
+    email: "",
+    password: "",
+    passwordConfirm: "",
+    pwMatch: true,
+    otp: "",
+  });
+
   const { register, handleSubmit, formState: { errors } } = useForm<SignupForm>();
+
+  const [signupError, setSignupError] = useState(false);
+  const [verifyError, setVerifyError] = useState(false);
+  // 0: null, 1: verify
+  const [modalKind, setModalKind] = useState(0);
 
   const requests = new RequestHandler();
 
-  async function onSubmit(data: SignupForm) {
-    setPwMatchError(false);
+  async function onSignupSubmit(data: SignupForm) {
+    setNewUser({
+      ...newUser,
+      email: data.email,
+      password: data.password,
+      passwordConfirm: data.password_confirm,
+      pwMatch: data.password === data.password_confirm,
+    });
     setSignupError(false);
 
-    if (data.password != data.password_confirm) {
-      setPwMatchError(true);
+    if (data.password !== data.password_confirm) {
       throw new Error("password mismatch");
     }
 
@@ -43,13 +57,41 @@ function Signup() {
       throw new Error("signup error");
     };
 
-    setEmail(data.email);
-    navigate("/verify");
+    setModalKind(1);
+  };
+
+  async function onVerifySubmit() {
+    if (newUser.otp.length < 6) {
+      setVerifyError(true);
+      throw new Error("invalid otp");
+    }
+
+    setVerifyError(false);
+    setModalKind(0);
+    setLoading(true);
+
+    const normalized_otp = newUser.otp.replace(/[０-９]/g, s => String.fromCharCode(s.charCodeAt(0) - 0xFEE0));
+
+    const res = await requests.post(
+      `${import.meta.env.VITE_API_HOST}/api/signup/verify`,
+      { email: newUser.email, otp: normalized_otp }
+    );
+
+    setLoading(false);
+
+    if (res.status != 200) {
+      setModalKind(1);
+      setVerifyError(true);
+      throw new Error("signup error");
+    };
+
+    // reload
+    window.location.reload();
   };
 
   return (
     <>
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={handleSubmit(onSignupSubmit)}>
         <TextField
           label="メールアドレス"
           fullWidth
@@ -94,7 +136,7 @@ function Signup() {
           ユーザ登録
         </Button>
 
-        {pwMatchError && (
+        {newUser.pwMatch === false && (
           <Alert severity="error" sx={{ mt: 2 }}>
             パスワードが一致しません
           </Alert>
@@ -105,6 +147,45 @@ function Signup() {
           </Alert>
         )}
       </form>
+
+      <Dialog
+        open={modalKind == 1}
+      >
+        <Container>
+          <DialogTitle
+            variant="body1"
+          >
+            メールアドレスに送付された認証コードを入力してください
+          </DialogTitle>
+
+          <form onSubmit={handleSubmit(onVerifySubmit)}>
+
+            <MuiOtpInput
+              value={newUser.otp}
+              onChange={(value) => setNewUser({ ...newUser, otp: value })}
+              length={6}
+              autoFocus
+              sx={{ m: 5 }}
+            />
+
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              sx={{ mb: 3 }}
+            >
+              送信
+            </Button>
+
+            {verifyError && (
+              <Alert severity="error" sx={{ mb: 2 }}>
+                認証コードが正しくありません
+              </Alert>
+            )}
+
+          </form>
+        </Container>
+      </Dialog >
     </>
   );
 };
