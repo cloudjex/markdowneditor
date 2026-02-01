@@ -3,7 +3,7 @@ import textwrap
 from .conftest import fa_client
 
 
-class TestSuccessGET:
+class TestSuccessGet:
     def test_func_nodes_get_normal(self, id_token):
         res = fa_client.get(
             url="/api/nodes",

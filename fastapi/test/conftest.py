@@ -4,7 +4,9 @@ import app
 from fastapi.testclient import TestClient
 from funcs.utilities.jwt_client import JwtClient
 
+# Test Accounts
 EMAIL = "test@gmail.com"
+PASSWORD = "test"
 NONUSER_EMAIL = "nonuser@gmail.com"
 
 

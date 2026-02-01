@@ -1,4 +1,4 @@
-from .conftest import EMAIL, fa_client
+from .conftest import EMAIL, PASSWORD, fa_client
 
 
 class TestSuccessPost:
@@ -7,7 +7,7 @@ class TestSuccessPost:
             url="/api/signin",
             json={
                 "email": EMAIL,
-                "password": "test"
+                "password": PASSWORD,
             }
         )
         assert res.status_code == 200

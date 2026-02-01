@@ -21,6 +21,21 @@ class SignUpVerifyReq(BaseModel):
     otp: str
 
 
+class UserReq(BaseModel):
+    email: str
+    password: str
+    options: Options
+
+    class Options(BaseModel):
+        enabled: bool
+        otp: str
+
+
+class UpdatePasswordReq(BaseModel):
+    old_password: str
+    new_password: str
+
+
 class TreeNodePostReq(BaseModel):
     parent_id: str
     label: str

@@ -5,6 +5,10 @@ class BaseExceptionClass(Exception):
         self.error_code = error_code
 
 
+class BadRequestError(BaseExceptionClass):
+    pass
+
+
 class UnauthorizedError(BaseExceptionClass):
     pass
 
