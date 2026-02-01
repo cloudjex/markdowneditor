@@ -6,7 +6,7 @@ import Signup from "@/src/components/auth/signup";
 import Header from "@/src/components/header/header";
 
 
-function Top() {
+function Auth() {
   const [tab, setTab] = useState(0);
 
   return (
@@ -55,4 +55,4 @@ function Top() {
   );
 };
 
-export default Top;
+export default Auth;
