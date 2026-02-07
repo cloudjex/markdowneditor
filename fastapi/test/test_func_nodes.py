@@ -30,6 +30,7 @@ class TestSuccessGet:
         assert type(body["email"]) is str
         assert type(body["text"]) is str
 
+
 class TestFailGet:
     def test_func_node_get_invalid_token(self, invalid_id_token):
         res = fa_client.get(
