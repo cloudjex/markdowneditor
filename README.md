@@ -39,31 +39,39 @@ NoSQL(ドキュメント指向DB)を使用し、Itemは単一テーブルに格�
 - ソートキー: `SK`
 
 ### user item
-| key       | type   | desctiption            | description        |
-| --------- | ------ | ---------------------- | ------------------ |
-| PK        | str    | value: `EMAIL#{email}` | PartitionKey       |
-| SK        | str    | value: `PROFILE`       | SortKey            |
-| password  | str    | hashed pw              |                    |
-| options   | object | other settings         |                    |
-| ├ enabled | bool   | active/inactive        |                    |
-| └ otp     | str    | otp                    | only inactive user |
+| key           | type   | desctiption            | description        |
+| ------------- | ------ | ---------------------- | ------------------ |
+| PK            | str    | value: `EMAIL#{email}` | PartitionKey       |
+| SK            | str    | value: `USER`          | SortKey            |
+| password      | str    | hashed pw              |                    |
+| options       | object | other settings         |                    |
+| ├ enabled     | bool   | active/inactive        |                    |
+| ├ otp         | str    | otp                    | only inactive user |
+| └ user_groups | array  | user groups            |                    |
+
+### user group
+| key   | type  | desctiption                      | description  |
+| ----- | ----- | -------------------------------- | ------------ |
+| PK    | str   | value: `GROUP_NAME#{user_group}` | PartitionKey |
+| SK    | str   | value: `USER_GROUP`              | SortKey      |
+| users | array | users                            |              |
 
 ### tree info item
-| key        | type   | desctiption            | description           |
-| ---------- | ------ | ---------------------- | --------------------- |
-| PK         | str    | value: `EMAIL#{email}` | PartitionKey          |
-| SK         | str    | value: `TREE_INFO`     | SortKey               |
-| tree       | object | tree content           |                       |
-| ├ node_id  | str    | node id                |                       |
-| ├ label    | str    | node label             |                       |
-| └ children | object | node children          | have tree recursively |
+| key        | type   | desctiption                      | description           |
+| ---------- | ------ | -------------------------------- | --------------------- |
+| PK         | str    | value: `GROUP_NAME#{user_group}` | PartitionKey          |
+| SK         | str    | value: `USER_GROUP`              | SortKey               |
+| tree       | object | tree content                     |                       |
+| ├ node_id  | str    | node id                          |                       |
+| ├ label    | str    | node label                       |                       |
+| └ children | object | node children                    | have tree recursively |
 
 ### node item
-| key  | type | desctiption             | description  |
-| ---- | ---- | ----------------------- | ------------ |
-| PK   | str  | value: `EMAIL#{email}`  | PartitionKey |
-| SK   | str  | value: `NODE#{node_id}` | SortKey      |
-| text | str  | text                    |              |
+| key  | type | desctiption                      | description  |
+| ---- | ---- | -------------------------------- | ------------ |
+| PK   | str  | value: `GROUP_NAME#{user_group}` | PartitionKey |
+| SK   | str  | value: `NODE#{node_id}`          | SortKey      |
+| text | str  | text                             |              |
 
 ## For Developer
 FastAPI in local
