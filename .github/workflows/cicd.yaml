@@ -32,26 +32,19 @@ jobs:
         run: |
           pip install -r requirements.txt
           pip install pytest allure-pytest
-          pytest --alluredir=allure-results
-
-      - name: Install Allure CLI
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y default-jre
-          wget https://github.com/allure-framework/allure2/releases/download/2.29.0/allure-2.29.0.tgz
-          tar -xzf allure-2.29.0.tgz
-          sudo mv allure-2.29.0 /opt/allure
-          sudo ln -s /opt/allure/bin/allure /usr/bin/allure
+          pytest --alluredir=../.github/allure-results
 
       - name: Generate Allure Report
-        run: |
-          allure generate allure-results -o allure-report --clean
+        uses: simple-elf/allure-report-action@v1.7
+        with:
+          allure_results: ./allure-results
+          allure_report: ./allure-report
 
       - name: Upload Allure Report as Artifact
         uses: actions/upload-artifact@v6
         with:
           name: allure-report
-          path: allure-report
+          path: ./allure-report
 
       - name: Build Lambda package
         run: |
