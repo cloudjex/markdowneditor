@@ -119,6 +119,19 @@ async def func_signin_post(req: schema.SignInReq):
 
 
 @app.post(
+    path="/api/signin/group",
+    tags=["Auth"],
+    summary="Sign in with user group",
+    response_model=schema.SignInRes,
+    responses={
+        401: {"description": "Unauthorized Error"},
+    },
+)
+async def func_signin_group_post(req: schema.SignInGroupReq, jwt: dict = Depends(verify_token)):
+    return func_signin.signin_group(jwt["email"], req.user_group)
+
+
+@app.post(
     path="/api/signout",
     tags=["Auth"],
     summary="Sign out",

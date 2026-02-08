@@ -11,6 +11,10 @@ class SignInReq(BaseModel):
     password: str
 
 
+class SignInGroupReq(BaseModel):
+    user_group: str
+
+
 class UserReq(BaseModel):
     email: str
     password: str

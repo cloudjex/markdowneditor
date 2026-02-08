@@ -13,12 +13,14 @@ class User:
 
 
 class Options:
-    def __init__(self, enabled: bool, otp: str):
+    def __init__(self, enabled: bool, otp: str, user_groups: list):
         self.enabled = enabled
         self.otp = otp
+        self.user_groups = user_groups
 
     def to_dict(self):
         return {
             "enabled": self.enabled,
             "otp": self.otp,
+            "user_groups": self.user_groups,
         }

@@ -14,6 +14,18 @@ def signin(email: str, password: str) -> dict:
     if not user.options.enabled:
         raise errors.ForbiddenError("func_login.not_enabled")
 
-    id_token = JwtClient().encode(email)
+    id_token = JwtClient().encode(email, "")
+
+    return {"id_token": id_token}
+
+
+def signin_group(email: str, user_group: str) -> dict:
+    db_client = DynamoDBClient()
+    user = db_client.get_user(email=email)
+
+    if not user.options.enabled:
+        raise errors.ForbiddenError("func_login.not_enabled")
+
+    id_token = JwtClient().encode(email, user_group)
 
     return {"id_token": id_token}
