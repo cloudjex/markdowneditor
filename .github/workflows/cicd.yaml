@@ -37,8 +37,8 @@ jobs:
       - name: Generate Allure Report
         uses: simple-elf/allure-report-action@v1.13
         with:
-          allure_results: .github/allure-results
-          allure_report: .github/allure-report
+          allure_results: allure-results
+          allure_report: allure-report
 
       - name: Upload Allure Report as Artifact
         uses: actions/upload-artifact@v6
