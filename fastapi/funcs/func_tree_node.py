@@ -7,10 +7,10 @@ from funcs.utilities.dynamodb_client import DynamoDBClient
 from funcs.utilities.tree_handler import TreeHandler
 
 
-def post_node(email: str, parent_id: str, label: str) -> dict:
+def post_node(user_group: str, parent_id: str, label: str) -> dict:
     db_client = DynamoDBClient()
 
-    tree_info = db_client.get_tree_info(email)
+    tree_info = db_client.get_tree_info(user_group)
     if not tree_info:
         raise errors.NotFoundError("func_tree_node.not_found")
 
@@ -31,7 +31,7 @@ def post_node(email: str, parent_id: str, label: str) -> dict:
         new_tree["children"]
     )
 
-    new_node = Node(email, insert_id, "")
+    new_node = Node(user_group, insert_id, "")
 
     db_client.put_tree_info(tree_info)
     db_client.put_node(new_node)
@@ -39,10 +39,10 @@ def post_node(email: str, parent_id: str, label: str) -> dict:
     return new_tree
 
 
-def delete_node(email: str, node_id: str) -> dict:
+def delete_node(user_group: str, node_id: str) -> dict:
     db_client = DynamoDBClient()
 
-    tree_info = db_client.get_tree_info(email)
+    tree_info = db_client.get_tree_info(user_group)
     if not tree_info:
         raise errors.NotFoundError("func_tree_node.not_found")
 
@@ -67,7 +67,7 @@ def delete_node(email: str, node_id: str) -> dict:
     )
 
     for del_id in del_targets:
-        db_client.delete_node(Node(email, del_id, ""))
+        db_client.delete_node(Node(user_group, del_id, ""))
     db_client.put_tree_info(tree_info)
 
     return new_tree

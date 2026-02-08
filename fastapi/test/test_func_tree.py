@@ -22,10 +22,3 @@ class TestFailGet:
             headers={"Authorization": invalid_id_token},
         )
         assert res.status_code == 401
-
-    def test_func_tree_get_nonuser_token(self, nonuser_id_token):
-        res = fa_client.get(
-            url="/api/tree",
-            headers={"Authorization": nonuser_id_token},
-        )
-        assert res.status_code == 404

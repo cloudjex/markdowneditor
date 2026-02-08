@@ -11,14 +11,8 @@ class SignInReq(BaseModel):
     password: str
 
 
-class SignUpReq(BaseModel):
-    email: str
-    password: str
-
-
-class SignUpVerifyReq(BaseModel):
-    email: str
-    otp: str
+class SignInGroupReq(BaseModel):
+    user_group: str
 
 
 class UserReq(BaseModel):
@@ -29,6 +23,7 @@ class UserReq(BaseModel):
     class Options(BaseModel):
         enabled: bool
         otp: str
+        user_groups: List[str]
 
 
 class UpdatePasswordReq(BaseModel):
@@ -69,7 +64,7 @@ class Tree(BaseModel):
 
 
 class NodeRes(BaseModel):
-    email: str
+    user_group: str
     node_id: str
     text: str
 

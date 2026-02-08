@@ -8,9 +8,9 @@ import schema
 from fastapi import Depends, FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-from funcs import (func_nodes, func_signin, func_signout, func_signup,
-                   func_signup_verify, func_tree, func_tree_node,
-                   func_tree_node_label, func_tree_node_move, func_users_me)
+from funcs import (func_nodes, func_signin, func_signout, func_tree,
+                   func_tree_node, func_tree_node_label, func_tree_node_move,
+                   func_users_me)
 from funcs.utilities import errors
 from funcs.utilities.jwt_client import JwtClient
 
@@ -119,30 +119,16 @@ async def func_signin_post(req: schema.SignInReq):
 
 
 @app.post(
-    path="/api/signup",
+    path="/api/signin/group",
     tags=["Auth"],
-    summary="Sign up",
-    response_model=schema.ResultRes,
-    responses={
-        409: {"description": "Conflict Error"},
-    },
-)
-async def func_signup_post(req: schema.SignUpReq):
-    return func_signup.signup(req.email, req.password)
-
-
-@app.post(
-    path="/api/signup/verify",
-    tags=["Auth"],
-    summary="Email verification",
-    response_model=schema.ResultRes,
+    summary="Sign in with user group",
+    response_model=schema.SignInRes,
     responses={
         401: {"description": "Unauthorized Error"},
-        404: {"description": "NotFound Error"},
     },
 )
-async def func_signup_verify_post(req: schema.SignUpVerifyReq):
-    return func_signup_verify.verify(req.email, req.otp)
+async def func_signin_group_post(req: schema.SignInGroupReq, jwt: dict = Depends(verify_token)):
+    return func_signin.signin_group(jwt["email"], req.user_group)
 
 
 @app.post(
@@ -198,7 +184,7 @@ async def func_users_me_password_put(req: schema.UpdatePasswordReq, jwt: dict = 
     },
 )
 async def func_tree_get(jwt: dict = Depends(verify_token)):
-    return func_tree.get_tree(jwt["email"])
+    return func_tree.get_tree(jwt["user_group"])
 
 
 @app.post(
@@ -212,7 +198,7 @@ async def func_tree_get(jwt: dict = Depends(verify_token)):
     },
 )
 async def func_tree_node_post(req: schema.TreeNodePostReq, jwt: dict = Depends(verify_token),):
-    return func_tree_node.post_node(jwt["email"], req.parent_id, req.label)
+    return func_tree_node.post_node(jwt["user_group"], req.parent_id, req.label)
 
 
 @app.delete(
@@ -227,7 +213,7 @@ async def func_tree_node_post(req: schema.TreeNodePostReq, jwt: dict = Depends(v
     },
 )
 async def func_tree_node_delete(node_id: str, jwt: dict = Depends(verify_token)):
-    return func_tree_node.delete_node(jwt["email"], node_id)
+    return func_tree_node.delete_node(jwt["user_group"], node_id)
 
 
 @app.put(
@@ -241,7 +227,7 @@ async def func_tree_node_delete(node_id: str, jwt: dict = Depends(verify_token))
     },
 )
 async def func_tree_node_label_put(node_id: str, req: schema.TreeNodeLabelPutReq, jwt: dict = Depends(verify_token),):
-    return func_tree_node_label.update_node_label(jwt["email"], node_id, req.label)
+    return func_tree_node_label.update_node_label(jwt["user_group"], node_id, req.label)
 
 
 @app.put(
@@ -256,7 +242,7 @@ async def func_tree_node_label_put(node_id: str, req: schema.TreeNodeLabelPutReq
     },
 )
 async def func_tree_node_move_put(node_id: str, req: schema.TreeNodeMovePutReq, jwt: dict = Depends(verify_token),):
-    return func_tree_node_move.node_move(jwt["email"], node_id, req.parent_id)
+    return func_tree_node_move.node_move(jwt["user_group"], node_id, req.parent_id)
 
 
 @app.get(
@@ -270,7 +256,7 @@ async def func_tree_node_move_put(node_id: str, req: schema.TreeNodeMovePutReq, 
     },
 )
 async def func_get_nodes(jwt: dict = Depends(verify_token)):
-    return func_nodes.get_nodes(jwt["email"])
+    return func_nodes.get_nodes(jwt["user_group"])
 
 
 @app.get(
@@ -284,7 +270,7 @@ async def func_get_nodes(jwt: dict = Depends(verify_token)):
     },
 )
 async def func_get_node(node_id: str,  jwt: dict = Depends(verify_token)):
-    return func_nodes.get_node(jwt["email"], node_id)
+    return func_nodes.get_node(jwt["user_group"], node_id)
 
 
 @app.put(
@@ -298,4 +284,4 @@ async def func_get_node(node_id: str,  jwt: dict = Depends(verify_token)):
     },
 )
 async def func_update_nodes(node_id: str, req: schema.NodePutReq, jwt: dict = Depends(verify_token)):
-    return func_nodes.put_node(jwt["email"], node_id, req.text)
+    return func_nodes.put_node(jwt["user_group"], node_id, req.text)

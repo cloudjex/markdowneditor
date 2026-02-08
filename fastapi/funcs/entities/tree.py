@@ -1,6 +1,6 @@
 class TreeInfo:
-    def __init__(self, email: str, tree: dict):
-        self.email = email
+    def __init__(self, user_group: str, tree: dict):
+        self.user_group = user_group
         self.tree = Tree(
             tree["node_id"],
             tree["label"],
@@ -9,7 +9,7 @@ class TreeInfo:
 
     def to_dict(self):
         return {
-            "email": self.email,
+            "user_group": self.user_group,
             "tree": self.tree.to_dict(),
         }
 

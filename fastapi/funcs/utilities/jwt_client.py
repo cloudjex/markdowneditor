@@ -7,9 +7,10 @@ from funcs.utilities import errors
 
 
 class JwtClient:
-    def encode(self, email: str) -> str:
+    def encode(self, email: str, user_group: str) -> str:
         claim = {
             "email": email,
+            "user_group": user_group,
             "iss": config.APP_URL,
             "aud": config.APP_URL,
             "iat": int(time.time()),
@@ -24,7 +25,7 @@ class JwtClient:
 
     def verify(self, id_token: str) -> dict:
         try:
-            return jwt.decode(
+            decoded = jwt.decode(
                 jwt=id_token.removeprefix("Bearer "),
                 key=config.JWT_KEY,
                 algorithms="HS256",
@@ -33,5 +34,12 @@ class JwtClient:
                 verify=True,
             )
 
-        except Exception:
-            raise errors.UnauthorizedError("JwtClient.invalid_credentials")
+            if "email" not in decoded or "user_group" not in decoded:
+                raise errors.UnauthorizedError("JwtClient.invalid_payload")
+
+            return decoded
+
+        except Exception as e:
+            raise errors.UnauthorizedError(
+                "JwtClient.invalid_credentials"
+            ) from e

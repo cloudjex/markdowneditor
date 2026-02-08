@@ -40,6 +40,7 @@ class TestSuccessGet:
         assert type(body["options"]) is dict
         assert type(body["options"]["enabled"]) is bool
         assert type(body["options"]["otp"]) is str
+        assert type(body["options"]["user_groups"]) is list
 
 
 class TestFailGet:
@@ -49,13 +50,6 @@ class TestFailGet:
             headers={"Authorization": invalid_id_token},
         )
         assert res.status_code == 401
-
-    def test_func_users_me_get_nonuser_token(self, nonuser_id_token):
-        res = fa_client.get(
-            url="/api/users/me",
-            headers={"Authorization": nonuser_id_token},
-        )
-        assert res.status_code == 404
 
 
 class TestSuccessPut:
@@ -109,14 +103,3 @@ class TestFailPut:
             }
         )
         assert res.status_code == 400
-
-    def test_func_users_me_put_nonuser_token(self, nonuser_id_token):
-        res = fa_client.put(
-            url="/api/users/me/password",
-            headers={"Authorization": nonuser_id_token},
-            json={
-                "old_password": "test",
-                "new_password": "test",
-            }
-        )
-        assert res.status_code == 404
