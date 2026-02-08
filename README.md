@@ -49,7 +49,6 @@ NoSQL(ドキュメント指向DB)を使用し、Itemは単一テーブルに格�
 | ├ enabled   | bool   | active/inactive        |                                  |
 | └ otp       | str    | otp                    | only inactive user               |
 
-
 ### user group
 | key   | type  | desctiption                      | description  |
 | ----- | ----- | -------------------------------- | ------------ |
