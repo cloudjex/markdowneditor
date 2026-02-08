@@ -2,9 +2,9 @@ from funcs.utilities import errors
 from funcs.utilities.dynamodb_client import DynamoDBClient
 
 
-def get_tree(email: str) -> dict:
+def get_tree(user_group: str) -> dict:
     db_client = DynamoDBClient()
-    tree_info = db_client.get_tree_info(email=email)
+    tree_info = db_client.get_tree_info(user_group)
     if not tree_info:
         raise errors.NotFoundError("func_tree.not_found")
 

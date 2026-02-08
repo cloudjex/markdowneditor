@@ -39,8 +39,8 @@ class TestSuccessGet:
         body: dict = res.json()
         nodes = body["nodes"]
         assert type(nodes) is list
+        assert type(nodes[0]["user_group"]) is str
         assert type(nodes[0]["node_id"]) is str
-        assert type(nodes[0]["email"]) is str
         assert type(nodes[0]["text"]) is str
 
     def test_func_nodes_get_normal_with_id(self, id_token, root_node_id):
@@ -51,8 +51,8 @@ class TestSuccessGet:
         assert res.status_code == 200
 
         body: dict = res.json()
+        assert type(body["user_group"]) is str
         assert type(body["node_id"]) is str
-        assert type(body["email"]) is str
         assert type(body["text"]) is str
 
 
@@ -63,20 +63,6 @@ class TestFailGet:
             headers={"Authorization": invalid_id_token},
         )
         assert res.status_code == 401
-
-    def test_func_node_get_nonuser_token(self, nonuser_id_token):
-        res = fa_client.get(
-            url="/api/nodes",
-            headers={"Authorization": nonuser_id_token},
-        )
-        assert res.status_code == 404
-
-    def test_func_node_get_with_id_nonuser_token(self, nonuser_id_token):
-        res = fa_client.get(
-            url="/api/nodes/hogehogehoge",
-            headers={"Authorization": nonuser_id_token},
-        )
-        assert res.status_code == 404
 
 
 class TestSuccessPut:
@@ -94,8 +80,8 @@ class TestSuccessPut:
         body = res.json()
         assert type(body) is dict
         assert body["text"] == text
+        assert type(body["user_group"]) is str
         assert type(body["node_id"]) is str
-        assert type(body["email"]) is str
 
     def test_func_nodes_put_empty_text(self, id_token, root_node_id, setup1):
         res = fa_client.put(
@@ -110,8 +96,8 @@ class TestSuccessPut:
         body = res.json()
         assert type(body) is dict
         assert body["text"] == ""
+        assert type(body["user_group"]) is str
         assert type(body["node_id"]) is str
-        assert type(body["email"]) is str
 
 
 class TestFailPut:

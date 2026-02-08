@@ -37,5 +37,9 @@ class JwtClient:
             if "email" not in decoded or "user_group" not in decoded:
                 raise errors.UnauthorizedError("JwtClient.invalid_payload")
 
+            return decoded
+
         except Exception as e:
-            raise errors.UnauthorizedError("JwtClient.invalid_credentials") from e
+            raise errors.UnauthorizedError(
+                "JwtClient.invalid_credentials"
+            ) from e

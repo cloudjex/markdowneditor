@@ -26,6 +26,9 @@ def signin_group(email: str, user_group: str) -> dict:
     if not user.options.enabled:
         raise errors.ForbiddenError("func_login.not_enabled")
 
+    if user_group not in user.options.user_groups:
+        raise errors.UnauthorizedError("func_login.invalid_user_group")
+
     id_token = JwtClient().encode(email, user_group)
 
     return {"id_token": id_token}

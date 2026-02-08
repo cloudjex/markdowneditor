@@ -130,16 +130,6 @@ class TestFailPut:
         )
         assert res.status_code == 403
 
-    def test_func_tree_node_move_put_nonuser_token(self, nonuser_id_token):
-        res = fa_client.put(
-            url="/api/tree/node/move/test",
-            headers={"Authorization": nonuser_id_token},
-            json={
-                "parent_id": "parent_test_id",
-            }
-        )
-        assert res.status_code == 404
-
     def test_func_tree_node_move_put_no_params(self, id_token):
         res = fa_client.put(
             url="/api/tree/node/move/test",

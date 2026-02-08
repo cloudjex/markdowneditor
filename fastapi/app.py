@@ -184,7 +184,7 @@ async def func_users_me_password_put(req: schema.UpdatePasswordReq, jwt: dict = 
     },
 )
 async def func_tree_get(jwt: dict = Depends(verify_token)):
-    return func_tree.get_tree(jwt["email"])
+    return func_tree.get_tree(jwt["user_group"])
 
 
 @app.post(
@@ -198,7 +198,7 @@ async def func_tree_get(jwt: dict = Depends(verify_token)):
     },
 )
 async def func_tree_node_post(req: schema.TreeNodePostReq, jwt: dict = Depends(verify_token),):
-    return func_tree_node.post_node(jwt["email"], req.parent_id, req.label)
+    return func_tree_node.post_node(jwt["user_group"], req.parent_id, req.label)
 
 
 @app.delete(
@@ -213,7 +213,7 @@ async def func_tree_node_post(req: schema.TreeNodePostReq, jwt: dict = Depends(v
     },
 )
 async def func_tree_node_delete(node_id: str, jwt: dict = Depends(verify_token)):
-    return func_tree_node.delete_node(jwt["email"], node_id)
+    return func_tree_node.delete_node(jwt["user_group"], node_id)
 
 
 @app.put(
@@ -227,7 +227,7 @@ async def func_tree_node_delete(node_id: str, jwt: dict = Depends(verify_token))
     },
 )
 async def func_tree_node_label_put(node_id: str, req: schema.TreeNodeLabelPutReq, jwt: dict = Depends(verify_token),):
-    return func_tree_node_label.update_node_label(jwt["email"], node_id, req.label)
+    return func_tree_node_label.update_node_label(jwt["user_group"], node_id, req.label)
 
 
 @app.put(
@@ -242,7 +242,7 @@ async def func_tree_node_label_put(node_id: str, req: schema.TreeNodeLabelPutReq
     },
 )
 async def func_tree_node_move_put(node_id: str, req: schema.TreeNodeMovePutReq, jwt: dict = Depends(verify_token),):
-    return func_tree_node_move.node_move(jwt["email"], node_id, req.parent_id)
+    return func_tree_node_move.node_move(jwt["user_group"], node_id, req.parent_id)
 
 
 @app.get(
@@ -256,7 +256,7 @@ async def func_tree_node_move_put(node_id: str, req: schema.TreeNodeMovePutReq, 
     },
 )
 async def func_get_nodes(jwt: dict = Depends(verify_token)):
-    return func_nodes.get_nodes(jwt["email"])
+    return func_nodes.get_nodes(jwt["user_group"])
 
 
 @app.get(
@@ -270,7 +270,7 @@ async def func_get_nodes(jwt: dict = Depends(verify_token)):
     },
 )
 async def func_get_node(node_id: str,  jwt: dict = Depends(verify_token)):
-    return func_nodes.get_node(jwt["email"], node_id)
+    return func_nodes.get_node(jwt["user_group"], node_id)
 
 
 @app.put(
@@ -284,4 +284,4 @@ async def func_get_node(node_id: str,  jwt: dict = Depends(verify_token)):
     },
 )
 async def func_update_nodes(node_id: str, req: schema.NodePutReq, jwt: dict = Depends(verify_token)):
-    return func_nodes.put_node(jwt["email"], node_id, req.text)
+    return func_nodes.put_node(jwt["user_group"], node_id, req.text)

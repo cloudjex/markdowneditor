@@ -23,7 +23,7 @@ class UserReq(BaseModel):
     class Options(BaseModel):
         enabled: bool
         otp: str
-        user_group: List[str]
+        user_groups: List[str]
 
 
 class UpdatePasswordReq(BaseModel):
@@ -64,7 +64,7 @@ class Tree(BaseModel):
 
 
 class NodeRes(BaseModel):
-    email: str
+    user_group: str
     node_id: str
     text: str
 

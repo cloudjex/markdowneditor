@@ -2,7 +2,11 @@ class User:
     def __init__(self, email: str, password: str, options: dict):
         self.email = email
         self.password = password
-        self.options = Options(options["enabled"], options["otp"])
+        self.options = Options(
+            options["enabled"],
+            options["otp"],
+            options["user_groups"],
+        )
 
     def to_dict(self, include_pw=False):
         return {

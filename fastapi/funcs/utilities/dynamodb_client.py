@@ -44,10 +44,10 @@ class DynamoDBClient:
     ###############################
     # For TreeInfo
     ###############################
-    def get_tree_info(self, email: str) -> TreeInfo | None:
+    def get_tree_info(self, user_group: str) -> TreeInfo | None:
         response = self._db_client.get_item(
             Key={
-                "PK": f"EMAIL#{email}",
+                "PK": f"USER_GROUP#{user_group}",
                 "SK": "TREE_INFO",
             }
         )
@@ -56,13 +56,13 @@ class DynamoDBClient:
         if item is None:
             return None
         else:
-            item["PK"] = item.pop("PK").removeprefix("EMAIL#")
+            item["PK"] = item.pop("PK").removeprefix("USER_GROUP#")
             return TreeInfo(item["PK"], item["tree"])
 
     def put_tree_info(self, tree_info: TreeInfo) -> None:
         self._db_client.put_item(
             Item={
-                "PK": f"EMAIL#{tree_info.email}",
+                "PK": f"USER_GROUP#{tree_info.user_group}",
                 "SK": "TREE_INFO",
                 "tree": tree_info.tree.to_dict(),
             }
@@ -71,10 +71,10 @@ class DynamoDBClient:
     ###############################
     # For Node
     ###############################
-    def get_node(self, email: str, node_id: str) -> Node | None:
+    def get_node(self, user_group: str, node_id: str) -> Node | None:
         response = self._db_client.get_item(
             Key={
-                "PK": f"EMAIL#{email}",
+                "PK": f"USER_GROUP#{user_group}",
                 "SK": f"NODE#{node_id}",
             }
         )
@@ -83,14 +83,14 @@ class DynamoDBClient:
         if item is None:
             return None
         else:
-            item["PK"] = item.pop("PK").removeprefix("EMAIL#")
+            item["PK"] = item.pop("PK").removeprefix("USER_GROUP#")
             item["SK"] = item.pop("SK").removeprefix("NODE#")
             return Node(item["PK"], item["SK"], item["text"])
 
-    def get_nodes(self, email: str) -> list[Node] | None:
+    def get_nodes(self, user_group: str) -> list[Node] | None:
         response = self._db_client.query(
             KeyConditionExpression=(
-                Key("PK").eq(f"EMAIL#{email}") &
+                Key("PK").eq(f"USER_GROUP#{user_group}") &
                 Key("SK").begins_with("NODE#")
             )
         )
@@ -101,7 +101,7 @@ class DynamoDBClient:
         else:
             entities = []
             for item in items:
-                item["PK"] = item.pop("PK").removeprefix("EMAIL#")
+                item["PK"] = item.pop("PK").removeprefix("USER_GROUP#")
                 item["SK"] = item.pop("SK").removeprefix("NODE#")
                 entities.append(Node(item["PK"], item["SK"], item["text"]))
             return entities
@@ -109,7 +109,7 @@ class DynamoDBClient:
     def put_node(self, node: Node) -> None:
         self._db_client.put_item(
             Item={
-                "PK": f"EMAIL#{node.email}",
+                "PK": f"USER_GROUP#{node.user_group}",
                 "SK": f"NODE#{node.node_id}",
                 "text": node.text,
             }
@@ -118,7 +118,7 @@ class DynamoDBClient:
     def delete_node(self, node: Node) -> None:
         self._db_client.delete_item(
             Key={
-                "PK": f"EMAIL#{node.email}",
+                "PK": f"USER_GROUP#{node.user_group}",
                 "SK": f"NODE#{node.node_id}",
             }
         )

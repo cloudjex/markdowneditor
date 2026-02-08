@@ -4,10 +4,10 @@ from funcs.utilities.dynamodb_client import DynamoDBClient
 from funcs.utilities.tree_handler import TreeHandler
 
 
-def node_move(email: str, node_id: str, parent_id: str) -> dict:
+def node_move(user_group: str, node_id: str, parent_id: str) -> dict:
     db_client = DynamoDBClient()
 
-    tree_info = db_client.get_tree_info(email)
+    tree_info = db_client.get_tree_info(user_group)
     if not tree_info:
         raise errors.NotFoundError("func_tree_node.not_found")
 

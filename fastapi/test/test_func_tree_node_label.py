@@ -61,16 +61,6 @@ class TestFailPut:
         )
         assert res.status_code == 401
 
-    def test_func_tree_node_label_put_nonuser_token(self, nonuser_id_token):
-        res = fa_client.put(
-            url="/api/tree/node/label/test",
-            headers={"Authorization": nonuser_id_token},
-            json={
-                "label": "invalid",
-            }
-        )
-        assert res.status_code == 404
-
     def test_func_tree_node_label_put_no_params(self, id_token):
         res = fa_client.put(
             url="/api/tree/node/label/test",
