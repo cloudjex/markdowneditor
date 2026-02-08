@@ -18,8 +18,12 @@ class SignInGroupReq(BaseModel):
 class UserReq(BaseModel):
     email: str
     password: str
-    user_groups: List[str]
+    user_groups: List[UserGroup]
     options: Options
+
+    class UserGroup(BaseModel):
+        group_name: str
+        role: str
 
     class Options(BaseModel):
         enabled: bool
