@@ -59,7 +59,7 @@ function Signin() {
 
     setLoading(false);
     setUserGroups(user_res.body.user_groups);
-    setUserGroup(user_res.body.user_groups[0]);
+    setUserGroup(user_res.body.user_groups[0].group_name);
     setIdToken(signin_res.body.id_token);
     setEmail(data.email);
     setDialogKind(1);
@@ -147,7 +147,7 @@ function Signin() {
             sx={{ width: "100%" }}
           >
             {user_groups.map((group) => (
-              <MenuItem key={group} value={group}>{group}</MenuItem>
+              <MenuItem key={group.group_name} value={group.group_name}>{group.group_name}</MenuItem>
             ))}
           </Select>
 

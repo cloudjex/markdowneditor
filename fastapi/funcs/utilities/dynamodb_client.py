@@ -37,7 +37,7 @@ class DynamoDBClient:
                 "PK": f"EMAIL#{user.email}",
                 "SK": "USER",
                 "password": user.password,
-                "user_groups": user.user_groups,
+                "user_groups": [i.to_dict() for i in user.user_groups],
                 "options": user.options.to_dict(),
             }
         )

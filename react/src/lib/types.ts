@@ -10,10 +10,14 @@ export interface SigninResponse {
 };
 
 // Object
+export interface UserGroup {
+  group_name: string; role: string;
+}
+
 export interface User {
   email: string;
   password: string;
-  user_groups: string[];
+  user_groups: UserGroup[];
   options: {
     enabled: boolean;
     otp: string;
