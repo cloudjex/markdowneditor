@@ -10,6 +10,16 @@ export interface SigninResponse {
 };
 
 // Object
+export interface User {
+  email: string;
+  password: string;
+  options: {
+    enabled: boolean;
+    otp: string;
+    user_groups: string[];
+  }
+};
+
 export interface Node {
   node_id: string;
   email: string;
