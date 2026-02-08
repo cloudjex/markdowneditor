@@ -58,8 +58,8 @@ function Signin() {
     };
 
     setLoading(false);
-    setUserGroups(user_res.body.options.user_groups);
-    setUserGroup(user_res.body.options.user_groups[0]);
+    setUserGroups(user_res.body.user_groups);
+    setUserGroup(user_res.body.user_groups[0]);
     setIdToken(signin_res.body.id_token);
     setEmail(data.email);
     setDialogKind(1);

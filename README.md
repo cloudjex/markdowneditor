@@ -39,15 +39,16 @@ NoSQL(ドキュメント指向DB)を使用し、Itemは単一テーブルに格�
 - ソートキー: `SK`
 
 ### user item
-| key           | type   | desctiption            | description        |
-| ------------- | ------ | ---------------------- | ------------------ |
-| PK            | str    | value: `EMAIL#{email}` | PartitionKey       |
-| SK            | str    | value: `USER`          | SortKey            |
-| password      | str    | hashed pw              |                    |
-| options       | object | other settings         |                    |
-| ├ enabled     | bool   | active/inactive        |                    |
-| ├ otp         | str    | otp                    | only inactive user |
-| └ user_groups | array  | user groups            |                    |
+| key         | type   | desctiption            | description        |
+| ----------- | ------ | ---------------------- | ------------------ |
+| PK          | str    | value: `EMAIL#{email}` | PartitionKey       |
+| SK          | str    | value: `USER`          | SortKey            |
+| password    | str    | hashed pw              |                    |
+| user_groups | array  | user groups            |                    |
+| options     | object | other settings         |                    |
+| ├ enabled   | bool   | active/inactive        |                    |
+| └ otp       | str    | otp                    | only inactive user |
+
 
 ### user group
 | key   | type  | desctiption                      | description  |

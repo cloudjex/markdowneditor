@@ -29,7 +29,7 @@ class DynamoDBClient:
             return None
         else:
             item["PK"] = item.pop("PK").removeprefix("EMAIL#")
-            return User(item["PK"], item["password"], item["options"])
+            return User(item["PK"], item["password"], item["user_groups"], item["options"])
 
     def put_user(self, user: User) -> None:
         self._db_client.put_item(
@@ -37,6 +37,7 @@ class DynamoDBClient:
                 "PK": f"EMAIL#{user.email}",
                 "SK": "USER",
                 "password": user.password,
+                "user_groups": user.user_groups,
                 "options": user.options.to_dict(),
             }
         )

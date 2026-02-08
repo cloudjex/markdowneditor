@@ -13,10 +13,10 @@ export interface SigninResponse {
 export interface User {
   email: string;
   password: string;
+  user_groups: string[];
   options: {
     enabled: boolean;
     otp: string;
-    user_groups: string[];
   }
 };
 

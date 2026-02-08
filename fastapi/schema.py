@@ -18,12 +18,12 @@ class SignInGroupReq(BaseModel):
 class UserReq(BaseModel):
     email: str
     password: str
+    user_groups: List[str]
     options: Options
 
     class Options(BaseModel):
         enabled: bool
         otp: str
-        user_groups: List[str]
 
 
 class UpdatePasswordReq(BaseModel):
