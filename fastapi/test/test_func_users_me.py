@@ -73,6 +73,25 @@ class TestSuccessPut:
 
 
 class TestFailPut:
+    def test_func_users_me_put_bad_request(self, id_token):
+        res = fa_client.put(
+            url="/api/users/me/password",
+            headers={"Authorization": id_token},
+            json={}
+        )
+        assert res.status_code == 400
+
+    def test_func_users_me_put_invalid_str(self, id_token):
+        res = fa_client.put(
+            url="/api/users/me/password",
+            headers={"Authorization": id_token},
+            json={
+                "old_password": PASSWORD,
+                "new_password": "123",
+            }
+        )
+        assert res.status_code == 400
+
     def test_func_users_me_put_invalid_token(self, invalid_id_token):
         res = fa_client.put(
             url="/api/users/me/password",
@@ -94,14 +113,3 @@ class TestFailPut:
             }
         )
         assert res.status_code == 401
-
-    def test_func_users_me_put_short_password(self, id_token):
-        res = fa_client.put(
-            url="/api/users/me/password",
-            headers={"Authorization": id_token},
-            json={
-                "old_password": PASSWORD,
-                "new_password": "123",
-            }
-        )
-        assert res.status_code == 400

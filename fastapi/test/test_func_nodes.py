@@ -29,21 +29,20 @@ def setup1(id_token, root_node_id):
 
 
 class TestSuccessGet:
-    def test_func_nodes_get_normal(self, id_token):
+    def test_func_nodes_get_nodes(self, id_token):
         res = fa_client.get(
             url="/api/nodes",
             headers={"Authorization": id_token}
         )
         assert res.status_code == 200
 
-        body: dict = res.json()
-        nodes = body["nodes"]
-        assert type(nodes) is list
-        assert type(nodes[0]["user_group"]) is str
-        assert type(nodes[0]["node_id"]) is str
-        assert type(nodes[0]["text"]) is str
+        body: list = res.json()
+        assert type(body) is list
+        assert type(body[0]["user_group"]) is str
+        assert type(body[0]["node_id"]) is str
+        assert type(body[0]["text"]) is str
 
-    def test_func_nodes_get_normal_with_id(self, id_token, root_node_id):
+    def test_func_nodes_get_node(self, id_token, root_node_id):
         res = fa_client.get(
             url=f"/api/nodes/{root_node_id}",
             headers={"Authorization": id_token},
@@ -57,12 +56,26 @@ class TestSuccessGet:
 
 
 class TestFailGet:
-    def test_func_node_get_invalid_token(self, invalid_id_token):
+    def test_func_nodes_get_nodes_invalid_token(self, invalid_id_token):
         res = fa_client.get(
             url="/api/nodes",
             headers={"Authorization": invalid_id_token},
         )
         assert res.status_code == 401
+
+    def test_func_nodes_get_non_exists_node_invalid_token(self, invalid_id_token):
+        res = fa_client.get(
+            url="/api/nodes/nonexists",
+            headers={"Authorization": invalid_id_token},
+        )
+        assert res.status_code == 401
+
+    def test_func_node_get_node_non_exists(self, id_token):
+        res = fa_client.get(
+            url="/api/nodes/nonexists",
+            headers={"Authorization": id_token},
+        )
+        assert res.status_code == 404
 
 
 class TestSuccessPut:
@@ -101,6 +114,14 @@ class TestSuccessPut:
 
 
 class TestFailPut:
+    def test_func_nodes_put_bad_request(self, id_token):
+        res = fa_client.put(
+            url="/api/nodes/non_existing_id",
+            headers={"Authorization": id_token},
+            json={}
+        )
+        assert res.status_code == 400
+
     def test_func_node_put_invalid_token(self, invalid_id_token):
         res = fa_client.put(
             url="/api/nodes/test",

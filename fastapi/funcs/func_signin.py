@@ -9,10 +9,10 @@ def signin(email: str, password: str) -> dict:
     user = db_client.get_user(email=email)
 
     if not user or not Bcrypt().verify(password, user.password):
-        raise errors.UnauthorizedError("func_login.invalid_credentials")
+        raise errors.UnauthorizedError
 
     if not user.options.enabled:
-        raise errors.ForbiddenError("func_login.not_enabled")
+        raise errors.ForbiddenError
 
     id_token = JwtClient().encode(email, "")
 
@@ -24,10 +24,10 @@ def signin_group(email: str, user_group: str) -> dict:
     user = db_client.get_user(email=email)
 
     if not user.options.enabled:
-        raise errors.ForbiddenError("func_login.not_enabled")
+        raise errors.ForbiddenError
 
     if not any(user_group == g.group_name for g in user.user_groups):
-        raise errors.UnauthorizedError("func_login.invalid_user_group")
+        raise errors.UnauthorizedError
 
     id_token = JwtClient().encode(email, user_group)
 

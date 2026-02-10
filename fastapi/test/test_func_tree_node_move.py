@@ -85,6 +85,14 @@ class TestSuccessPut:
 
 
 class TestFailPut:
+    def test_func_tree_node_move_put_bad_request(self, id_token):
+        res = fa_client.put(
+            url="/api/tree/node/move/test",
+            headers={"Authorization": id_token},
+            json={}
+        )
+        assert res.status_code == 400
+
     def test_func_tree_node_move_put_invalid_token(self, invalid_id_token):
         res = fa_client.put(
             url="/api/tree/node/move/test_id",
@@ -129,11 +137,3 @@ class TestFailPut:
             }
         )
         assert res.status_code == 403
-
-    def test_func_tree_node_move_put_no_params(self, id_token):
-        res = fa_client.put(
-            url="/api/tree/node/move/test",
-            headers={"Authorization": id_token},
-            json={}
-        )
-        assert res.status_code == 422

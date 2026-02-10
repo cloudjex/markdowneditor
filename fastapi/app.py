@@ -1,11 +1,12 @@
 import json
 import logging
+from typing import List
 
 from mangum import Mangum
 from starlette.responses import Response
 
-import schema
 from fastapi import Depends, FastAPI, Request
+from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from funcs import (func_nodes, func_signin, func_signout, func_tree,
@@ -13,6 +14,12 @@ from funcs import (func_nodes, func_signin, func_signout, func_tree,
                    func_users_me)
 from funcs.utilities import errors
 from funcs.utilities.jwt_client import JwtClient
+from models import req
+from models.jwt import IdToken, JwtClaim
+from models.node import Node
+from models.result import Result
+from models.tree import Tree
+from models.user import User
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
@@ -78,6 +85,11 @@ async def verify_token(request: Request) -> dict:
 
 
 # =============== Exception Hander ===============
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(_, exc: RequestValidationError):
+    return JSONResponse(status_code=400, content={"detail": exc.errors()})
+
+
 @app.exception_handler(errors.BadRequestError)
 async def bad_request_exception_handler(_, exc: errors.BadRequestError):
     return JSONResponse(status_code=400, content={"detail": exc.error_code})
@@ -108,39 +120,40 @@ async def conflict_exception_handler(_, exc: errors.ConflictError):
     path="/api/signin",
     tags=["Auth"],
     summary="Sign in",
-    response_model=schema.SignInRes,
+    response_model=IdToken,
     responses={
         401: {"description": "Unauthorized Error"},
         403: {"description": "ForbiddenError"},
     },
 )
-async def func_signin_post(req: schema.SignInReq):
+async def func_signin_post(req: req.SignInReq):
     return func_signin.signin(req.email, req.password)
 
 
 @app.post(
     path="/api/signin/group",
     tags=["Auth"],
-    summary="Sign in with user group",
-    response_model=schema.SignInRes,
+    summary="Sign in to user group",
+    response_model=IdToken,
     responses={
         401: {"description": "Unauthorized Error"},
+        403: {"description": "ForbiddenError"},
     },
 )
-async def func_signin_group_post(req: schema.SignInGroupReq, jwt: dict = Depends(verify_token)):
-    return func_signin.signin_group(jwt["email"], req.user_group)
+async def func_signin_group_post(req: req.SignInGroupReq, jwt: JwtClaim = Depends(verify_token)):
+    return func_signin.signin_group(jwt.email, req.user_group)
 
 
 @app.post(
     path="/api/signout",
     tags=["Auth"],
     summary="Sign out",
-    response_model=schema.ResultRes,
+    response_model=Result,
     responses={
         401: {"description": "Unauthorized Error"},
     },
 )
-async def func_signout_post(jwt: dict = Depends(verify_token)):
+async def func_signout_post(jwt: JwtClaim = Depends(verify_token)):
     return func_signout.signout()
 
 
@@ -148,140 +161,136 @@ async def func_signout_post(jwt: dict = Depends(verify_token)):
     path="/api/users/me",
     tags=["User"],
     summary="Get your user info",
-    response_model=schema.UserReq,
+    response_model=User,
     responses={
         401: {"description": "Unauthorized Error"},
-        404: {"description": "NotFound Error"},
     },
 )
-async def func_users_me_get(jwt: dict = Depends(verify_token)):
-    return func_users_me.get_myuser(jwt["email"])
+async def func_users_me_get(jwt: JwtClaim = Depends(verify_token)):
+    return func_users_me.get_myuser(jwt.email)
 
 
 @app.put(
     path="/api/users/me/password",
     tags=["User"],
     summary="Update your password",
-    response_model=schema.ResultRes,
+    response_model=Result,
     responses={
         400: {"description": "BadRequest Error"},
         401: {"description": "Unauthorized Error"},
-        404: {"description": "NotFound Error"},
     },
 )
-async def func_users_me_password_put(req: schema.UpdatePasswordReq, jwt: dict = Depends(verify_token)):
-    return func_users_me.update_mypw(jwt["email"], req.old_password, req.new_password)
+async def func_users_me_password_put(req: req.UpdatePasswordReq, jwt: JwtClaim = Depends(verify_token)):
+    return func_users_me.update_mypw(jwt.email, req.old_password, req.new_password)
 
 
 @app.get(
     path="/api/tree",
     tags=["Tree"],
     summary="Get tree",
-    response_model=schema.Tree,
+    response_model=Tree,
     responses={
         401: {"description": "Unauthorized Error"},
-        404: {"description": "NotFound Error"},
     },
 )
-async def func_tree_get(jwt: dict = Depends(verify_token)):
-    return func_tree.get_tree(jwt["user_group"])
+async def func_tree_get(jwt: JwtClaim = Depends(verify_token)):
+    return func_tree.get_tree(jwt.user_group)
 
 
 @app.post(
     path="/api/tree/node",
     tags=["Tree"],
     summary="Update tree, Insert node",
-    response_model=schema.Tree,
+    response_model=Tree,
     responses={
         401: {"description": "Unauthorized Error"},
         404: {"description": "NotFound Error"},
     },
 )
-async def func_tree_node_post(req: schema.TreeNodePostReq, jwt: dict = Depends(verify_token),):
-    return func_tree_node.post_node(jwt["user_group"], req.parent_id, req.label)
+async def func_tree_node_post(req: req.TreeNodePostReq, jwt: JwtClaim = Depends(verify_token),):
+    return func_tree_node.post_node(jwt.user_group, req.parent_id, req.label)
 
 
 @app.delete(
     path="/api/tree/node/{node_id}",
     tags=["Tree"],
     summary="Update tree, Delete node",
-    response_model=schema.Tree,
+    response_model=Tree,
     responses={
         401: {"description": "Unauthorized Error"},
         403: {"description": "Forbidden Error"},
         404: {"description": "NotFound Error"},
     },
 )
-async def func_tree_node_delete(node_id: str, jwt: dict = Depends(verify_token)):
-    return func_tree_node.delete_node(jwt["user_group"], node_id)
+async def func_tree_node_delete(node_id: str, jwt: JwtClaim = Depends(verify_token)):
+    return func_tree_node.delete_node(jwt.user_group, node_id)
 
 
 @app.put(
     path="/api/tree/node/label/{node_id}",
     tags=["Tree"],
     summary="Update tree, Update label of node",
-    response_model=schema.Tree,
+    response_model=Tree,
     responses={
         401: {"description": "Unauthorized Error"},
         404: {"description": "NotFound Error"},
     },
 )
-async def func_tree_node_label_put(node_id: str, req: schema.TreeNodeLabelPutReq, jwt: dict = Depends(verify_token),):
-    return func_tree_node_label.update_node_label(jwt["user_group"], node_id, req.label)
+async def func_tree_node_label_put(node_id: str, req: req.TreeNodeLabelPutReq, jwt: JwtClaim = Depends(verify_token),):
+    return func_tree_node_label.update_node_label(jwt.user_group, node_id, req.label)
 
 
 @app.put(
     path="/api/tree/node/move/{node_id}",
     tags=["Tree"],
     summary="Update tree, Move node",
-    response_model=schema.Tree,
+    response_model=Tree,
     responses={
         401: {"description": "Unauthorized Error"},
         403: {"description": "Forbidden Error"},
         404: {"description": "NotFound Error"},
     },
 )
-async def func_tree_node_move_put(node_id: str, req: schema.TreeNodeMovePutReq, jwt: dict = Depends(verify_token),):
-    return func_tree_node_move.node_move(jwt["user_group"], node_id, req.parent_id)
+async def func_tree_node_move_put(node_id: str, req: req.TreeNodeMovePutReq, jwt: JwtClaim = Depends(verify_token),):
+    return func_tree_node_move.node_move(jwt.user_group, node_id, req.parent_id)
 
 
 @app.get(
     path="/api/nodes",
     tags=["Node"],
     summary="Get nodes",
-    response_model=schema.NodesRes,
+    response_model=List[Node],
     responses={
         401: {"description": "Unauthorized Error"},
-        404: {"description": "NotFound Error"},
     },
 )
-async def func_get_nodes(jwt: dict = Depends(verify_token)):
-    return func_nodes.get_nodes(jwt["user_group"])
+async def func_get_nodes(jwt: JwtClaim = Depends(verify_token)):
+    return func_nodes.get_nodes(jwt.user_group)
 
 
 @app.get(
     path="/api/nodes/{node_id}",
     tags=["Node"],
     summary="Get node",
-    response_model=schema.NodeRes,
+    response_model=Node,
     responses={
         401: {"description": "Unauthorized Error"},
         404: {"description": "NotFound Error"},
     },
 )
-async def func_get_node(node_id: str,  jwt: dict = Depends(verify_token)):
-    return func_nodes.get_node(jwt["user_group"], node_id)
+async def func_get_node(node_id: str,  jwt: JwtClaim = Depends(verify_token)):
+    return func_nodes.get_node(jwt.user_group, node_id)
 
 
 @app.put(
     path="/api/nodes/{node_id}",
     tags=["Node"],
     summary="Put node",
-    response_model=schema.NodeRes,
+    response_model=Node,
     responses={
         401: {"description": "Unauthorized Error"},
         404: {"description": "NotFound Error"},
     },
 )
-async def func_update_nodes(node_id: str, req: schema.NodePutReq, jwt: dict = Depends(verify_token)):
-    return func_nodes.put_node(jwt["user_group"], node_id, req.text)
+async def func_update_nodes(node_id: str, req: req.NodePutReq, jwt: JwtClaim = Depends(verify_token)):
+    return func_nodes.put_node(jwt.user_group, node_id, req.text)

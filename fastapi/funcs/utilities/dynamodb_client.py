@@ -3,9 +3,9 @@ from boto3.dynamodb.conditions import Key
 from mypy_boto3_dynamodb import service_resource
 
 import config
-from funcs.entities.node import Node
-from funcs.entities.tree import TreeInfo
-from funcs.entities.user import User
+from models.node import Node
+from models.tree import TreeInfo
+from models.user import User
 
 
 class DynamoDBClient:
@@ -29,7 +29,12 @@ class DynamoDBClient:
             return None
         else:
             item["PK"] = item.pop("PK").removeprefix("EMAIL#")
-            return User(item["PK"], item["password"], item["user_groups"], item["options"])
+            return User(
+                email=item["PK"],
+                password=item["password"],
+                user_groups=item["user_groups"],
+                options=item["options"]
+            )
 
     def put_user(self, user: User) -> None:
         self._db_client.put_item(
@@ -37,8 +42,8 @@ class DynamoDBClient:
                 "PK": f"EMAIL#{user.email}",
                 "SK": "USER",
                 "password": user.password,
-                "user_groups": [i.to_dict() for i in user.user_groups],
-                "options": user.options.to_dict(),
+                "user_groups": [i.model_dump() for i in user.user_groups],
+                "options": user.options.model_dump(),
             }
         )
 
@@ -58,14 +63,17 @@ class DynamoDBClient:
             return None
         else:
             item["PK"] = item.pop("PK").removeprefix("GROUP_NAME#")
-            return TreeInfo(item["PK"], item["tree"])
+            return TreeInfo(
+                user_group=item["PK"],
+                tree=item["tree"]
+            )
 
     def put_tree_info(self, tree_info: TreeInfo) -> None:
         self._db_client.put_item(
             Item={
                 "PK": f"GROUP_NAME#{tree_info.user_group}",
                 "SK": "TREE_INFO",
-                "tree": tree_info.tree.to_dict(),
+                "tree": tree_info.tree.model_dump(),
             }
         )
 
@@ -86,7 +94,11 @@ class DynamoDBClient:
         else:
             item["PK"] = item.pop("PK").removeprefix("GROUP_NAME#")
             item["SK"] = item.pop("SK").removeprefix("NODE#")
-            return Node(item["PK"], item["SK"], item["text"])
+            return Node(
+                user_group=item["PK"],
+                node_id=item["SK"],
+                text=item["text"]
+            )
 
     def get_nodes(self, user_group: str) -> list[Node] | None:
         response = self._db_client.query(
@@ -104,7 +116,13 @@ class DynamoDBClient:
             for item in items:
                 item["PK"] = item.pop("PK").removeprefix("GROUP_NAME#")
                 item["SK"] = item.pop("SK").removeprefix("NODE#")
-                entities.append(Node(item["PK"], item["SK"], item["text"]))
+                entities.append(
+                    Node(
+                        user_group=item["PK"],
+                        node_id=item["SK"],
+                        text=item["text"]
+                    )
+                )
             return entities
 
     def put_node(self, node: Node) -> None:

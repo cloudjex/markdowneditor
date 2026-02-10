@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 
-import type { SigninForm, SigninResponse, User, Tree } from "@/src/lib/types";
+import type { SigninForm, IdToken, User, Tree } from "@/src/lib/types";
 
 import RequestHandler from "@/src/lib/request_handler";
 import loadingState from "@/src/store/loading_store";
@@ -34,7 +34,7 @@ function Signin() {
     setSigninError(false);
 
     const requests = new RequestHandler();
-    const signin_res = await requests.post<SigninResponse>(
+    const signin_res = await requests.post<IdToken>(
       `${import.meta.env.VITE_API_HOST}/api/signin`,
       { email: data.email, password: data.password }
     );
@@ -75,7 +75,7 @@ function Signin() {
     setLoading(true);
 
     const requests = new RequestHandler(id_token);
-    const signin_res = await requests.post<SigninResponse>(
+    const signin_res = await requests.post<IdToken>(
       `${import.meta.env.VITE_API_HOST}/api/signin/group`,
       { user_group: user_group }
     );

@@ -5,11 +5,23 @@ export interface APIResponse<T> {
   body: T;
 };
 
-export interface SigninResponse {
-  id_token: string;
+// Form
+export interface SigninForm {
+  email: string;
+  password: string;
+};
+
+export interface SignupForm {
+  email: string;
+  password: string;
+  password_confirm: string;
 };
 
 // Object
+export interface IdToken {
+  id_token: string;
+};
+
 export interface UserGroup {
   group_name: string; role: string;
 }
@@ -25,8 +37,8 @@ export interface User {
 };
 
 export interface Node {
+  user_group: string;
   node_id: string;
-  email: string;
   text: string;
 };
 
@@ -34,16 +46,4 @@ export interface Tree {
   node_id: string;
   label: string;
   children: Tree[];
-};
-
-// Form
-export interface SigninForm {
-  email: string;
-  password: string;
-};
-
-export interface SignupForm {
-  email: string;
-  password: string;
-  password_confirm: string;
 };

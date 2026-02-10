@@ -1,73 +1,56 @@
 import uuid
 
-from funcs.entities.node import Node
-from funcs.entities.tree import Tree
 from funcs.utilities import errors
 from funcs.utilities.dynamodb_client import DynamoDBClient
 from funcs.utilities.tree_handler import TreeHandler
+from models.node import Node
+from models.tree import Tree
 
 
 def post_node(user_group: str, parent_id: str, label: str) -> dict:
     db_client = DynamoDBClient()
 
     tree_info = db_client.get_tree_info(user_group)
-    if not tree_info:
-        raise errors.NotFoundError("func_tree_node.not_found")
 
     insert_id = str(uuid.uuid4())
-    insert_node = {
-        "node_id": insert_id,
-        "label": label,
-        "children": [],
-    }
+    insert_node = Tree(node_id=insert_id, label=label, children=[])
 
-    tree_handler = TreeHandler(tree_info.tree.to_dict())
+    tree_handler = TreeHandler(tree_info.tree)
     tree_handler.insert_node(parent_id, insert_node)
     new_tree = tree_handler.sort_tree()
+    tree_info.tree = new_tree
 
-    tree_info.tree = Tree(
-        new_tree["node_id"],
-        new_tree["label"],
-        new_tree["children"]
-    )
-
-    new_node = Node(user_group, insert_id, "")
+    new_node = Node(user_group=user_group, node_id=insert_id, text="")
 
     db_client.put_tree_info(tree_info)
     db_client.put_node(new_node)
 
-    return new_tree
+    return new_tree.model_dump()
 
 
 def delete_node(user_group: str, node_id: str) -> dict:
     db_client = DynamoDBClient()
 
     tree_info = db_client.get_tree_info(user_group)
-    if not tree_info:
-        raise errors.NotFoundError("func_tree_node.not_found")
 
-    tree_handler = TreeHandler(tree_info.tree.to_dict())
+    tree_handler = TreeHandler(tree_info.tree)
 
     node = tree_handler.recursive_get(node_id)
     if not node:
-        raise errors.NotFoundError("func_tree_node.not_found")
-    if node["node_id"] == tree_info.tree.node_id:
-        raise errors.ForbiddenError("func_tree_node.cant_delete")
+        raise errors.NotFoundError
+    if node.node_id == tree_info.tree.node_id:
+        raise errors.ForbiddenError
 
     del_targets = tree_handler.get_children_ids(node_id)
     del_targets.append(node_id)
 
     tree_handler.del_node(node_id)
     new_tree = tree_handler.sort_tree()
-
-    tree_info.tree = Tree(
-        new_tree["node_id"],
-        new_tree["label"],
-        new_tree["children"]
-    )
+    tree_info.tree = new_tree
 
     for del_id in del_targets:
-        db_client.delete_node(Node(user_group, del_id, ""))
+        n = Node(user_group=user_group, node_id=del_id, text="")
+        db_client.delete_node(n)
     db_client.put_tree_info(tree_info)
 
-    return new_tree
+    return new_tree.model_dump()

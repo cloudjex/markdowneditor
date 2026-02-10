@@ -4,6 +4,7 @@ import jwt
 
 import config
 from funcs.utilities import errors
+from models.jwt import JwtClaim
 
 
 class JwtClient:
@@ -23,7 +24,7 @@ class JwtClient:
             algorithm="HS256",
         )
 
-    def verify(self, id_token: str) -> dict:
+    def verify(self, id_token: str) -> JwtClaim:
         try:
             decoded = jwt.decode(
                 jwt=id_token.removeprefix("Bearer "),
@@ -35,11 +36,9 @@ class JwtClient:
             )
 
             if "email" not in decoded or "user_group" not in decoded:
-                raise errors.UnauthorizedError("JwtClient.invalid_payload")
+                raise errors.UnauthorizedError
 
-            return decoded
+            return JwtClaim(**decoded)
 
         except Exception as e:
-            raise errors.UnauthorizedError(
-                "JwtClient.invalid_credentials"
-            ) from e
+            raise errors.UnauthorizedError from e

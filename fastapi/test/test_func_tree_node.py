@@ -80,20 +80,20 @@ class TestSuccessPost:
 
 
 class TestFailPost:
+    def test_func_tree_node_post_bad_request(self, id_token):
+        res = fa_client.post(
+            url="/api/tree/node",
+            headers={"Authorization": id_token},
+            json={}
+        )
+        assert res.status_code == 400
+
     def test_func_tree_node_post_invalid_token(self, invalid_id_token):
         res = fa_client.post(
             url="/api/tree/node",
             headers={"Authorization": invalid_id_token}
         )
         assert res.status_code == 401
-
-    def test_func_tree_node_post_no_params(self, id_token):
-        res = fa_client.post(
-            url="/api/tree/node",
-            headers={"Authorization": id_token},
-            json={}
-        )
-        assert res.status_code == 422
 
 
 class TestSuccessDelete:

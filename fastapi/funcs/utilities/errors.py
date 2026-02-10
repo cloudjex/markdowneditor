@@ -1,8 +1,14 @@
+import inspect
+
+
 class BaseExceptionClass(Exception):
     error_code: str = None
 
-    def __init__(self, error_code: str):
-        self.error_code = error_code
+    def __init__(self):
+        frame = inspect.stack()[1]
+        function = frame.function
+        line = frame.lineno
+        self.error_code = f"{function}#{line}"
 
 
 class BadRequestError(BaseExceptionClass):
