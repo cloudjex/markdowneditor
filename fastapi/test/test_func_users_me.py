@@ -18,7 +18,7 @@ def setup1(id_token):
         json={
             "old_password": new_password,
             "new_password": PASSWORD,
-        }
+        },
     )
     assert res.status_code == 200
 
@@ -64,7 +64,7 @@ class TestSuccessPut:
             json={
                 "old_password": PASSWORD,
                 "new_password": new_password,
-            }
+            },
         )
         assert res.status_code == 200
 
@@ -73,17 +73,6 @@ class TestSuccessPut:
 
 
 class TestFailPut:
-    def test_func_users_me_put_invalid_str(self, id_token):
-        res = fa_client.put(
-            url="/api/users/me/password",
-            headers={"Authorization": id_token},
-            json={
-                "old_password": PASSWORD,
-                "new_password": "123",
-            }
-        )
-        assert res.status_code == 400
-
     def test_func_users_me_put_invalid_token(self, invalid_id_token):
         res = fa_client.put(
             url="/api/users/me/password",
@@ -91,7 +80,7 @@ class TestFailPut:
             json={
                 "old_password": "test",
                 "new_password": "test",
-            }
+            },
         )
         assert res.status_code == 401
 
@@ -102,14 +91,23 @@ class TestFailPut:
             json={
                 "old_password": PASSWORD + "wrong",
                 "new_password": "wrong",
-            }
+            },
         )
         assert res.status_code == 401
 
     def test_func_users_me_put_bad_request(self, id_token):
         res = fa_client.put(
+            url="/api/users/me/password", headers={"Authorization": id_token}, json={}
+        )
+        assert res.status_code == 422
+
+    def test_func_users_me_put_invalid_str(self, id_token):
+        res = fa_client.put(
             url="/api/users/me/password",
             headers={"Authorization": id_token},
-            json={}
+            json={
+                "old_password": PASSWORD,
+                "new_password": "123",
+            },
         )
         assert res.status_code == 422

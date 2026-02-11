@@ -31,17 +31,13 @@ async def func(
     path="/users/me/password",
     summary="Update your password",
     response_model=Result,
-    responses={400: config.RES_400, 401: config.RES_401, 422: config.RES_422},
+    responses={401: config.RES_401, 422: config.RES_422},
 )
 async def func(
     req: req.UpdatePassword,
     jwt: JwtClaim = Depends(JwtClient().verify),
 ):
     user = db_client.get_user(jwt.email)
-
-    if len(req.new_password) < 4 or len(req.new_password) > 20:
-        raise errors.BadRequestError
-
     if not Bcrypt().verify(req.old_password, user.password):
         raise errors.UnauthorizedError
 

@@ -29,7 +29,7 @@ async def func(
     if not user.options.enabled:
         raise errors.ForbiddenError
 
-    id_token = JwtClient().encode(req.email, "")
+    id_token = JwtClient().encode(req.email)
     return {"id_token": id_token}
 
 

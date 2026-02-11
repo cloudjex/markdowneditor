@@ -26,7 +26,7 @@ def setup1(id_token, root_node_id):
         headers={"Authorization": id_token},
         json={
             "label": root_label,
-        }
+        },
     )
     assert res.status_code == 200
 
@@ -42,7 +42,7 @@ class TestSuccessPut:
             headers={"Authorization": id_token},
             json={
                 "label": new_label,
-            }
+            },
         )
         assert res.status_code == 200
 
@@ -56,15 +56,25 @@ class TestSuccessPut:
 class TestFailPut:
     def test_func_tree_node_label_put_invalid_token(self, invalid_id_token):
         res = fa_client.put(
-            url="/api/tree/node/label/test",
-            headers={"Authorization": invalid_id_token}
+            url="/api/tree/node/label/00000000-0000-0000-0000-000000000000",
+            headers={"Authorization": invalid_id_token},
         )
         assert res.status_code == 401
 
     def test_func_tree_node_label_bad_request(self, id_token):
         res = fa_client.put(
-            url="/api/tree/node/label/test",
+            url="/api/tree/node/label/00000000-0000-0000-0000-000000000000",
             headers={"Authorization": id_token},
-            json={}
+            json={},
+        )
+        assert res.status_code == 422
+
+    def test_func_tree_node_label_invalid_str(self, id_token, root_node_id):
+        res = fa_client.put(
+            url=f"/api/tree/node/label/{root_node_id}",
+            headers={"Authorization": id_token},
+            json={
+                "label": "",
+            },
         )
         assert res.status_code == 422

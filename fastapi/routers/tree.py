@@ -1,11 +1,12 @@
 import uuid
 
 import config
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Path
 from models import req
 from models.jwt import JwtClaim
 from models.node import Node
 from models.tree import Tree
+from models.uuid4_str import pattern
 from utilities import errors
 from utilities.dynamodb_client import DynamoDBClient
 from utilities.jwt_client import JwtClient
@@ -60,10 +61,15 @@ async def func(
     path="/tree/node/{node_id}",
     summary="Update tree, Delete node",
     response_model=Tree,
-    responses={401: config.RES_401, 403: config.RES_403, 404: config.RES_404, 422: config.RES_422},
+    responses={
+        401: config.RES_401,
+        403: config.RES_403,
+        404: config.RES_404,
+        422: config.RES_422,
+    },
 )
 async def func(
-    node_id: str,
+    node_id: str = Path(**pattern),
     jwt: JwtClaim = Depends(JwtClient().verify),
 ):
     tree_info = db_client.get_tree_info(jwt.user_group)
@@ -97,8 +103,8 @@ async def func(
     responses={401: config.RES_401, 404: config.RES_404, 422: config.RES_422},
 )
 async def func(
-    node_id: str,
     req: req.TreeNodeLabelPut,
+    node_id: str = Path(**pattern),
     jwt: JwtClaim = Depends(JwtClient().verify),
 ):
     tree_info = db_client.get_tree_info(jwt.user_group)
@@ -116,12 +122,16 @@ async def func(
     path="/tree/node/move/{node_id}",
     summary="Update tree, Move node",
     response_model=Tree,
-    responses={401: config.RES_401, 403: config.RES_403,
-               404: config.RES_404, 422: config.RES_422},
+    responses={
+        401: config.RES_401,
+        403: config.RES_403,
+        404: config.RES_404,
+        422: config.RES_422,
+    },
 )
 async def func(
-    node_id: str,
     req: req.TreeNodeMovePut,
+    node_id: str = Path(**pattern),
     jwt: JwtClaim = Depends(JwtClient().verify),
 ):
     tree_info = db_client.get_tree_info(jwt.user_group)

@@ -9,7 +9,7 @@ from utilities import errors
 
 
 class JwtClient:
-    def encode(self, email: str, user_group: str) -> str:
+    def encode(self, email: str, user_group: str = "") -> str:
         claim = {
             "email": email,
             "user_group": user_group,

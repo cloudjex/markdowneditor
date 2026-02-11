@@ -33,7 +33,7 @@ class DynamoDBClient:
                 email=item["PK"],
                 password=item["password"],
                 user_groups=item["user_groups"],
-                options=item["options"]
+                options=item["options"],
             )
 
     def put_user(self, user: User) -> None:
@@ -63,10 +63,7 @@ class DynamoDBClient:
             return None
         else:
             item["PK"] = item.pop("PK").removeprefix("GROUP_NAME#")
-            return TreeInfo(
-                user_group=item["PK"],
-                tree=item["tree"]
-            )
+            return TreeInfo(user_group=item["PK"], tree=item["tree"])
 
     def put_tree_info(self, tree_info: TreeInfo) -> None:
         self._db_client.put_item(
@@ -94,17 +91,13 @@ class DynamoDBClient:
         else:
             item["PK"] = item.pop("PK").removeprefix("GROUP_NAME#")
             item["SK"] = item.pop("SK").removeprefix("NODE#")
-            return Node(
-                user_group=item["PK"],
-                node_id=item["SK"],
-                text=item["text"]
-            )
+            return Node(user_group=item["PK"], node_id=item["SK"], text=item["text"])
 
     def get_nodes(self, user_group: str) -> list[Node] | None:
         response = self._db_client.query(
             KeyConditionExpression=(
-                Key("PK").eq(f"GROUP_NAME#{user_group}") &
-                Key("SK").begins_with("NODE#")
+                Key("PK").eq(f"GROUP_NAME#{user_group}")
+                & Key("SK").begins_with("NODE#")
             )
         )
         items = response.get("Items")
@@ -117,11 +110,7 @@ class DynamoDBClient:
                 item["PK"] = item.pop("PK").removeprefix("GROUP_NAME#")
                 item["SK"] = item.pop("SK").removeprefix("NODE#")
                 entities.append(
-                    Node(
-                        user_group=item["PK"],
-                        node_id=item["SK"],
-                        text=item["text"]
-                    )
+                    Node(user_group=item["PK"], node_id=item["SK"], text=item["text"])
                 )
             return entities
 

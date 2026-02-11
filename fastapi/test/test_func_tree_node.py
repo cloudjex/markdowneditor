@@ -33,7 +33,7 @@ def setup2(id_token, root_node_id):
         json={
             "parent_id": root_node_id,
             "label": new_node_label,
-        }
+        },
     )
     assert res.status_code == 200
 
@@ -61,7 +61,7 @@ class TestSuccessPost:
             json={
                 "parent_id": root_node_id,
                 "label": new_node_label,
-            }
+            },
         )
         assert res.status_code == 200
 
@@ -82,16 +82,24 @@ class TestSuccessPost:
 class TestFailPost:
     def test_func_tree_node_post_invalid_token(self, invalid_id_token):
         res = fa_client.post(
-            url="/api/tree/node",
-            headers={"Authorization": invalid_id_token}
+            url="/api/tree/node", headers={"Authorization": invalid_id_token}
         )
         assert res.status_code == 401
 
     def test_func_tree_node_post_bad_request(self, id_token):
         res = fa_client.post(
+            url="/api/tree/node", headers={"Authorization": id_token}, json={}
+        )
+        assert res.status_code == 422
+
+    def test_func_tree_node_post_invalid_str(self, id_token, root_node_id):
+        res = fa_client.post(
             url="/api/tree/node",
             headers={"Authorization": id_token},
-            json={}
+            json={
+                "parent_id": root_node_id,
+                "label": "",
+            },
         )
         assert res.status_code == 422
 
@@ -118,8 +126,8 @@ class TestSuccessDelete:
 class TestFailDelete:
     def test_func_tree_node_delete_invalid_token(self, invalid_id_token):
         res = fa_client.delete(
-            url="/api/tree/node/test",
-            headers={"Authorization": invalid_id_token}
+            url="/api/tree/node/00000000-0000-0000-0000-000000000000",
+            headers={"Authorization": invalid_id_token},
         )
         assert res.status_code == 401
 
@@ -132,7 +140,7 @@ class TestFailDelete:
 
     def test_func_tree_node_delete_non_exist(self, id_token):
         res = fa_client.delete(
-            url="/api/tree/node/non_exist_node",
+            url="/api/tree/node/00000000-0000-0000-0000-000000000000",
             headers={"Authorization": id_token},
         )
         assert res.status_code == 404

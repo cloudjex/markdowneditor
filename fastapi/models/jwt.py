@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
 
 
 class IdToken(BaseModel):
@@ -6,7 +6,7 @@ class IdToken(BaseModel):
 
 
 class JwtClaim(BaseModel):
-    email: str
+    email: EmailStr
     user_group: str
     iss: str
     aud: str

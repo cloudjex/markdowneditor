@@ -40,10 +40,7 @@ class SmtpClient:
 
     def send(self, recipient: str, subject: str, body: str) -> None:
         if not (
-            self.smtp_user and
-            self.smtp_pass and
-            self.smtp_host and
-            self.smtp_port
+            self.smtp_user and self.smtp_pass and self.smtp_host and self.smtp_port
         ):
             print(f"Warning: SMTP is not configured. Can't send email to {recipient}.")
             return

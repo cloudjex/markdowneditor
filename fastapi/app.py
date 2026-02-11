@@ -40,13 +40,17 @@ async def __log(request: Request, call_next):
     except:
         body = {}
 
-    log_content = json.dumps({
-        "Url": request.url.path,
-        "Method": request.method,
-        "Header": dict(request.headers),
-        "Params": dict(request.query_params),
-        "Body": body,
-    }, indent=2, ensure_ascii=False)
+    log_content = json.dumps(
+        {
+            "Url": request.url.path,
+            "Method": request.method,
+            "Header": dict(request.headers),
+            "Params": dict(request.query_params),
+            "Body": body,
+        },
+        indent=2,
+        ensure_ascii=False,
+    )
     logger.info(f"[REQUEST] {log_content}")
 
     response: Response = await call_next(request)
@@ -59,10 +63,14 @@ async def __log(request: Request, call_next):
     except:
         parsed = resp_text
 
-    log_content = json.dumps({
-        "Header": dict(response.headers),
-        "Body": parsed,
-    }, indent=2, ensure_ascii=False)
+    log_content = json.dumps(
+        {
+            "Header": dict(response.headers),
+            "Body": parsed,
+        },
+        indent=2,
+        ensure_ascii=False,
+    )
     logger.info(f"[RESPONSE] {log_content}")
 
     return Response(
@@ -75,25 +83,25 @@ async def __log(request: Request, call_next):
 
 # =============== Exception Hander ===============
 @app.exception_handler(errors.BadRequestError)
-async def bad_request_exception_handler(_, exc: errors.BadRequestError):
+async def exception_handler(_, exc: errors.BadRequestError):
     return JSONResponse(status_code=400, content={"detail": exc.error_code})
 
 
 @app.exception_handler(errors.UnauthorizedError)
-async def unauthorized_exception_handler(_, exc: errors.UnauthorizedError):
+async def exception_handler(_, exc: errors.UnauthorizedError):
     return JSONResponse(status_code=401, content={"detail": exc.error_code})
 
 
 @app.exception_handler(errors.ForbiddenError)
-async def forbidden_exception_handler(_, exc: errors.ForbiddenError):
+async def exception_handler(_, exc: errors.ForbiddenError):
     return JSONResponse(status_code=403, content={"detail": exc.error_code})
 
 
 @app.exception_handler(errors.NotFoundError)
-async def notfound_exception_handler(_, exc: errors.NotFoundError):
+async def exception_handler(_, exc: errors.NotFoundError):
     return JSONResponse(status_code=404, content={"detail": exc.error_code})
 
 
 @app.exception_handler(errors.ConflictError)
-async def conflict_exception_handler(_, exc: errors.ConflictError):
+async def exception_handler(_, exc: errors.ConflictError):
     return JSONResponse(status_code=409, content={"detail": exc.error_code})
