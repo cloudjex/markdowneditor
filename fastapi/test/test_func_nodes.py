@@ -114,14 +114,6 @@ class TestSuccessPut:
 
 
 class TestFailPut:
-    def test_func_nodes_put_bad_request(self, id_token):
-        res = fa_client.put(
-            url="/api/nodes/non_existing_id",
-            headers={"Authorization": id_token},
-            json={}
-        )
-        assert res.status_code == 400
-
     def test_func_node_put_invalid_token(self, invalid_id_token):
         res = fa_client.put(
             url="/api/nodes/test",
@@ -138,3 +130,11 @@ class TestFailPut:
             }
         )
         assert res.status_code == 404
+
+    def test_func_nodes_put_bad_request(self, id_token):
+        res = fa_client.put(
+            url="/api/nodes/non_existing_id",
+            headers={"Authorization": id_token},
+            json={}
+        )
+        assert res.status_code == 422

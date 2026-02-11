@@ -1,32 +1,32 @@
 from pydantic import BaseModel
 
 
-class SignInReq(BaseModel):
+class SignIn(BaseModel):
     email: str
     password: str
 
 
-class SignInGroupReq(BaseModel):
+class SignInGroup(BaseModel):
     user_group: str
 
 
-class UpdatePasswordReq(BaseModel):
+class UpdatePassword(BaseModel):
     old_password: str
     new_password: str
 
 
-class TreeNodePostReq(BaseModel):
+class TreeNodePost(BaseModel):
     parent_id: str
     label: str
 
 
-class TreeNodeLabelPutReq(BaseModel):
+class TreeNodeLabelPut(BaseModel):
     label: str
 
 
-class TreeNodeMovePutReq(BaseModel):
+class TreeNodeMovePut(BaseModel):
     parent_id: str
 
 
-class NodePutReq(BaseModel):
+class NodePut(BaseModel):
     text: str

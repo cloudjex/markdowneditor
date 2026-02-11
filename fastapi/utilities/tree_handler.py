@@ -1,5 +1,5 @@
-from funcs.utilities import errors
 from models.tree import Tree
+from utilities import errors
 
 
 class TreeHandler:

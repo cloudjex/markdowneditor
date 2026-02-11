@@ -2,7 +2,7 @@ import pytest
 
 import app
 from fastapi.testclient import TestClient
-from funcs.utilities.jwt_client import JwtClient
+from utilities.jwt_client import JwtClient
 
 # Test Accounts
 EMAIL = "test@gmail.com"

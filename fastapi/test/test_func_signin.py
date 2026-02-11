@@ -17,13 +17,6 @@ class TestSuccessPost:
 
 
 class TestFailPost:
-    def test_func_signin_bad_request(self):
-        res = fa_client.post(
-            url="/api/signin",
-            json={}
-        )
-        assert res.status_code == 400
-
     def test_func_signin_no_params(self):
         res = fa_client.post(
             url="/api/signin",
@@ -43,3 +36,10 @@ class TestFailPost:
             }
         )
         assert res.status_code == 401
+
+    def test_func_signin_bad_request(self):
+        res = fa_client.post(
+            url="/api/signin",
+            json={}
+        )
+        assert res.status_code == 422

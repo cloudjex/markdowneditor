@@ -3,8 +3,9 @@ import time
 import jwt
 
 import config
-from funcs.utilities import errors
+from fastapi import Request
 from models.jwt import JwtClaim
+from utilities import errors
 
 
 class JwtClient:
@@ -24,7 +25,7 @@ class JwtClient:
             algorithm="HS256",
         )
 
-    def verify(self, id_token: str) -> JwtClaim:
+    def verify_token(self, id_token: str) -> JwtClaim:
         try:
             decoded = jwt.decode(
                 jwt=id_token.removeprefix("Bearer "),
@@ -42,3 +43,7 @@ class JwtClient:
 
         except Exception as e:
             raise errors.UnauthorizedError from e
+
+    async def verify(self, request: Request) -> JwtClaim:
+        token = request.headers.get("Authorization", "")
+        return self.verify_token(token)
