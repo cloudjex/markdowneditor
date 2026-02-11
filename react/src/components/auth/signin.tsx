@@ -35,7 +35,7 @@ function Signin() {
 
     const requests = new RequestHandler();
     const signin_res = await requests.post<IdToken>(
-      `${import.meta.env.VITE_API_HOST}/api/signin`,
+      `/api/signin`,
       { email: data.email, password: data.password }
     );
 
@@ -48,7 +48,7 @@ function Signin() {
     requests.id_token = signin_res.body.id_token;
 
     const user_res = await requests.get<User>(
-      `${import.meta.env.VITE_API_HOST}/api/users/me`,
+      `/api/users/me`,
     );
 
     if (user_res.status != 200) {
@@ -76,13 +76,13 @@ function Signin() {
 
     const requests = new RequestHandler(id_token);
     const signin_res = await requests.post<IdToken>(
-      `${import.meta.env.VITE_API_HOST}/api/signin/group`,
+      `/api/signin/group`,
       { user_group: user_group }
     );
 
     requests.id_token = signin_res.body.id_token;
     const tree_res = await requests.get<Tree>(
-      `${import.meta.env.VITE_API_HOST}/api/tree`,
+      `/api/tree`,
     );
 
     setLoading(false);

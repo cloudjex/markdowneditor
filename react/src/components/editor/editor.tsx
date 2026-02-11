@@ -26,7 +26,7 @@ function Editor(props: { tree: Tree, node_id: string }) {
       setLoading(true);
 
       const res = await requests.get<Node>(
-        `${import.meta.env.VITE_API_HOST}/api/nodes/${props.node_id}`,
+        `/api/nodes/${props.node_id}`,
       );
 
       setMarkdownValue(res.body.text);

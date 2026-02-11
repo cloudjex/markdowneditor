@@ -37,7 +37,7 @@ function EditorHeader(props: { node_id: string, tree: Tree, text: string }) {
     setLoading(true);
 
     await requests.put(
-      `${import.meta.env.VITE_API_HOST}/api/nodes/${props.node_id}`,
+      `/api/nodes/${props.node_id}`,
       { text: props.text }
     );
 
@@ -61,7 +61,7 @@ function EditorHeader(props: { node_id: string, tree: Tree, text: string }) {
     setLoading(true);
 
     const res = await requests.put<Tree>(
-      `${import.meta.env.VITE_API_HOST}/api/tree/node/label/${node_id}`,
+      `/api/tree/node/label/${node_id}`,
       { label: label }
     );
 
@@ -79,7 +79,7 @@ function EditorHeader(props: { node_id: string, tree: Tree, text: string }) {
     setLoading(true);
 
     const res = await requests.put<Tree>(
-      `${import.meta.env.VITE_API_HOST}/api/tree/node/move/${node_id}`,
+      `/api/tree/node/move/${node_id}`,
       { parent_id: parent_id }
     );
 

@@ -37,7 +37,7 @@ function Preview() {
       setLoading(true);
 
       const res = await requests.get<Node>(
-        `${import.meta.env.VITE_API_HOST}/api/nodes/${node_id}`,
+        `/api/nodes/${node_id}`,
       );
 
       setLoading(false);

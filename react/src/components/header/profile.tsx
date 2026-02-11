@@ -22,7 +22,7 @@ function Profile() {
     setLoading(true);
 
     const res = await requests.get<Tree>(
-      `${import.meta.env.VITE_API_HOST}/api/tree`,
+      `/api/tree`,
     );
 
     setTree(res.body);
@@ -35,7 +35,7 @@ function Profile() {
     setLoading(true);
 
     await requests.post(
-      `${import.meta.env.VITE_API_HOST}/api/signout`,
+      `/api/signout`,
     );
 
     setLoading(false);
