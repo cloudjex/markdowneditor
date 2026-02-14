@@ -37,9 +37,11 @@ export interface User {
 };
 
 export interface Node {
-  user_group: string;
   node_id: string;
+  label: string;
+  user_group: string;
   text: string;
+  children: string[],
 };
 
 export interface Tree {

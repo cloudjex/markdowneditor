@@ -41,9 +41,13 @@ function TreeUpdate(props: { node_id: string, tree: Tree }) {
     closeDialog();
     setLoading(true);
 
-    const res = await requests.post<Tree>(
-      `/api/tree/node`,
-      { parent_id: props.node_id, label: label }
+    await requests.post(
+      `/api/nodes/${props.node_id}`,
+      { label: label, text: "" }
+    );
+
+    const res = await requests.get<Tree>(
+      `/api/tree`,
     );
 
     setTree(res.body);
@@ -58,12 +62,16 @@ function TreeUpdate(props: { node_id: string, tree: Tree }) {
     const parent_node = tree_handler.getParentNode(del_node_id);
     const next_node_id = parent_node?.node_id || props.tree.node_id;
 
-    const res = await requests.delete<Tree>(
-      `/api/tree/node/${del_node_id}`,
+    await requests.delete(
+      `/api/nodes/${del_node_id}`,
     );
 
-    setLoading(false);
+    const res = await requests.get<Tree>(
+      `/api/tree`,
+    );
+
     setTree(res.body);
+    setLoading(false);
     navigate(`/node/${next_node_id}`);
   };
 
@@ -145,7 +153,7 @@ function TreeUpdate(props: { node_id: string, tree: Tree }) {
         </DialogTitle>
 
         <DialogContent
-          sx={{fontSize: "80%"}}
+          sx={{ fontSize: "80%" }}
         >
           現在のページとその配下のページを削除します。よろしいですか？
         </DialogContent>

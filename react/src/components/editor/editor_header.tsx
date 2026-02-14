@@ -38,7 +38,7 @@ function EditorHeader(props: { node_id: string, tree: Tree, text: string }) {
 
     await requests.put(
       `/api/nodes/${props.node_id}`,
-      { text: props.text }
+      { text: props.text, label: label }
     );
 
     setLoading(false);
@@ -51,8 +51,8 @@ function EditorHeader(props: { node_id: string, tree: Tree, text: string }) {
     setIsMenuOpen(null);
   };
 
-  async function updateNodeLabel(node_id: string, label: string) {
-    if (!label) {
+  async function updateNodeLabel() {
+    if (!labelInput.label) {
       setLabelInput({ ...labelInput, isInvalid: true, });
       throw new Error("label is invalid");
     }
@@ -60,17 +60,21 @@ function EditorHeader(props: { node_id: string, tree: Tree, text: string }) {
     closeDialog();
     setLoading(true);
 
-    const res = await requests.put<Tree>(
-      `/api/tree/node/label/${node_id}`,
-      { label: label }
+    await requests.put(
+      `/api/nodes/${props.node_id}`,
+      { text: props.text, label: labelInput.label }
+    );
+
+    const res = await requests.get<Tree>(
+      `/api/tree`,
     );
 
     setTree(res.body);
     setLoading(false);
   }
 
-  async function updateMoveNode(node_id: string, parent_id: string = "") {
-    if (!parent_id) {
+  async function updateMoveNode() {
+    if (!moveInput.parent_id) {
       setMoveInput({ ...moveInput, isInvalid: true });
       throw new Error("destination is invalid");
     }
@@ -78,9 +82,13 @@ function EditorHeader(props: { node_id: string, tree: Tree, text: string }) {
     closeDialog();
     setLoading(true);
 
-    const res = await requests.put<Tree>(
-      `/api/tree/node/move/${node_id}`,
-      { parent_id: parent_id }
+    await requests.put<Tree>(
+      `/api/nodes/move/${props.node_id}`,
+      { parent_id: moveInput.parent_id }
+    );
+
+    const res = await requests.get<Tree>(
+      `/api/tree`,
     );
 
     setTree(res.body);
@@ -195,7 +203,7 @@ function EditorHeader(props: { node_id: string, tree: Tree, text: string }) {
         <DialogActions>
           <Button
             autoFocus
-            onClick={() => updateNodeLabel(props.node_id, labelInput.label)}
+            onClick={() => updateNodeLabel()}
           >
             OK
           </Button>
@@ -237,7 +245,7 @@ function EditorHeader(props: { node_id: string, tree: Tree, text: string }) {
         <DialogActions>
           <Button
             autoFocus
-            onClick={() => updateMoveNode(props.node_id, moveInput.parent_id)}
+            onClick={() => updateMoveNode()}
           >
             OK
           </Button>
