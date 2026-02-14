@@ -20,17 +20,26 @@ class TestFailPost:
     def test_func_signin_invalid_email_pw(self):
         res = fa_client.post(
             url="/api/signin",
-            json={"email": "invalid@gmail.com", "password": "invalid"},
+            json={
+                "email": "invalid@gmail.com",
+                "password": "invalid",
+            },
         )
         assert res.status_code == 401
 
     def test_func_signin_invalid_pw(self):
         res = fa_client.post(
             url="/api/signin",
-            json={"email": "test@gmail.com", "password": "invalid_password"},
+            json={
+                "email": "test@gmail.com",
+                "password": "invalid_password",
+            },
         )
         assert res.status_code == 401
 
     def test_func_signin_bad_request(self):
-        res = fa_client.post(url="/api/signin", json={})
+        res = fa_client.post(
+            url="/api/signin",
+            json={},
+        )
         assert res.status_code == 422

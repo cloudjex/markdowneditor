@@ -16,7 +16,6 @@ def setup_for_move(id_token, root_node_id):
         },
     )
     assert res.status_code == 200
-
     to_be_parent_node = res.json()
 
     res = fa_client.post(
@@ -28,10 +27,9 @@ def setup_for_move(id_token, root_node_id):
         },
     )
     assert res.status_code == 200
-
     to_be_child_node = res.json()
 
-    yield [to_be_parent_node, to_be_child_node]
+    yield [to_be_parent_node["node_id"], to_be_child_node["node_id"]]
 
     # Clean up
     print("\nteardown...")
@@ -45,18 +43,17 @@ def setup_for_move(id_token, root_node_id):
 class TestSuccessPut:
     def test_func_tree_node_move_put_normal(self, id_token, setup_for_move):
         # Test
-        to_be_parent_node = setup_for_move[0]
-        to_be_child_node = setup_for_move[1]
+        to_be_parent_node_id = setup_for_move[0]
+        to_be_child_node_id = setup_for_move[1]
 
         res = fa_client.put(
-            url=f"/api/nodes/move/{to_be_child_node['node_id']}",
+            url=f"/api/nodes/move/{to_be_child_node_id}",
             headers={"Authorization": id_token},
             json={
-                "parent_id": to_be_parent_node["node_id"],
+                "parent_id": to_be_parent_node_id,
             },
         )
         assert res.status_code == 200
-
         body = res.json()
         assert body["result"] == "success"
 
@@ -68,16 +65,10 @@ class TestSuccessPut:
         assert res.status_code == 200
 
         body = res.json()
-
-        children = body["children"]
-        for i in children:
-            if to_be_parent_node["node_id"] == i["node_id"]:
-                break
-
-        children_ids = []
-        for j in i["children"]:
-            children_ids.append(j["node_id"])
-        assert to_be_child_node["node_id"] in children_ids
+        top_children = [i for i in body["children"] if i["node_id"] == to_be_parent_node_id]
+        second_children = top_children[0]["children"]
+        second_children_ids = [j["node_id"] for j in second_children]
+        assert to_be_child_node_id in second_children_ids
 
 
 class TestFailPut:
@@ -103,25 +94,25 @@ class TestFailPut:
 
     def test_func_tree_node_move_put_move_to_child(self, id_token, setup_for_move):
         # Test
-        to_be_parent_node = setup_for_move[0]
-        to_be_child_node = setup_for_move[1]
+        to_be_parent_node_id = setup_for_move[0]
+        to_be_child_node_id = setup_for_move[1]
 
         # First, move child under parent
         res = fa_client.put(
-            url=f"/api/nodes/move/{to_be_child_node['node_id']}",
+            url=f"/api/nodes/move/{to_be_child_node_id}",
             headers={"Authorization": id_token},
             json={
-                "parent_id": to_be_parent_node["node_id"],
+                "parent_id": to_be_parent_node_id,
             },
         )
         assert res.status_code == 200
 
         # Then, try to move parent under child
         res = fa_client.put(
-            url=f"/api/nodes/move/{to_be_parent_node['node_id']}",
+            url=f"/api/nodes/move/{to_be_parent_node_id}",
             headers={"Authorization": id_token},
             json={
-                "parent_id": to_be_child_node["node_id"],
+                "parent_id": to_be_child_node_id,
             },
         )
         assert res.status_code == 403

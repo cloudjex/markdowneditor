@@ -8,6 +8,7 @@ def setup1(id_token):
     print("\nsetup...")
     # Return new pw
     new_password = "NewTestPassword123!"
+
     yield new_password
 
     # Clean up
@@ -21,9 +22,6 @@ def setup1(id_token):
         },
     )
     assert res.status_code == 200
-
-    body = res.json()
-    assert body["result"] == "success"
 
 
 class TestSuccessGet:
@@ -97,7 +95,9 @@ class TestFailPut:
 
     def test_func_users_me_put_bad_request(self, id_token):
         res = fa_client.put(
-            url="/api/users/me/password", headers={"Authorization": id_token}, json={}
+            url="/api/users/me/password",
+            headers={"Authorization": id_token},
+            json={},
         )
         assert res.status_code == 422
 

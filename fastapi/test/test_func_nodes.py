@@ -24,7 +24,7 @@ def setup_for_post(id_token):
 
 @pytest.fixture()
 def setup_for_put(id_token, root_node_id):
-    # Backup current text
+    # Backup current label and text
     print("\nsetup...")
     res = fa_client.get(
         url=f"/api/nodes/{root_node_id}",
@@ -35,7 +35,7 @@ def setup_for_put(id_token, root_node_id):
 
     yield res_json["label"], res_json["text"]
 
-    # Restore previous text
+    # Restore previous label and text
     print("\nteardown...")
     res = fa_client.put(
         url=f"/api/nodes/{root_node_id}",
@@ -50,7 +50,7 @@ def setup_for_put(id_token, root_node_id):
 
 @pytest.fixture()
 def setup_for_delete(id_token, root_node_id):
-    # Nothing to set up
+    # Create new node
     print("\nsetup...")
     new_node_label = str(time.time())
     res = fa_client.post(
@@ -71,7 +71,10 @@ def setup_for_delete(id_token, root_node_id):
 
 class TestSuccessGet:
     def test_func_nodes_get_nodes(self, id_token):
-        res = fa_client.get(url="/api/nodes", headers={"Authorization": id_token})
+        res = fa_client.get(
+            url="/api/nodes",
+            headers={"Authorization": id_token},
+        )
         assert res.status_code == 200
 
         body: list = res.json()
@@ -90,6 +93,7 @@ class TestSuccessGet:
         assert res.status_code == 200
 
         body: dict = res.json()
+        assert type(body) is dict
         assert type(body["user_group"]) is str
         assert type(body["node_id"]) is str
         assert type(body["label"]) is str
@@ -133,9 +137,8 @@ class TestSuccessPost:
         )
         assert res.status_code == 200
 
-        body = res.json()
         global new_node
-        new_node = body
+        new_node = res.json()
 
         # check node is created
         res = fa_client.get(
@@ -145,13 +148,10 @@ class TestSuccessPost:
         assert res.status_code == 200
 
         body = res.json()
-        children = body["children"]
 
-        created = False
-        for i in children:
-            if i["node_id"] == new_node["node_id"]:
-                created = True
-        assert created
+        children = body["children"]
+        children_ids = [i["node_id"] for i in children]
+        assert new_node["node_id"] in children_ids
 
 
 class TestFailPost:
@@ -184,8 +184,9 @@ class TestFailPost:
 
 class TestSuccessPut:
     def test_func_nodes_put_normal(self, id_token, root_node_id, setup_for_put):
-        text = "test text"
         label = setup_for_put[0]
+        text = "test text"
+
         res = fa_client.put(
             url=f"/api/nodes/{root_node_id}",
             headers={"Authorization": id_token},
@@ -205,8 +206,9 @@ class TestSuccessPut:
         assert type(body["children_ids"]) is list
 
     def test_func_nodes_put_empty_text(self, id_token, root_node_id, setup_for_put):
-        text = ""
         label = setup_for_put[0]
+        text = ""
+
         res = fa_client.put(
             url=f"/api/nodes/{root_node_id}",
             headers={"Authorization": id_token},
@@ -226,8 +228,9 @@ class TestSuccessPut:
         assert type(body["children_ids"]) is list
 
     def test_func_nodes_put_update_label(self, id_token, root_node_id, setup_for_put):
+        label = f"{setup_for_put[0]} ver2"
         text = setup_for_put[1]
-        label = f"{setup_for_put[0]} version2"
+
         res = fa_client.put(
             url=f"/api/nodes/{root_node_id}",
             headers={"Authorization": id_token},
@@ -284,9 +287,6 @@ class TestSuccessDelete:
         )
         assert res.status_code == 200
 
-        body = res.json()
-        assert body["result"] == "success"
-
         # check node is deleted
         res = fa_client.get(
             url=f"/api/tree",
@@ -296,7 +296,8 @@ class TestSuccessDelete:
 
         body = res.json()
         children = body["children"]
-        assert del_node_id not in children
+        children_ids = [i["node_id"] for i in children]
+        assert del_node_id not in children_ids
 
 
 class TestFailDelete:

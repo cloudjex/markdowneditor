@@ -6,7 +6,6 @@ from fastapi import APIRouter, Depends, Path
 from models import req
 from models.jwt import JwtClaim
 from models.node import Node
-from models.result import Result
 from models.uuid4_str import pattern
 from utilities import errors
 from utilities.dynamodb_client import DynamoDBClient
@@ -105,7 +104,7 @@ async def func(
 @router.delete(
     path="/nodes/{node_id}",
     summary="Delete node",
-    response_model=Result,
+    response_model=Node,
     responses={
         401: config.RES_401,
         403: config.RES_403,
@@ -136,4 +135,4 @@ async def func(
 
     db_client.put_node(parent_node)
 
-    return {"result": "success"}
+    return node.model_dump()
