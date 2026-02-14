@@ -65,7 +65,9 @@ class TestSuccessPut:
         assert res.status_code == 200
 
         body = res.json()
-        top_children = [i for i in body["children"] if i["node_id"] == to_be_parent_node_id]
+        top_children = [
+            i for i in body["children"] if i["node_id"] == to_be_parent_node_id
+        ]
         second_children = top_children[0]["children"]
         second_children_ids = [j["node_id"] for j in second_children]
         assert to_be_child_node_id in second_children_ids
