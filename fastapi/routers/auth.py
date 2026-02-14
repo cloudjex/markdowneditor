@@ -37,7 +37,7 @@ async def func(
     path="/signin/group",
     summary="Sign in to user group",
     response_model=IdToken,
-    responses={401: config.RES_401, 403: config.RES_403, 422: config.RES_422},
+    responses={403: config.RES_403, 422: config.RES_422},
 )
 async def func(
     req: req.SignInGroup,
@@ -49,7 +49,7 @@ async def func(
         raise errors.ForbiddenError
 
     if not any(req.user_group == g.group_name for g in user.user_groups):
-        raise errors.UnauthorizedError
+        raise errors.ForbiddenError
 
     id_token = JwtClient().encode(jwt.email, req.user_group)
     return {"id_token": id_token}

@@ -301,19 +301,19 @@ class TestSuccessDelete:
 
 
 class TestFailDelete:
+    def test_func_nodes_delete_root(self, id_token, root_node_id):
+        res = fa_client.delete(
+            url=f"/api/nodes/{root_node_id}",
+            headers={"Authorization": id_token},
+        )
+        assert res.status_code == 400
+
     def test_func_nodes_delete_invalid_token(self, invalid_id_token):
         res = fa_client.delete(
             url="/api/nodes/00000000-0000-0000-0000-000000000000",
             headers={"Authorization": invalid_id_token},
         )
         assert res.status_code == 401
-
-    def test_func_nodes_delete_root(self, id_token, root_node_id):
-        res = fa_client.delete(
-            url=f"/api/nodes/{root_node_id}",
-            headers={"Authorization": id_token},
-        )
-        assert res.status_code == 403
 
     def test_func_nodes_delete_non_exist(self, id_token):
         res = fa_client.delete(

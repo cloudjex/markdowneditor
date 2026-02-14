@@ -106,8 +106,8 @@ async def func(
     summary="Delete node",
     response_model=Node,
     responses={
+        400: config.RES_400,
         401: config.RES_401,
-        403: config.RES_403,
         404: config.RES_404,
         422: config.RES_422,
     },
@@ -123,7 +123,7 @@ async def func(
     nodes_handler = NodesHandler(jwt.user_group)
     root_node = nodes_handler.get_root()
     if root_node.node_id == node_id:
-        raise errors.ForbiddenError
+        raise errors.BadRequestError
 
     del_targets = nodes_handler.children_ids_recursive(node_id)
     parent_node = nodes_handler.get_parent(node_id)

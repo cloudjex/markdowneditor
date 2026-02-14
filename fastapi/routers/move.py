@@ -18,8 +18,8 @@ db_client = DynamoDBClient()
     summary="Move",
     response_model=Result,
     responses={
+        400: config.RES_400,
         401: config.RES_401,
-        403: config.RES_403,
         404: config.RES_404,
         422: config.RES_422,
     },
@@ -37,7 +37,7 @@ async def func(
     nodes_handler = NodesHandler(jwt.user_group)
     root_node = nodes_handler.get_root()
     if root_node.node_id == node_id:
-        raise errors.ForbiddenError
+        raise errors.BadRequestError
 
     new_parent = db_client.get_node(jwt.user_group, req.parent_id)
     if not new_parent:
@@ -47,16 +47,20 @@ async def func(
     childs = nodes_handler.children_ids_recursive(node_id)
     for i in childs:
         if i.node_id == req.parent_id:
-            raise errors.ForbiddenError
+            raise errors.BadRequestError
 
-    # remove node id from old node
-    now_parent = nodes_handler.get_parent(node_id)
-    now_parent.children_ids.remove(node_id)
+    if req.parent_id == node_id:
+        # if move to same place, do nothing.
+        pass
+    else:
+        # remove node id from old node
+        now_parent = nodes_handler.get_parent(node_id)
+        now_parent.children_ids.remove(node_id)
 
-    # add node id to new node
-    new_parent.children_ids.append(node_id)
+        # add node id to new node
+        new_parent.children_ids.append(node_id)
 
-    db_client.put_node(now_parent)
-    db_client.put_node(new_parent)
+        db_client.put_node(now_parent)
+        db_client.put_node(new_parent)
 
     return {"result": "success"}
