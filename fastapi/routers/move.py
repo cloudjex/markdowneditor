@@ -49,7 +49,7 @@ async def func(
         if i.node_id == req.parent_id:
             raise errors.BadRequestError
 
-    if req.parent_id == node_id:
+    if req.parent_id == nodes_handler.get_parent(node_id).node_id:
         # if move to same place, do nothing.
         pass
     else:
