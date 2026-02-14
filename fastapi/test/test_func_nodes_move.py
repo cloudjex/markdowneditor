@@ -4,64 +4,52 @@ from .conftest import fa_client
 
 
 @pytest.fixture()
-def setup1(id_token, root_node_id):
+def setup_for_move(id_token, root_node_id):
     # First, create 2 nodes
     print("\nsetup...")
     res = fa_client.post(
-        url=f"/api/tree/node",
+        url=f"/api/nodes/{root_node_id}",
         headers={"Authorization": id_token},
         json={
-            "parent_id": root_node_id,
-            "label": "test",
+            "label": "this is to be parent node",
+            "text": "",
         },
     )
     assert res.status_code == 200
 
-    body = res.json()
-    children = body["children"]
-    to_be_parent_node = None
-    for child in children:
-        if child["label"] == "test":
-            to_be_parent_node = child
-    assert to_be_parent_node is not None
+    to_be_parent_node = res.json()
 
     res = fa_client.post(
-        url=f"/api/tree/node",
+        url=f"/api/nodes/{root_node_id}",
         headers={"Authorization": id_token},
         json={
-            "parent_id": root_node_id,
-            "label": "test",
+            "label": "this is to be child node",
+            "text": "",
         },
     )
     assert res.status_code == 200
 
-    body = res.json()
-    children = body["children"]
-    to_be_child_node = None
-    for child in children:
-        if child["label"] == "test":
-            to_be_child_node = child
-    assert to_be_child_node is not None
+    to_be_child_node = res.json()
 
     yield [to_be_parent_node, to_be_child_node]
 
     # Clean up
     print("\nteardown...")
     res = fa_client.delete(
-        url=f"/api/tree/node/{to_be_parent_node['node_id']}",
+        url=f"/api/nodes/{to_be_parent_node['node_id']}",
         headers={"Authorization": id_token},
     )
     assert res.status_code == 200
 
 
 class TestSuccessPut:
-    def test_func_tree_node_move_put_normal(self, id_token, setup1):
+    def test_func_tree_node_move_put_normal(self, id_token, setup_for_move):
         # Test
-        to_be_parent_node = setup1[0]
-        to_be_child_node = setup1[1]
+        to_be_parent_node = setup_for_move[0]
+        to_be_child_node = setup_for_move[1]
 
         res = fa_client.put(
-            url=f"/api/tree/node/move/{to_be_child_node['node_id']}",
+            url=f"/api/nodes/move/{to_be_child_node['node_id']}",
             headers={"Authorization": id_token},
             json={
                 "parent_id": to_be_parent_node["node_id"],
@@ -70,24 +58,32 @@ class TestSuccessPut:
         assert res.status_code == 200
 
         body = res.json()
-        children = body["children"]
-        parent_node = None
-        for child in children:
-            if child["node_id"] == to_be_parent_node["node_id"]:
-                parent_node = child
-        assert parent_node is not None
+        assert body["result"] == "success"
 
-        child_node = None
-        for child in parent_node["children"]:
-            if child["node_id"] == to_be_child_node["node_id"]:
-                child_node = child
-        assert child_node is not None
+        # check node is moved
+        res = fa_client.get(
+            url=f"/api/tree",
+            headers={"Authorization": id_token},
+        )
+        assert res.status_code == 200
+
+        body = res.json()
+
+        children = body["children"]
+        for i in children:
+            if to_be_parent_node["node_id"] == i["node_id"]:
+                break
+
+        children_ids = []
+        for j in i["children"]:
+            children_ids.append(j["node_id"])
+        assert to_be_child_node["node_id"] in children_ids
 
 
 class TestFailPut:
     def test_func_tree_node_move_put_invalid_token(self, invalid_id_token):
         res = fa_client.put(
-            url="/api/tree/node/move/00000000-0000-0000-0000-000000000000",
+            url="/api/nodes/move/00000000-0000-0000-0000-000000000000",
             headers={"Authorization": invalid_id_token},
             json={
                 "parent_id": "00000000-0000-0000-0000-000000000000",
@@ -97,7 +93,7 @@ class TestFailPut:
 
     def test_func_tree_node_move_put_root_node(self, id_token, root_node_id):
         res = fa_client.put(
-            url=f"/api/tree/node/move/{root_node_id}",
+            url=f"/api/nodes/move/{root_node_id}",
             headers={"Authorization": id_token},
             json={
                 "parent_id": "00000000-0000-0000-0000-000000000000",
@@ -105,14 +101,14 @@ class TestFailPut:
         )
         assert res.status_code == 403
 
-    def test_func_tree_node_move_put_move_to_child(self, id_token, setup1):
+    def test_func_tree_node_move_put_move_to_child(self, id_token, setup_for_move):
         # Test
-        to_be_parent_node = setup1[0]
-        to_be_child_node = setup1[1]
+        to_be_parent_node = setup_for_move[0]
+        to_be_child_node = setup_for_move[1]
 
         # First, move child under parent
         res = fa_client.put(
-            url=f"/api/tree/node/move/{to_be_child_node['node_id']}",
+            url=f"/api/nodes/move/{to_be_child_node['node_id']}",
             headers={"Authorization": id_token},
             json={
                 "parent_id": to_be_parent_node["node_id"],
@@ -122,7 +118,7 @@ class TestFailPut:
 
         # Then, try to move parent under child
         res = fa_client.put(
-            url=f"/api/tree/node/move/{to_be_parent_node['node_id']}",
+            url=f"/api/nodes/move/{to_be_parent_node['node_id']}",
             headers={"Authorization": id_token},
             json={
                 "parent_id": to_be_child_node["node_id"],
@@ -132,7 +128,7 @@ class TestFailPut:
 
     def test_func_tree_node_move_put_bad_request(self, id_token):
         res = fa_client.put(
-            url="/api/tree/node/move/00000000-0000-0000-0000-000000000000",
+            url="/api/nodes/move/00000000-0000-0000-0000-000000000000",
             headers={"Authorization": id_token},
             json={},
         )

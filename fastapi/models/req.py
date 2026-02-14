@@ -26,9 +26,15 @@ class TreeNodeLabelPut(BaseModel):
     label: str = Field(min_length=1)
 
 
-class TreeNodeMovePut(BaseModel):
+class NodeMovePut(BaseModel):
     parent_id: str = Field(**pattern)
 
 
+class NodePost(BaseModel):
+    label: str = Field(min_length=1)
+    text: str
+
+
 class NodePut(BaseModel):
+    label: str = Field(min_length=1)
     text: str

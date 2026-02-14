@@ -4,7 +4,6 @@ from mypy_boto3_dynamodb import service_resource
 
 import config
 from models.node import Node
-from models.tree import TreeInfo
 from models.user import User
 
 
@@ -48,33 +47,6 @@ class DynamoDBClient:
         )
 
     ###############################
-    # For TreeInfo
-    ###############################
-    def get_tree_info(self, user_group: str) -> TreeInfo | None:
-        response = self._db_client.get_item(
-            Key={
-                "PK": f"GROUP_NAME#{user_group}",
-                "SK": "TREE_INFO",
-            }
-        )
-        item = response.get("Item")
-
-        if item is None:
-            return None
-        else:
-            item["PK"] = item.pop("PK").removeprefix("GROUP_NAME#")
-            return TreeInfo(user_group=item["PK"], tree=item["tree"])
-
-    def put_tree_info(self, tree_info: TreeInfo) -> None:
-        self._db_client.put_item(
-            Item={
-                "PK": f"GROUP_NAME#{tree_info.user_group}",
-                "SK": "TREE_INFO",
-                "tree": tree_info.tree.model_dump(),
-            }
-        )
-
-    ###############################
     # For Node
     ###############################
     def get_node(self, user_group: str, node_id: str) -> Node | None:
@@ -91,7 +63,13 @@ class DynamoDBClient:
         else:
             item["PK"] = item.pop("PK").removeprefix("GROUP_NAME#")
             item["SK"] = item.pop("SK").removeprefix("NODE#")
-            return Node(user_group=item["PK"], node_id=item["SK"], text=item["text"])
+            return Node(
+                user_group=item["PK"],
+                node_id=item["SK"],
+                label=item["label"],
+                text=item["text"],
+                children_ids=item["children_ids"],
+            )
 
     def get_nodes(self, user_group: str) -> list[Node]:
         response = self._db_client.query(
@@ -107,7 +85,13 @@ class DynamoDBClient:
             item["PK"] = item.pop("PK").removeprefix("GROUP_NAME#")
             item["SK"] = item.pop("SK").removeprefix("NODE#")
             entities.append(
-                Node(user_group=item["PK"], node_id=item["SK"], text=item["text"])
+                Node(
+                    user_group=item["PK"],
+                    node_id=item["SK"],
+                    label=item["label"],
+                    text=item["text"],
+                    children_ids=item["children_ids"],
+                )
             )
         return entities
 
@@ -116,7 +100,9 @@ class DynamoDBClient:
             Item={
                 "PK": f"GROUP_NAME#{node.user_group}",
                 "SK": f"NODE#{node.node_id}",
+                "label": node.label,
                 "text": node.text,
+                "children_ids": node.children_ids,
             }
         )
 
