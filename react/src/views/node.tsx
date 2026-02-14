@@ -6,7 +6,7 @@ import Header from "@/src/components/header/header";
 import userStore from '@/src/store/user_store';
 
 
-function Main() {
+function Node() {
   const { tree } = userStore();
   const node_id = useParams<{ node_id: string }>().node_id || "";
 
@@ -22,4 +22,4 @@ function Main() {
   );
 };
 
-export default Main;
+export default Node;

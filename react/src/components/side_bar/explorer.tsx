@@ -30,7 +30,7 @@ function Explorer(props: { node_id: string, tree: Tree }) {
           items={[props.tree]}
           getItemId={getItemId}
           onItemClick={(_, node_id) => {
-            navigate(`/main/${node_id}`);
+            navigate(`/node/${node_id}`);
           }}
           selectedItems={props.node_id}
           expandedItems={displayedExpanded}

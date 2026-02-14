@@ -88,7 +88,7 @@ function Signin() {
     setLoading(false);
     setIdToken(signin_res.body.id_token);
     setTree(tree_res.body);
-    navigate(`/main/${tree_res.body.node_id}`);
+    navigate(`/node/${tree_res.body.node_id}`);
   }
 
   return (

@@ -21,7 +21,7 @@ function Breadcrumb(props: { node_id: string, tree: Tree }) {
           key={node.node_id}
           underline="none"
           color={index === parentNodes.length - 1 ? "textDisabled" : "textSecondary"}
-          href={index === parentNodes.length - 1 ? undefined : `/main/${node.node_id}`}
+          href={index === parentNodes.length - 1 ? undefined : `/node/${node.node_id}`}
           aria-current={index === parentNodes.length - 1 ? "page" : undefined}
         >
           {node.label}

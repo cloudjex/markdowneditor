@@ -64,7 +64,7 @@ function TreeUpdate(props: { node_id: string, tree: Tree }) {
 
     setLoading(false);
     setTree(res.body);
-    navigate(`/main/${next_node_id}`);
+    navigate(`/node/${next_node_id}`);
   };
 
   return (
