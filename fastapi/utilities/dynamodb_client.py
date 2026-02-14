@@ -93,7 +93,7 @@ class DynamoDBClient:
             item["SK"] = item.pop("SK").removeprefix("NODE#")
             return Node(user_group=item["PK"], node_id=item["SK"], text=item["text"])
 
-    def get_nodes(self, user_group: str) -> list[Node] | None:
+    def get_nodes(self, user_group: str) -> list[Node]:
         response = self._db_client.query(
             KeyConditionExpression=(
                 Key("PK").eq(f"GROUP_NAME#{user_group}")
@@ -102,17 +102,14 @@ class DynamoDBClient:
         )
         items = response.get("Items")
 
-        if items is None:
-            return None
-        else:
-            entities = []
-            for item in items:
-                item["PK"] = item.pop("PK").removeprefix("GROUP_NAME#")
-                item["SK"] = item.pop("SK").removeprefix("NODE#")
-                entities.append(
-                    Node(user_group=item["PK"], node_id=item["SK"], text=item["text"])
-                )
-            return entities
+        entities = []
+        for item in items:
+            item["PK"] = item.pop("PK").removeprefix("GROUP_NAME#")
+            item["SK"] = item.pop("SK").removeprefix("NODE#")
+            entities.append(
+                Node(user_group=item["PK"], node_id=item["SK"], text=item["text"])
+            )
+        return entities
 
     def put_node(self, node: Node) -> None:
         self._db_client.put_item(
