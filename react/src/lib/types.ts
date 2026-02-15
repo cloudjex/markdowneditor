@@ -22,18 +22,25 @@ export interface IdToken {
   id_token: string;
 };
 
-export interface UserGroup {
-  group_name: string; role: string;
-}
-
 export interface User {
   email: string;
   password: string;
-  groups: UserGroup[];
+  groups: [
+    {
+      group_id: string,
+      role: string
+    }
+  ];
   options: {
     enabled: boolean;
     otp: string;
   }
+};
+
+export interface Group {
+  group_id: string;
+  group_name: string;
+  users: string[];
 };
 
 export interface Node {

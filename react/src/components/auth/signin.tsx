@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 
-import type { SigninForm, IdToken, User, Tree } from "@/src/lib/types";
+import type { SigninForm, IdToken, Group, Tree } from "@/src/lib/types";
 
 import RequestHandler from "@/src/lib/request_handler";
 import loadingState from "@/src/store/loading_store";
@@ -14,7 +14,7 @@ import userStore from '@/src/store/user_store';
 
 function Signin() {
   const navigate = useNavigate();
-  const { id_token, setIdToken, user_groups, setUserGroups, setEmail, resetUserState, setTree } = userStore();
+  const { id_token, setIdToken, groups, setGroups, setEmail, resetUserState, setTree } = userStore();
   const { setLoading, resetLoadingState } = loadingState();
   const [signinError, setSigninError] = useState(false);
   const { register, handleSubmit, formState: { errors } } = useForm<SigninForm>();
@@ -47,26 +47,26 @@ function Signin() {
 
     requests.id_token = signin_res.body.id_token;
 
-    const user_res = await requests.get<User>(
-      `/api/users/me`,
+    const user_res = await requests.get<Group[]>(
+      `/api/groups`,
     );
 
     if (user_res.status != 200) {
       setSigninError(true);
       setLoading(false);
-      throw new Error("get user info error");
+      throw new Error("get groups error");
     };
 
     setLoading(false);
-    setUserGroups(user_res.body.groups);
-    setUserGroup(user_res.body.groups[0].group_name);
+    setGroups(user_res.body);
+    setUserGroup(user_res.body[0].group_id);
     setIdToken(signin_res.body.id_token);
     setEmail(data.email);
     setDialogKind(1);
   };
 
-  async function SigninWithUserGroup(user_group: string) {
-    if (!user_group) {
+  async function SigninWithUserGroup(group_id: string) {
+    if (!group_id) {
       setSigninWithGroupError(true);
       throw new Error("no selected group");
     }
@@ -77,7 +77,7 @@ function Signin() {
     const requests = new RequestHandler(id_token);
     const signin_res = await requests.post<IdToken>(
       `/api/signin/group`,
-      { user_group: user_group }
+      { group_id: group_id }
     );
 
     requests.id_token = signin_res.body.id_token;
@@ -143,11 +143,11 @@ function Signin() {
           <Select
             value={userGroup}
             label="User Group"
-            onChange={(e) => setUserGroup(e.target.value as string)}
+            onChange={(e) => setUserGroup(e.target.value)}
             sx={{ width: "100%" }}
           >
-            {user_groups.map((group) => (
-              <MenuItem key={group.group_name} value={group.group_name}>{group.group_name}</MenuItem>
+            {groups.map((group) => (
+              <MenuItem key={group.group_name} value={group.group_id}>{group.group_name}</MenuItem>
             ))}
           </Select>
 
