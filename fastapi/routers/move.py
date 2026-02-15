@@ -30,7 +30,9 @@ async def func(
     jwt: JwtClaim = Depends(JwtClient().verify),
 ):
     node = db_client.get_node(jwt.user_group, node_id)
-    if not node:
+    new_parent = db_client.get_node(jwt.user_group, req.parent_id)
+
+    if not node or not new_parent:
         raise errors.NotFoundError
 
     # can not move root node
@@ -38,10 +40,6 @@ async def func(
     root_node = nodes_handler.get_root()
     if root_node.node_id == node_id:
         raise errors.BadRequestError
-
-    new_parent = db_client.get_node(jwt.user_group, req.parent_id)
-    if not new_parent:
-        raise errors.NotFoundError
 
     # can not move to child node
     childs = nodes_handler.children_ids_recursive(node_id)

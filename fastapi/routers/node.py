@@ -20,7 +20,9 @@ db_client = DynamoDBClient()
     path="/nodes",
     summary="Get nodes",
     response_model=List[Node],
-    responses={401: config.RES_401},
+    responses={
+        401: config.RES_401,
+    },
 )
 async def func(
     jwt: JwtClaim = Depends(JwtClient().verify),
@@ -33,7 +35,11 @@ async def func(
     path="/nodes/{node_id}",
     summary="Get node",
     response_model=Node,
-    responses={401: config.RES_401, 404: config.RES_404, 422: config.RES_422},
+    responses={
+        401: config.RES_401,
+        404: config.RES_404,
+        422: config.RES_422,
+    },
 )
 async def func(
     node_id: str = Path(**pattern),
@@ -42,16 +48,18 @@ async def func(
     item = db_client.get_node(jwt.user_group, node_id)
     if not item:
         raise errors.NotFoundError
-    ret = item.model_dump()
-
-    return ret
+    return item.model_dump()
 
 
 @router.post(
     path="/nodes/{node_id}",
     summary="Post node",
     response_model=Node,
-    responses={401: config.RES_401, 404: config.RES_404, 422: config.RES_422},
+    responses={
+        401: config.RES_401,
+        404: config.RES_404,
+        422: config.RES_422,
+    },
 )
 async def func(
     req: req.NodePost,
@@ -83,7 +91,11 @@ async def func(
     path="/nodes/{node_id}",
     summary="Put node",
     response_model=Node,
-    responses={401: config.RES_401, 404: config.RES_404, 422: config.RES_422},
+    responses={
+        401: config.RES_401,
+        404: config.RES_404,
+        422: config.RES_422,
+    },
 )
 async def func(
     req: req.NodePut,

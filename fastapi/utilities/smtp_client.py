@@ -32,15 +32,15 @@ HTML = """
 
 class SmtpClient:
     def __init__(self):
-        self.smtp_host = config.SMTP_HOST
-        self.smtp_port = config.SMTP_PORT
-        self.smtp_user = config.SMTP_USER
-        self.smtp_pass = config.SMTP_PASSWORD
-        self.smtp_from = "cloudjex.com<auto@cloudjex.com>"
+        pass
 
     def send(self, recipient: str, subject: str, body: str) -> None:
         if not (
-            self.smtp_user and self.smtp_pass and self.smtp_host and self.smtp_port
+            config.SMTP_FROM
+            and config.SMTP_HOST
+            and config.SMTP_PORT
+            and config.SMTP_USER
+            and config.SMTP_PASSWORD
         ):
             print(f"Warning: SMTP is not configured. Can't send email to {recipient}.")
             return
@@ -49,7 +49,7 @@ class SmtpClient:
 
         msg = MIMEMultipart("alternative")
         msg["Subject"] = subject
-        msg["From"] = self.smtp_from
+        msg["From"] = config.SMTP_FROM
         msg["To"] = recipient
 
         text_part = MIMEText(body, "plain", "utf-8")
@@ -57,7 +57,7 @@ class SmtpClient:
         msg.attach(text_part)
         msg.attach(html_part)
 
-        with smtplib.SMTP(self.smtp_host, self.smtp_port) as server:
+        with smtplib.SMTP(config.SMTP_HOST, config.SMTP_PORT) as server:
             server.starttls()
-            server.login(self.smtp_user, self.smtp_pass)
-            server.sendmail(self.smtp_from, recipient, msg.as_string())
+            server.login(config.SMTP_USER, config.SMTP_PASSWORD)
+            server.sendmail(config.SMTP_FROM, recipient, msg.as_string())

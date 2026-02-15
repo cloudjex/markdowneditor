@@ -16,13 +16,16 @@ db_client = DynamoDBClient()
     path="/signin",
     summary="Sign in",
     response_model=IdToken,
-    responses={401: config.RES_401, 403: config.RES_403, 422: config.RES_422},
+    responses={
+        401: config.RES_401,
+        403: config.RES_403,
+        422: config.RES_422,
+    },
 )
 async def func(
     req: req.SignIn,
 ):
     user = db_client.get_user(email=req.email)
-
     if not user or not Bcrypt().verify(req.password, user.password):
         raise errors.UnauthorizedError
 
@@ -37,14 +40,16 @@ async def func(
     path="/signin/group",
     summary="Sign in to user group",
     response_model=IdToken,
-    responses={403: config.RES_403, 422: config.RES_422},
+    responses={
+        403: config.RES_403,
+        422: config.RES_422,
+    },
 )
 async def func(
     req: req.SignInGroup,
     jwt: JwtClaim = Depends(JwtClient().verify),
 ):
     user = db_client.get_user(email=jwt.email)
-
     if not user.options.enabled:
         raise errors.ForbiddenError
 
@@ -59,7 +64,9 @@ async def func(
     path="/signout",
     summary="Sign out",
     response_model=Result,
-    responses={401: config.RES_401},
+    responses={
+        401: config.RES_401,
+    },
 )
 async def func(
     _=Depends(JwtClient().verify),

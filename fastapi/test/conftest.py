@@ -16,7 +16,10 @@ fa_client = TestClient(app.app)
 
 @pytest.fixture(scope="session")
 def root_node_id(id_token):
-    res = fa_client.get(url="/api/tree", headers={"Authorization": id_token})
+    res = fa_client.get(
+        url="/api/tree",
+        headers={"Authorization": id_token},
+    )
     assert res.status_code == 200
 
     body: dict = res.json()

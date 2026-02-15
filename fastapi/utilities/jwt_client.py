@@ -27,7 +27,7 @@ class JwtClient:
 
     def verify_token(self, id_token: str) -> JwtClaim:
         try:
-            decoded = jwt.decode(
+            decoded: dict = jwt.decode(
                 jwt=id_token.removeprefix("Bearer "),
                 key=config.JWT_KEY,
                 algorithms="HS256",
@@ -36,7 +36,8 @@ class JwtClient:
                 verify=True,
             )
 
-            if "email" not in decoded or "user_group" not in decoded:
+            required_key = ["email", "user_group"]
+            if not all(k in decoded.keys() for k in required_key):
                 raise errors.UnauthorizedError
 
             return JwtClaim(**decoded)

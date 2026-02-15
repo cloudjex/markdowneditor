@@ -14,7 +14,9 @@ db_client = DynamoDBClient()
     path="/tree",
     summary="Get tree",
     response_model=Tree,
-    responses={401: config.RES_401},
+    responses={
+        401: config.RES_401,
+    },
 )
 async def func(
     jwt: JwtClaim = Depends(JwtClient().verify),

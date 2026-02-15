@@ -56,6 +56,8 @@ class TestFailPost:
 
     def test_func_signin_group_bad_request(self, plain_id_token):
         res = fa_client.post(
-            url="/api/signin/group", headers={"Authorization": plain_id_token}, json={}
+            url="/api/signin/group",
+            headers={"Authorization": plain_id_token},
+            json={},
         )
         assert res.status_code == 422

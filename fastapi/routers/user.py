@@ -17,7 +17,9 @@ db_client = DynamoDBClient()
     path="/users/me",
     summary="Get your user info",
     response_model=User,
-    responses={401: config.RES_401},
+    responses={
+        401: config.RES_401,
+    },
 )
 async def func(
     jwt: JwtClaim = Depends(JwtClient().verify),
@@ -31,7 +33,10 @@ async def func(
     path="/users/me/password",
     summary="Update your password",
     response_model=Result,
-    responses={401: config.RES_401, 422: config.RES_422},
+    responses={
+        401: config.RES_401,
+        422: config.RES_422,
+    },
 )
 async def func(
     req: req.UpdatePassword,

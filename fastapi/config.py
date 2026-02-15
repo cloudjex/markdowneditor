@@ -8,6 +8,7 @@ APP_URL = "www.cloudjex.com"
 TABLE_NAME = "cloudjex-table"
 
 # smtp settings
+SMTP_FROM = "cloudjex.com<auto@cloudjex.com>"
 SMTP_HOST = "smtp.resend.com"
 SMTP_PORT = 587
 SMTP_USER = "resend"

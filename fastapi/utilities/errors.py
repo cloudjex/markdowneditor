@@ -2,13 +2,10 @@ import inspect
 
 
 class BaseExceptionClass(Exception):
-    error_code: str = None
-
     def __init__(self):
         frame = inspect.stack()[1]
-        function = frame.function
-        line = frame.lineno
-        self.error_code = f"{function}#{line}"
+
+        self.error_code = f"{frame.filename}.{frame.function}#{frame.lineno}"
 
 
 class BadRequestError(BaseExceptionClass):

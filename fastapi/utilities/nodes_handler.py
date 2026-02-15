@@ -10,11 +10,6 @@ class NodesHandler:
             n.node_id: n for n in self._dynamodb_client.get_nodes(user_group)
         }
 
-    def reset_node_map(self):
-        self._node_map = {
-            n.node_id: n for n in self._dynamodb_client.get_nodes(self._user_group)
-        }
-
     def get_root(self) -> Node:
         # all node ids
         all_ids = set(self._node_map.keys())

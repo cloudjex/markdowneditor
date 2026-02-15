@@ -10,19 +10,15 @@ from fastapi.responses import JSONResponse
 from routers import auth, move, node, tree, user
 from utilities import errors
 
-app = FastAPI(title="cloudjex.com", description="## OpenAPI for cloudjex.com")
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
+app = FastAPI(title="cloudjex.com", description="# OpenAPI for cloudjex.com")
 app.include_router(router=auth.router, prefix="/api")
 app.include_router(router=move.router, prefix="/api")
 app.include_router(router=node.router, prefix="/api")
 app.include_router(router=tree.router, prefix="/api")
 app.include_router(router=user.router, prefix="/api")
+app.add_middleware(
+    CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"]
+)
 handler = Mangum(app)
 
 

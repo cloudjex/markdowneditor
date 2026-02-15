@@ -79,7 +79,7 @@ class TestFailPut:
             url=f"/api/nodes/move/{root_node_id}",
             headers={"Authorization": id_token},
             json={
-                "parent_id": "00000000-0000-0000-0000-000000000000",
+                "parent_id": root_node_id,
             },
         )
         assert res.status_code == 400
@@ -118,6 +118,16 @@ class TestFailPut:
             },
         )
         assert res.status_code == 401
+
+    def test_func_tree_node_move_put_non_exist(self, id_token):
+        res = fa_client.put(
+            url="/api/nodes/move/00000000-0000-0000-0000-000000000000",
+            headers={"Authorization": id_token},
+            json={
+                "parent_id": "00000000-0000-0000-0000-000000000000",
+            },
+        )
+        assert res.status_code == 404
 
     def test_func_tree_node_move_put_bad_request(self, id_token):
         res = fa_client.put(
