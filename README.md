@@ -57,22 +57,14 @@ NoSQL(ドキュメント指向DB)を使用し、Itemは単一テーブルに格�
 | group_name | str   | group name                   |              |
 | users      | array | users                        |              |
 
-### tree info item
-| key        | type   | desctiption                  | description           |
-| ---------- | ------ | ---------------------------- | --------------------- |
-| PK         | str    | value: `GROUP_ID#{group_id}` | PartitionKey          |
-| SK         | str    | value: `USER_GROUP`          | SortKey               |
-| tree       | object | tree content                 |                       |
-| ├ node_id  | str    | node id                      |                       |
-| ├ label    | str    | node label                   |                       |
-| └ children | object | node children                | have tree recursively |
-
 ### node item
-| key  | type | desctiption                  | description  |
-| ---- | ---- | ---------------------------- | ------------ |
-| PK   | str  | value: `GROUP_ID#{group_id}` | PartitionKey |
-| SK   | str  | value: `NODE#{node_id}`      | SortKey      |
-| text | str  | text                         |              |
+| key          | type  | desctiption                  | description  |
+| ------------ | ----- | ---------------------------- | ------------ |
+| PK           | str   | value: `GROUP_ID#{group_id}` | PartitionKey |
+| SK           | str   | value: `NODE#{node_id}`      | SortKey      |
+| label        | str   | label                        |              |
+| text         | str   | text                         |              |
+| children_ids | array | children nodes               |              |
 
 ## For Developer
 FastAPI in local
