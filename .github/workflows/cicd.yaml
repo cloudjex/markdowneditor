@@ -5,10 +5,6 @@ on:
       - main
   workflow_dispatch:
 env:
-  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-  AWS_DEFAULT_REGION: us-east-1
-
   TF_VAR_CLOUDJEX_JWT_KEY: ${{ secrets.CLOUDJEX_JWT_KEY }}
   TF_VAR_CLOUDJEX_SMTP_PASSWORD: ${{ secrets.CLOUDJEX_SMTP_PASSWORD }}
 
@@ -21,6 +17,13 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -35,10 +38,14 @@ jobs:
           pytest
 
       - name: Build Lambda package
+        working-directory: ./fastapi
         run: |
-          pip install -r ../fastapi/requirements.txt -t ./build
-          cp -r ../fastapi/* ./build/
-          cd ./build
+          rm -r ./test
+          pip install -r requirements.txt -t ../.github/build
+          cp -r . ../.github/build/
+          cd ../.github/build
+
+          find . -name "*.pyc" -delete
           zip -r deploy.zip .
 
       - name: Set up Terraform
@@ -60,6 +67,13 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
 
       - name: Setup Node
         uses: actions/setup-node@v6
@@ -92,12 +106,12 @@ jobs:
           echo "cloudfront_id=$cloudfront_id" >> $GITHUB_OUTPUT
           echo "s3_bucket=$s3_bucket" >> $GITHUB_OUTPUT
 
-      - name: Copy Objects to S3
+      - name: Upload files to S3
         working-directory: ./react
         env:
           S3_BUCKET: ${{ steps.tf_output.outputs.s3_bucket }}
         run: |
-          aws s3 cp ./dist "s3://$S3_BUCKET" --recursive
+          aws s3 sync ./dist "s3://$S3_BUCKET" --delete
 
       - name: Clear Cloudfront Cache
         env:
