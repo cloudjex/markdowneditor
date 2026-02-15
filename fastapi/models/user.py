@@ -6,10 +6,10 @@ from pydantic import BaseModel, EmailStr
 class User(BaseModel):
     email: EmailStr
     password: str
-    user_groups: List["UserGroup"]
+    groups: List["Groups"]
     options: "Options"
 
-    class UserGroup(BaseModel):
+    class Groups(BaseModel):
         group_name: str
         role: str
 

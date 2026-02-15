@@ -29,7 +29,7 @@ export interface UserGroup {
 export interface User {
   email: string;
   password: string;
-  user_groups: UserGroup[];
+  groups: UserGroup[];
   options: {
     enabled: boolean;
     otp: string;

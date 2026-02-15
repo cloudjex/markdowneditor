@@ -31,7 +31,7 @@ class DynamoDBClient:
             return User(
                 email=item["PK"],
                 password=item["password"],
-                user_groups=item["user_groups"],
+                groups=item["groups"],
                 options=item["options"],
             )
 
@@ -41,7 +41,7 @@ class DynamoDBClient:
                 "PK": f"EMAIL#{user.email}",
                 "SK": "USER",
                 "password": user.password,
-                "user_groups": [i.model_dump() for i in user.user_groups],
+                "groups": [i.model_dump() for i in user.groups],
                 "options": user.options.model_dump(),
             }
         )
