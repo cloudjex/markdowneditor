@@ -7,7 +7,7 @@ from utilities.jwt_client import JwtClient
 # Test Accounts
 EMAIL = "test@gmail.com"
 PASSWORD = "test"
-USER_GROUP = "test group"
+GROUP_ID = "a4baa583-f327-47db-a989-0a9e0386f2a2"
 NONUSER_EMAIL = "nonuser@gmail.com"
 
 
@@ -30,7 +30,7 @@ def root_node_id(id_token):
 
 @pytest.fixture(scope="session")
 def id_token():
-    return f"Bearer {JwtClient().encode(EMAIL, USER_GROUP)}"
+    return f"Bearer {JwtClient().encode(EMAIL, GROUP_ID)}"
 
 
 @pytest.fixture(scope="session")

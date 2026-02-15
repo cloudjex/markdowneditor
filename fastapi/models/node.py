@@ -6,7 +6,7 @@ from models.uuid4_str import pattern
 
 
 class Node(BaseModel):
-    user_group: str
+    group_id: str = Field(**pattern)
     node_id: str = Field(**pattern)
     label: str = Field(min_length=1)
     text: str

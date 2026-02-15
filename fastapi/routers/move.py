@@ -29,14 +29,14 @@ async def func(
     node_id: str = Path(**pattern),
     jwt: JwtClaim = Depends(JwtClient().verify),
 ):
-    node = db_client.get_node(jwt.user_group, node_id)
-    new_parent = db_client.get_node(jwt.user_group, req.parent_id)
+    node = db_client.get_node(jwt.group_id, node_id)
+    new_parent = db_client.get_node(jwt.group_id, req.parent_id)
 
     if not node or not new_parent:
         raise errors.NotFoundError
 
     # can not move root node
-    nodes_handler = NodesHandler(jwt.user_group)
+    nodes_handler = NodesHandler(jwt.group_id)
     root_node = nodes_handler.get_root()
     if root_node.node_id == node_id:
         raise errors.BadRequestError

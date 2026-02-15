@@ -10,7 +10,7 @@ class User(BaseModel):
     options: "Options"
 
     class Groups(BaseModel):
-        group_name: str
+        group_id: str
         role: str
 
     class Options(BaseModel):

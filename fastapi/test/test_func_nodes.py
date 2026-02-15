@@ -79,7 +79,7 @@ class TestSuccessGet:
 
         body: list = res.json()
         assert type(body) is list
-        assert type(body[0]["user_group"]) is str
+        assert type(body[0]["group_id"]) is str
         assert type(body[0]["node_id"]) is str
         assert type(body[0]["label"]) is str
         assert type(body[0]["text"]) is str
@@ -94,7 +94,7 @@ class TestSuccessGet:
 
         body: dict = res.json()
         assert type(body) is dict
-        assert type(body["user_group"]) is str
+        assert type(body["group_id"]) is str
         assert type(body["node_id"]) is str
         assert type(body["label"]) is str
         assert type(body["text"]) is str
@@ -201,7 +201,7 @@ class TestSuccessPut:
         assert type(body) is dict
         assert body["text"] == text
         assert body["label"] == label
-        assert type(body["user_group"]) is str
+        assert type(body["group_id"]) is str
         assert type(body["node_id"]) is str
         assert type(body["children_ids"]) is list
 
@@ -223,7 +223,7 @@ class TestSuccessPut:
         assert type(body) is dict
         assert body["text"] == text
         assert body["label"] == label
-        assert type(body["user_group"]) is str
+        assert type(body["group_id"]) is str
         assert type(body["node_id"]) is str
         assert type(body["children_ids"]) is list
 
@@ -245,7 +245,7 @@ class TestSuccessPut:
         assert type(body) is dict
         assert body["text"] == text
         assert body["label"] == label
-        assert type(body["user_group"]) is str
+        assert type(body["group_id"]) is str
         assert type(body["node_id"]) is str
         assert type(body["children_ids"]) is list
 

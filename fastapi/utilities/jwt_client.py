@@ -9,10 +9,10 @@ from utilities import errors
 
 
 class JwtClient:
-    def encode(self, email: str, user_group: str = "") -> str:
+    def encode(self, email: str, group_id: str = "") -> str:
         claim = {
             "email": email,
-            "user_group": user_group,
+            "group_id": group_id,
             "iss": config.APP_URL,
             "aud": config.APP_URL,
             "iat": int(time.time()),
@@ -36,7 +36,7 @@ class JwtClient:
                 verify=True,
             )
 
-            required_key = ["email", "user_group"]
+            required_key = ["email", "group_id"]
             if not all(k in decoded.keys() for k in required_key):
                 raise errors.UnauthorizedError
 

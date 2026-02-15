@@ -9,7 +9,7 @@ class SignIn(BaseModel):
 
 
 class SignInGroup(BaseModel):
-    user_group: str
+    group_id: str = Field(**pattern)
 
 
 class UpdatePassword(BaseModel):

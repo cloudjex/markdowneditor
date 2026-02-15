@@ -21,6 +21,6 @@ db_client = DynamoDBClient()
 async def func(
     jwt: JwtClaim = Depends(JwtClient().verify),
 ):
-    nodes_handler = NodesHandler(jwt.user_group)
+    nodes_handler = NodesHandler(jwt.group_id)
     root = nodes_handler.get_root()
     return nodes_handler.tree(root.node_id)
