@@ -21,7 +21,7 @@ function Signin() {
 
   // 0: null, 1: user group select
   const [dialogKind, setDialogKind] = useState(0);
-  const [userGroup, setUserGroup] = useState("");
+  const [stateGroupId, setStateGroupId] = useState("");
   const [signinWithGroupError, setSigninWithGroupError] = useState(false);
 
   useEffect(() => {
@@ -59,7 +59,7 @@ function Signin() {
 
     setLoading(false);
     setGroups(user_res.body);
-    setUserGroup(user_res.body[0].group_id);
+    setStateGroupId(user_res.body[0].group_id);
     setIdToken(signin_res.body.id_token);
     setEmail(data.email);
     setDialogKind(1);
@@ -141,9 +141,9 @@ function Signin() {
         <Container>
           <InputLabel>User Group</InputLabel>
           <Select
-            value={userGroup}
+            value={stateGroupId}
             label="User Group"
-            onChange={(e) => setUserGroup(e.target.value)}
+            onChange={(e) => setStateGroupId(e.target.value)}
             sx={{ width: "100%" }}
           >
             {groups.map((group) => (
@@ -161,7 +161,7 @@ function Signin() {
         <DialogActions>
           <Button
             autoFocus
-            onClick={() => SigninWithUserGroup(userGroup)}
+            onClick={() => SigninWithUserGroup(stateGroupId)}
           >
             OK
           </Button>
