@@ -12,7 +12,7 @@ from utilities.dynamodb_client import DynamoDBClient
 from utilities.jwt_client import JwtClient
 from utilities.nodes_handler import NodesHandler
 
-router = APIRouter(tags=["Node"])
+router = APIRouter(tags=["Nodes"])
 db_client = DynamoDBClient()
 
 

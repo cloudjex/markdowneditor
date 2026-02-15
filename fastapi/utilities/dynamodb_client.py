@@ -3,6 +3,7 @@ from boto3.dynamodb.conditions import Key
 from mypy_boto3_dynamodb import service_resource
 
 import config
+from models.group import Group
 from models.node import Node
 from models.user import User
 
@@ -45,6 +46,28 @@ class DynamoDBClient:
                 "options": user.options.model_dump(),
             }
         )
+
+    ###############################
+    # For Group
+    ###############################
+    def get_group(self, group_id: str) -> Group | None:
+        response = self._db_client.get_item(
+            Key={
+                "PK": f"GROUP_ID#{group_id}",
+                "SK": "USER_GROUP",
+            }
+        )
+        item = response.get("Item")
+
+        if item is None:
+            return None
+        else:
+            item["PK"] = item.pop("PK").removeprefix("GROUP_ID#")
+            return Group(
+                group_id=item["PK"],
+                group_name=item["group_name"],
+                users=item["users"]
+            )
 
     ###############################
     # For Node

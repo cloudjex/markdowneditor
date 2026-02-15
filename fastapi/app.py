@@ -7,11 +7,12 @@ from starlette.responses import Response
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-from routers import auth, move, node, tree, user
+from routers import auth, move, node, tree, user, groups
 from utilities import errors
 
 app = FastAPI(title="cloudjex.com", description="# OpenAPI for cloudjex.com")
 app.include_router(router=auth.router, prefix="/api")
+app.include_router(router=groups.router, prefix="/api")
 app.include_router(router=move.router, prefix="/api")
 app.include_router(router=node.router, prefix="/api")
 app.include_router(router=tree.router, prefix="/api")
