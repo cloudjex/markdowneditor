@@ -9,7 +9,7 @@ from utilities.bcrypt_hash import Bcrypt
 from utilities.dynamodb_client import DynamoDBClient
 from utilities.jwt_client import JwtClient
 
-router = APIRouter(tags=["User"])
+router = APIRouter(tags=["Users"])
 db_client = DynamoDBClient()
 
 

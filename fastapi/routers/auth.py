@@ -53,10 +53,10 @@ async def func(
     if not user.options.enabled:
         raise errors.ForbiddenError
 
-    if not any(req.user_group == g.group_name for g in user.user_groups):
+    if not any(req.group_id == g.group_id for g in user.groups):
         raise errors.ForbiddenError
 
-    id_token = JwtClient().encode(jwt.email, req.user_group)
+    id_token = JwtClient().encode(jwt.email, req.group_id)
     return {"id_token": id_token}
 
 

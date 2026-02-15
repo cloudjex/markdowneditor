@@ -2,7 +2,7 @@ import pytest
 
 from utilities.jwt_client import JwtClient
 
-from .conftest import EMAIL, USER_GROUP, fa_client
+from .conftest import EMAIL, GROUP_ID, fa_client
 
 
 @pytest.fixture()
@@ -21,7 +21,7 @@ class TestSuccessPost:
             url="/api/signin/group",
             headers={"Authorization": plain_id_token},
             json={
-                "user_group": USER_GROUP,
+                "group_id": GROUP_ID,
             },
         )
         assert res.status_code == 200
@@ -34,7 +34,7 @@ class TestSuccessPost:
             url="/api/signin/group",
             headers={"Authorization": id_token},
             json={
-                "user_group": USER_GROUP,
+                "group_id": GROUP_ID,
             },
         )
         assert res.status_code == 200
@@ -49,7 +49,7 @@ class TestFailPost:
             url="/api/signin/group",
             headers={"Authorization": invalid_id_token},
             json={
-                "user_group": USER_GROUP,
+                "group_id": GROUP_ID,
             },
         )
         assert res.status_code == 401

@@ -33,45 +33,38 @@
 
 ## Table Design
 
-NoSQL(ドキュメント指向DB)を使用し、Itemは単一テーブルに格納  
+NoSQL(ドキュメント指向DB)を使用し、Itemは単一テーブルに格納
 
-- 主キー: `PK`  
+- 主キー: `PK`
 - ソートキー: `SK`
 
 ### user item
-| key         | type   | desctiption            | description                      |
-| ----------- | ------ | ---------------------- | -------------------------------- |
-| PK          | str    | value: `EMAIL#{email}` | PartitionKey                     |
-| SK          | str    | value: `USER`          | SortKey                          |
-| password    | str    | hashed pw              |                                  |
-| user_groups | array  | user groups            | `[{group_name: str, role: str}]` |
-| options     | object | other settings         |                                  |
-| ├ enabled   | bool   | active/inactive        |                                  |
-| └ otp       | str    | otp                    | only inactive user               |
+| key       | type   | desctiption            | description                    |
+| --------- | ------ | ---------------------- | ------------------------------ |
+| PK        | str    | value: `EMAIL#{email}` | PartitionKey                   |
+| SK        | str    | value: `USER`          | SortKey                        |
+| password  | str    | hashed pw              |                                |
+| groups    | array  | user groups            | `[{group_id: str, role: str}]` |
+| options   | object | other settings         |                                |
+| ├ enabled | bool   | active/inactive        |                                |
+| └ otp     | str    | otp                    | only inactive user             |
 
 ### user group
-| key   | type  | desctiption                      | description  |
-| ----- | ----- | -------------------------------- | ------------ |
-| PK    | str   | value: `GROUP_NAME#{user_group}` | PartitionKey |
-| SK    | str   | value: `USER_GROUP`              | SortKey      |
-| users | array | users                            |              |
-
-### tree info item
-| key        | type   | desctiption                      | description           |
-| ---------- | ------ | -------------------------------- | --------------------- |
-| PK         | str    | value: `GROUP_NAME#{user_group}` | PartitionKey          |
-| SK         | str    | value: `USER_GROUP`              | SortKey               |
-| tree       | object | tree content                     |                       |
-| ├ node_id  | str    | node id                          |                       |
-| ├ label    | str    | node label                       |                       |
-| └ children | object | node children                    | have tree recursively |
+| key        | type  | desctiption                  | description  |
+| ---------- | ----- | ---------------------------- | ------------ |
+| PK         | str   | value: `GROUP_ID#{group_id}` | PartitionKey |
+| SK         | str   | value: `USER_GROUP`          | SortKey      |
+| group_name | str   | group name                   |              |
+| users      | array | users                        |              |
 
 ### node item
-| key  | type | desctiption                      | description  |
-| ---- | ---- | -------------------------------- | ------------ |
-| PK   | str  | value: `GROUP_NAME#{user_group}` | PartitionKey |
-| SK   | str  | value: `NODE#{node_id}`          | SortKey      |
-| text | str  | text                             |              |
+| key          | type  | desctiption                  | description  |
+| ------------ | ----- | ---------------------------- | ------------ |
+| PK           | str   | value: `GROUP_ID#{group_id}` | PartitionKey |
+| SK           | str   | value: `NODE#{node_id}`      | SortKey      |
+| label        | str   | label                        |              |
+| text         | str   | text                         |              |
+| children_ids | array | children nodes               |              |
 
 ## For Developer
 FastAPI in local

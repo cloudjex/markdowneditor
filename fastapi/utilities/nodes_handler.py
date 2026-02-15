@@ -3,11 +3,11 @@ from utilities.dynamodb_client import DynamoDBClient
 
 
 class NodesHandler:
-    def __init__(self, user_group: str):
+    def __init__(self, group_id: str):
         self._dynamodb_client = DynamoDBClient()
-        self._user_group = user_group
+        self._group_id = group_id
         self._node_map = {
-            n.node_id: n for n in self._dynamodb_client.get_nodes(user_group)
+            n.node_id: n for n in self._dynamodb_client.get_nodes(group_id)
         }
 
     def get_root(self) -> Node:

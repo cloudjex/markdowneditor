@@ -35,9 +35,9 @@ class TestSuccessGet:
         body = res.json()
         assert body["email"] == EMAIL
         assert body["password"] == "***"
-        assert type(body["user_groups"]) is list
-        assert type(body["user_groups"][0]["group_name"]) is str
-        assert type(body["user_groups"][0]["role"]) is str
+        assert type(body["groups"]) is list
+        assert type(body["groups"][0]["group_id"]) is str
+        assert type(body["groups"][0]["role"]) is str
         assert type(body["options"]) is dict
         assert type(body["options"]["enabled"]) is bool
         assert type(body["options"]["otp"]) is str

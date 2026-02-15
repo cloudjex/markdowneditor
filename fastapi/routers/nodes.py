@@ -12,7 +12,7 @@ from utilities.dynamodb_client import DynamoDBClient
 from utilities.jwt_client import JwtClient
 from utilities.nodes_handler import NodesHandler
 
-router = APIRouter(tags=["Node"])
+router = APIRouter(tags=["Nodes"])
 db_client = DynamoDBClient()
 
 
@@ -27,7 +27,7 @@ db_client = DynamoDBClient()
 async def func(
     jwt: JwtClaim = Depends(JwtClient().verify),
 ):
-    items = db_client.get_nodes(jwt.user_group)
+    items = db_client.get_nodes(jwt.group_id)
     return [i.model_dump() for i in items]
 
 
@@ -45,7 +45,7 @@ async def func(
     node_id: str = Path(**pattern),
     jwt: JwtClaim = Depends(JwtClient().verify),
 ):
-    item = db_client.get_node(jwt.user_group, node_id)
+    item = db_client.get_node(jwt.group_id, node_id)
     if not item:
         raise errors.NotFoundError
     return item.model_dump()
@@ -66,7 +66,7 @@ async def func(
     node_id: str = Path(**pattern),
     jwt: JwtClaim = Depends(JwtClient().verify),
 ):
-    parent_node = db_client.get_node(jwt.user_group, node_id)
+    parent_node = db_client.get_node(jwt.group_id, node_id)
     if not parent_node:
         raise errors.NotFoundError
 
@@ -74,7 +74,7 @@ async def func(
     parent_node.children_ids.append(uuid_v4)
 
     new_node = Node(
-        user_group=jwt.user_group,
+        group_id=jwt.group_id,
         node_id=uuid_v4,
         label=req.label,
         text="",
@@ -102,7 +102,7 @@ async def func(
     node_id: str = Path(**pattern),
     jwt: JwtClaim = Depends(JwtClient().verify),
 ):
-    node = db_client.get_node(jwt.user_group, node_id)
+    node = db_client.get_node(jwt.group_id, node_id)
     if not node:
         raise errors.NotFoundError
 
@@ -128,11 +128,11 @@ async def func(
     node_id: str = Path(**pattern),
     jwt: JwtClaim = Depends(JwtClient().verify),
 ):
-    node = db_client.get_node(jwt.user_group, node_id)
+    node = db_client.get_node(jwt.group_id, node_id)
     if not node:
         raise errors.NotFoundError
 
-    nodes_handler = NodesHandler(jwt.user_group)
+    nodes_handler = NodesHandler(jwt.group_id)
     root_node = nodes_handler.get_root()
     if root_node.node_id == node_id:
         raise errors.BadRequestError

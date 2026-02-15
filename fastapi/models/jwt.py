@@ -7,7 +7,7 @@ class IdToken(BaseModel):
 
 class JwtClaim(BaseModel):
     email: EmailStr
-    user_group: str
+    group_id: str
     iss: str
     aud: str
     iat: int

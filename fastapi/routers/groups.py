@@ -1,19 +1,20 @@
+from typing import List
+
 import config
 from fastapi import APIRouter, Depends
+from models.group import Group
 from models.jwt import JwtClaim
-from models.tree import Tree
 from utilities.dynamodb_client import DynamoDBClient
 from utilities.jwt_client import JwtClient
-from utilities.nodes_handler import NodesHandler
 
-router = APIRouter(tags=["Tree"])
+router = APIRouter(tags=["Groups"])
 db_client = DynamoDBClient()
 
 
 @router.get(
-    path="/tree",
-    summary="Get tree",
-    response_model=Tree,
+    path="/groups",
+    summary="Get user groups",
+    response_model=List[Group],
     responses={
         401: config.RES_401,
     },
@@ -21,6 +22,6 @@ db_client = DynamoDBClient()
 async def func(
     jwt: JwtClaim = Depends(JwtClient().verify),
 ):
-    nodes_handler = NodesHandler(jwt.group_id)
-    root = nodes_handler.get_root()
-    return nodes_handler.tree(root.node_id)
+    user = db_client.get_user(jwt.email)
+    groups = [db_client.get_group(i.group_id) for i in user.groups]
+    return groups
