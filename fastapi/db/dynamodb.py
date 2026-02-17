@@ -101,11 +101,11 @@ class DynamoDBClient:
         )
         items = response.get("Items")
 
-        entities = []
+        nodes = []
         for item in items:
             item["PK"] = item.pop("PK").removeprefix("GROUP_ID#")
             item["SK"] = item.pop("SK").removeprefix("NODE#")
-            entities.append(
+            nodes.append(
                 Node(
                     group_id=item["PK"],
                     node_id=item["SK"],
@@ -114,7 +114,7 @@ class DynamoDBClient:
                     children_ids=item["children_ids"],
                 )
             )
-        return entities
+        return nodes
 
     def put_node(self, node: Node) -> None:
         self._db_client.put_item(
