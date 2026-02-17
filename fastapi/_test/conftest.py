@@ -38,4 +38,5 @@ def user_token():
 
 @pytest.fixture(scope="session")
 def invalid_id_token():
-    return f"Bearer {JwtClient().encode("invalid@cloudjex.com")}"
+    # expired token
+    return "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3RAY2xvdWRqZXguY29tIiwiZ3JvdXBfaWQiOiJhNGJhYTU4My1mMzI3LTQ3ZGItYTk4OS0wYTllMDM4NmYyYTIiLCJpc3MiOiJ3d3cuY2xvdWRqZXguY29tIiwiYXVkIjoid3d3LmNsb3VkamV4LmNvbSIsImlhdCI6MTc3MTMyNDU5MSwiZXhwIjoxNzcxMzI4MTkxfQ.WTr84SqVsspaRLlOD62oZv0JQiwxbC9r0dhEsEbt2Qg"
