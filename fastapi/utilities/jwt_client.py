@@ -30,7 +30,7 @@ class JwtClient:
             decoded: dict = jwt.decode(
                 jwt=id_token.removeprefix("Bearer "),
                 key=config.JWT_KEY,
-                algorithms="HS256",
+                algorithms=["HS256"],
                 audience=config.APP_URL,
                 issuer=config.APP_URL,
                 verify=True,
