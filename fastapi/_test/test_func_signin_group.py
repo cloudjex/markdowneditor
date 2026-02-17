@@ -1,18 +1,4 @@
-import pytest
-
-from utilities.jwt_client import JwtClient
-
-from .conftest import EMAIL, GROUP_ID, fa_client
-
-
-@pytest.fixture()
-def user_token():
-    print("\nsetup...")
-    id_token = JwtClient().encode(EMAIL)
-
-    yield id_token
-
-    print("\nteardown...")
+from .conftest import GROUP_ID, fa_client
 
 
 class TestSuccessPost:

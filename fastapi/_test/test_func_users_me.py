@@ -4,7 +4,7 @@ from .conftest import EMAIL, PASSWORD, fa_client
 
 
 @pytest.fixture()
-def setup1(id_token):
+def reset_pw(id_token):
     print("\nsetup...")
     # Return new pw
     new_password = "NewTestPassword123!"
@@ -53,8 +53,8 @@ class TestFailGet:
 
 
 class TestSuccessPut:
-    def test_put_me_pw(self, id_token, setup1):
-        new_password = setup1
+    def test_put_me_pw(self, id_token, reset_pw):
+        new_password = reset_pw
 
         res = fa_client.put(
             url="/api/users/me/password",

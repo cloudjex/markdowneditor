@@ -34,5 +34,10 @@ def id_token():
 
 
 @pytest.fixture(scope="session")
+def user_token():
+    return f"Bearer {JwtClient().encode(EMAIL)}"
+
+
+@pytest.fixture(scope="session")
 def invalid_id_token():
     return "Bearer invalid_token"

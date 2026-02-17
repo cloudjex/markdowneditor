@@ -6,7 +6,7 @@ from .conftest import fa_client
 
 
 @pytest.fixture()
-def setup_for_post(id_token):
+def delete_node(id_token):
     # Nothing to set up
     print("\nsetup...")
 
@@ -23,7 +23,7 @@ def setup_for_post(id_token):
 
 
 @pytest.fixture()
-def setup_for_put(id_token, root_node_id):
+def reset_root_node(id_token, root_node_id):
     # Backup current label and text
     print("\nsetup...")
     res = fa_client.get(
@@ -49,7 +49,7 @@ def setup_for_put(id_token, root_node_id):
 
 
 @pytest.fixture()
-def setup_for_delete(id_token, root_node_id):
+def prepare_node(id_token, root_node_id):
     # Create new node
     print("\nsetup...")
     new_node_label = str(time.time())
@@ -125,7 +125,7 @@ class TestFailGet:
 
 
 class TestSuccessPost:
-    def test_post_node(self, id_token, root_node_id, setup_for_post):
+    def test_post_node(self, id_token, root_node_id, delete_node):
         new_node_label = str(time.time())
         res = fa_client.post(
             url=f"/api/nodes/{root_node_id}",
@@ -183,8 +183,8 @@ class TestFailPost:
 
 
 class TestSuccessPut:
-    def test_put_node(self, id_token, root_node_id, setup_for_put):
-        label = setup_for_put[0]
+    def test_put_node(self, id_token, root_node_id, reset_root_node):
+        label = reset_root_node[0]
         text = "test text"
 
         res = fa_client.put(
@@ -205,8 +205,8 @@ class TestSuccessPut:
         assert type(body["node_id"]) is str
         assert type(body["children_ids"]) is list
 
-    def test_with_empty_text(self, id_token, root_node_id, setup_for_put):
-        label = setup_for_put[0]
+    def test_with_empty_text(self, id_token, root_node_id, reset_root_node):
+        label = reset_root_node[0]
         text = ""
 
         res = fa_client.put(
@@ -227,9 +227,9 @@ class TestSuccessPut:
         assert type(body["node_id"]) is str
         assert type(body["children_ids"]) is list
 
-    def test_update_label(self, id_token, root_node_id, setup_for_put):
-        label = f"{setup_for_put[0]} ver2"
-        text = setup_for_put[1]
+    def test_update_label(self, id_token, root_node_id, reset_root_node):
+        label = f"{reset_root_node[0]} ver2"
+        text = reset_root_node[1]
 
         res = fa_client.put(
             url=f"/api/nodes/{root_node_id}",
@@ -279,8 +279,8 @@ class TestFailPut:
 
 
 class TestSuccessDelete:
-    def test_delete_node(self, id_token, setup_for_delete):
-        del_node_id = setup_for_delete["node_id"]
+    def test_delete_node(self, id_token, prepare_node):
+        del_node_id = prepare_node["node_id"]
         res = fa_client.delete(
             url=f"/api/nodes/{del_node_id}",
             headers={"Authorization": id_token},

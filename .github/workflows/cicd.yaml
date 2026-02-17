@@ -40,7 +40,7 @@ jobs:
       - name: Build Lambda package
         working-directory: ./fastapi
         run: |
-          rm -r ./test
+          rm -r ./_test
           pip install -r requirements.txt -t ../.github/build
           cp -r . ../.github/build/
           cd ../.github/build

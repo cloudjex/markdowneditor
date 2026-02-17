@@ -4,7 +4,7 @@ from .conftest import fa_client
 
 
 @pytest.fixture()
-def setup_for_move(id_token, root_node_id):
+def prepare_2_node(id_token, root_node_id):
     # First, create 2 nodes
     print("\nsetup...")
     res = fa_client.post(
@@ -41,10 +41,10 @@ def setup_for_move(id_token, root_node_id):
 
 
 class TestSuccessPut:
-    def test_move_node(self, id_token, setup_for_move):
+    def test_move_node(self, id_token, prepare_2_node):
         # Test
-        to_be_parent_node_id = setup_for_move[0]
-        to_be_child_node_id = setup_for_move[1]
+        to_be_parent_node_id = prepare_2_node[0]
+        to_be_child_node_id = prepare_2_node[1]
 
         res = fa_client.put(
             url=f"/api/nodes/move/{to_be_child_node_id}",
@@ -84,10 +84,10 @@ class TestFailPut:
         )
         assert res.status_code == 400
 
-    def test_move_node_to_child(self, id_token, setup_for_move):
+    def test_move_node_to_child(self, id_token, prepare_2_node):
         # Test
-        to_be_parent_node_id = setup_for_move[0]
-        to_be_child_node_id = setup_for_move[1]
+        to_be_parent_node_id = prepare_2_node[0]
+        to_be_child_node_id = prepare_2_node[1]
 
         # First, move child under parent
         res = fa_client.put(
