@@ -66,7 +66,6 @@ class DynamoDBClient:
             return Group(
                 group_id=item["PK"],
                 group_name=item["group_name"],
-                users=item["users"],
             )
 
     ###############################

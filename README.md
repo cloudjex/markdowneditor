@@ -55,7 +55,6 @@ NoSQL(ドキュメント指向DB)を使用し、Itemは単一テーブルに格�
 | PK         | str   | value: `GROUP_ID#{group_id}` | PartitionKey |
 | SK         | str   | value: `USER_GROUP`          | SortKey      |
 | group_name | str   | group name                   |              |
-| users      | array | users                        |              |
 
 ### node item
 | key          | type  | desctiption                  | description  |

@@ -13,7 +13,6 @@ class TestSuccessGet:
         assert type(body) is list
         assert type(body[0]["group_id"]) is str
         assert type(body[0]["group_name"]) is str
-        assert type(body[0]["users"]) is list
 
 
 class TestFailGet:
