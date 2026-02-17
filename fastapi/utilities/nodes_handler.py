@@ -4,10 +4,16 @@ from models.node import Node
 
 class NodesHandler:
     def __init__(self, group_id: str):
-        self._dynamodb_client = DynamoDBClient()
+        self._db_client = DynamoDBClient()
         self._group_id = group_id
-        self._node_map = {
-            n.node_id: n for n in self._dynamodb_client.get_nodes(group_id)
+        self._node_map = {n.node_id: n for n in self._db_client.get_nodes(group_id)}
+
+    def tree(self, nid: str) -> dict:
+        node = self._node_map[nid]
+        return {
+            "node_id": node.node_id,
+            "label": node.label,
+            "children": [self.tree(child_id) for child_id in node.children_ids],
         }
 
     def get_root(self) -> Node:
@@ -23,16 +29,8 @@ class NodesHandler:
         root_id = next(iter(root_ids))
         return self._node_map[root_id]
 
-    def tree(self, nid: str) -> dict:
-        node = self._node_map[nid]
-        return {
-            "node_id": node.node_id,
-            "label": node.label,
-            "children": [self.tree(child_id) for child_id in node.children_ids],
-        }
-
     def get_parent(self, node_id: str) -> Node | None:
-        for _, node in self._node_map.items():
+        for node in self._node_map.values():
             if node_id in node.children_ids:
                 return node
         else:
