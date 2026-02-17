@@ -1,10 +1,10 @@
 from typing import List
 
 import config
+from db.dynamodb import DynamoDBClient
 from fastapi import APIRouter, Depends
 from models.group import Group
 from models.jwt import JwtClaim
-from utilities.dynamodb_client import DynamoDBClient
 from utilities.jwt_client import JwtClient
 
 router = APIRouter(tags=["Groups"])

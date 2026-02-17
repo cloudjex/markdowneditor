@@ -1,11 +1,11 @@
 import config
+from db.dynamodb import DynamoDBClient
 from fastapi import APIRouter, Depends
 from models import req
 from models.jwt import IdToken, JwtClaim
 from models.result import Result
 from utilities import errors
 from utilities.bcrypt_hash import Bcrypt
-from utilities.dynamodb_client import DynamoDBClient
 from utilities.jwt_client import JwtClient
 
 router = APIRouter(tags=["Auth"])

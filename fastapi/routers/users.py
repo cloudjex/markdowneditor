@@ -1,4 +1,5 @@
 import config
+from db.dynamodb import DynamoDBClient
 from fastapi import APIRouter, Depends
 from models import req
 from models.jwt import JwtClaim
@@ -6,7 +7,6 @@ from models.result import Result
 from models.user import User
 from utilities import errors
 from utilities.bcrypt_hash import Bcrypt
-from utilities.dynamodb_client import DynamoDBClient
 from utilities.jwt_client import JwtClient
 
 router = APIRouter(tags=["Users"])
