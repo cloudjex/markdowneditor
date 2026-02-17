@@ -5,11 +5,9 @@ from fastapi.testclient import TestClient
 from utilities.jwt_client import JwtClient
 
 # Test Accounts
-EMAIL = "test@gmail.com"
+EMAIL = "test@cloudjex.com"
 PASSWORD = "test"
 GROUP_ID = "a4baa583-f327-47db-a989-0a9e0386f2a2"
-NONUSER_EMAIL = "nonuser@gmail.com"
-
 
 fa_client = TestClient(app.app)
 
@@ -40,4 +38,4 @@ def user_token():
 
 @pytest.fixture(scope="session")
 def invalid_id_token():
-    return "Bearer invalid_token"
+    return f"Bearer {JwtClient().encode("invalid@cloudjex.com")}"

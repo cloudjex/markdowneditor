@@ -31,7 +31,7 @@ class TestFailPost:
         res = fa_client.post(
             url="/api/signin",
             json={
-                "email": "test@gmail.com",
+                "email": EMAIL,
                 "password": "invalid_password",
             },
         )
