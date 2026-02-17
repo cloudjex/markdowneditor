@@ -1,11 +1,11 @@
 from typing import List
 
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, Field
 
 
 class User(BaseModel):
     email: EmailStr
-    password: str
+    password: str = Field(min_length=4, examples=["*****"])
     groups: List["Groups"]
     options: "Options"
 

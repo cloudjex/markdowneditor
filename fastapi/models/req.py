@@ -5,7 +5,7 @@ from models.uuid4_str import pattern
 
 class SignIn(BaseModel):
     email: EmailStr
-    password: str
+    password: str = Field(min_length=4)
 
 
 class SignInGroup(BaseModel):
@@ -13,8 +13,8 @@ class SignInGroup(BaseModel):
 
 
 class UpdatePassword(BaseModel):
-    old_password: str
-    new_password: str = Field(min_length=4, max_length=20)
+    old_password: str = Field(min_length=4)
+    new_password: str = Field(min_length=4)
 
 
 class TreeNodePost(BaseModel):

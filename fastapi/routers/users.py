@@ -25,7 +25,7 @@ async def func(
     jwt: JwtClaim = Depends(JwtClient().verify),
 ):
     user = db_client.get_user(jwt.email)
-    user.password = "***"
+    user.password = "*****"
     return user
 
 
