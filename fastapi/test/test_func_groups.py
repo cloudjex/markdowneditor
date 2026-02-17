@@ -2,7 +2,7 @@ from .conftest import fa_client
 
 
 class TestSuccessGet:
-    def test_func_groups_get_nodes(self, id_token):
+    def test_get_nodes(self, id_token):
         res = fa_client.get(
             url="/api/groups",
             headers={"Authorization": id_token},
@@ -16,7 +16,7 @@ class TestSuccessGet:
 
 
 class TestFailGet:
-    def test_func_groups_get_nodes_invalid_token(self, invalid_id_token):
+    def test_with_invalid_token(self, invalid_id_token):
         res = fa_client.get(
             url="/api/nodes",
             headers={"Authorization": invalid_id_token},

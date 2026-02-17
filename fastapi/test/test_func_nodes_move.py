@@ -41,7 +41,7 @@ def setup_for_move(id_token, root_node_id):
 
 
 class TestSuccessPut:
-    def test_func_tree_node_move_put_normal(self, id_token, setup_for_move):
+    def test_move_node(self, id_token, setup_for_move):
         # Test
         to_be_parent_node_id = setup_for_move[0]
         to_be_child_node_id = setup_for_move[1]
@@ -74,7 +74,7 @@ class TestSuccessPut:
 
 
 class TestFailPut:
-    def test_func_tree_node_move_put_root_node(self, id_token, root_node_id):
+    def test_move_root_node(self, id_token, root_node_id):
         res = fa_client.put(
             url=f"/api/nodes/move/{root_node_id}",
             headers={"Authorization": id_token},
@@ -84,7 +84,7 @@ class TestFailPut:
         )
         assert res.status_code == 400
 
-    def test_func_tree_node_move_put_move_to_child(self, id_token, setup_for_move):
+    def test_move_node_to_child(self, id_token, setup_for_move):
         # Test
         to_be_parent_node_id = setup_for_move[0]
         to_be_child_node_id = setup_for_move[1]
@@ -109,7 +109,7 @@ class TestFailPut:
         )
         assert res.status_code == 400
 
-    def test_func_tree_node_move_put_invalid_token(self, invalid_id_token):
+    def test_with_invalid_token(self, invalid_id_token):
         res = fa_client.put(
             url="/api/nodes/move/00000000-0000-0000-0000-000000000000",
             headers={"Authorization": invalid_id_token},
@@ -119,7 +119,7 @@ class TestFailPut:
         )
         assert res.status_code == 401
 
-    def test_func_tree_node_move_put_non_exist(self, id_token):
+    def test_move_non_exist_node(self, id_token):
         res = fa_client.put(
             url="/api/nodes/move/00000000-0000-0000-0000-000000000000",
             headers={"Authorization": id_token},
@@ -129,7 +129,7 @@ class TestFailPut:
         )
         assert res.status_code == 404
 
-    def test_func_tree_node_move_put_bad_request(self, id_token):
+    def test_with_bad_request(self, id_token):
         res = fa_client.put(
             url="/api/nodes/move/00000000-0000-0000-0000-000000000000",
             headers={"Authorization": id_token},

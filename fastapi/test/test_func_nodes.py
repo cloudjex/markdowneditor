@@ -70,7 +70,7 @@ def setup_for_delete(id_token, root_node_id):
 
 
 class TestSuccessGet:
-    def test_func_nodes_get_nodes(self, id_token):
+    def test_get_nodes(self, id_token):
         res = fa_client.get(
             url="/api/nodes",
             headers={"Authorization": id_token},
@@ -85,7 +85,7 @@ class TestSuccessGet:
         assert type(body[0]["text"]) is str
         assert type(body[0]["children_ids"]) is list
 
-    def test_func_nodes_get_node(self, id_token, root_node_id):
+    def test_get_node(self, id_token, root_node_id):
         res = fa_client.get(
             url=f"/api/nodes/{root_node_id}",
             headers={"Authorization": id_token},
@@ -102,21 +102,21 @@ class TestSuccessGet:
 
 
 class TestFailGet:
-    def test_func_nodes_get_nodes_invalid_token(self, invalid_id_token):
+    def test_with_invalid_token(self, invalid_id_token):
         res = fa_client.get(
             url="/api/nodes",
             headers={"Authorization": invalid_id_token},
         )
         assert res.status_code == 401
 
-    def test_func_nodes_get_non_exists_node_invalid_token(self, invalid_id_token):
+    def test_with_invalid_token2(self, invalid_id_token):
         res = fa_client.get(
             url="/api/nodes/00000000-0000-0000-0000-000000000000",
             headers={"Authorization": invalid_id_token},
         )
         assert res.status_code == 401
 
-    def test_func_nodes_get_node_non_exists(self, id_token):
+    def test_get_non_exist_node(self, id_token):
         res = fa_client.get(
             url="/api/nodes/00000000-0000-0000-0000-000000000000",
             headers={"Authorization": id_token},
@@ -125,7 +125,7 @@ class TestFailGet:
 
 
 class TestSuccessPost:
-    def test_func_nodes_post_normal(self, id_token, root_node_id, setup_for_post):
+    def test_post_node(self, id_token, root_node_id, setup_for_post):
         new_node_label = str(time.time())
         res = fa_client.post(
             url=f"/api/nodes/{root_node_id}",
@@ -155,14 +155,14 @@ class TestSuccessPost:
 
 
 class TestFailPost:
-    def test_func_nodes_post_invalid_token(self, invalid_id_token):
+    def test_with_invalid_token(self, invalid_id_token):
         res = fa_client.post(
             url="/api/nodes/00000000-0000-0000-0000-000000000000",
             headers={"Authorization": invalid_id_token},
         )
         assert res.status_code == 401
 
-    def test_func_nodes_post_bad_request(self, id_token):
+    def test_with_bad_request(self, id_token):
         res = fa_client.post(
             url="/api/nodes/00000000-0000-0000-0000-000000000000",
             headers={"Authorization": id_token},
@@ -170,7 +170,7 @@ class TestFailPost:
         )
         assert res.status_code == 422
 
-    def test_func_nodes_post_invalid_str(self, id_token):
+    def test_with_invalid_str(self, id_token):
         res = fa_client.post(
             url="/api/nodes/00000000-0000-0000-0000-000000000000",
             headers={"Authorization": id_token},
@@ -183,7 +183,7 @@ class TestFailPost:
 
 
 class TestSuccessPut:
-    def test_func_nodes_put_normal(self, id_token, root_node_id, setup_for_put):
+    def test_put_node(self, id_token, root_node_id, setup_for_put):
         label = setup_for_put[0]
         text = "test text"
 
@@ -205,7 +205,7 @@ class TestSuccessPut:
         assert type(body["node_id"]) is str
         assert type(body["children_ids"]) is list
 
-    def test_func_nodes_put_empty_text(self, id_token, root_node_id, setup_for_put):
+    def test_with_empty_text(self, id_token, root_node_id, setup_for_put):
         label = setup_for_put[0]
         text = ""
 
@@ -227,7 +227,7 @@ class TestSuccessPut:
         assert type(body["node_id"]) is str
         assert type(body["children_ids"]) is list
 
-    def test_func_nodes_put_update_label(self, id_token, root_node_id, setup_for_put):
+    def test_update_label(self, id_token, root_node_id, setup_for_put):
         label = f"{setup_for_put[0]} ver2"
         text = setup_for_put[1]
 
@@ -251,14 +251,14 @@ class TestSuccessPut:
 
 
 class TestFailPut:
-    def test_func_nodes_put_invalid_token(self, invalid_id_token):
+    def test_with_invalid_token(self, invalid_id_token):
         res = fa_client.put(
             url="/api/nodes/00000000-0000-0000-0000-000000000000",
             headers={"Authorization": invalid_id_token},
         )
         assert res.status_code == 401
 
-    def test_func_nodes_put_no_exist_node(self, id_token):
+    def test_put_no_exist_node(self, id_token):
         res = fa_client.put(
             url="/api/nodes/00000000-0000-0000-0000-000000000000",
             headers={"Authorization": id_token},
@@ -269,7 +269,7 @@ class TestFailPut:
         )
         assert res.status_code == 404
 
-    def test_func_nodes_put_bad_request(self, id_token):
+    def test_with_bad_request(self, id_token):
         res = fa_client.put(
             url="/api/nodes/00000000-0000-0000-0000-000000000000",
             headers={"Authorization": id_token},
@@ -279,7 +279,7 @@ class TestFailPut:
 
 
 class TestSuccessDelete:
-    def test_func_nodes_delete_normal(self, id_token, setup_for_delete):
+    def test_delete_node(self, id_token, setup_for_delete):
         del_node_id = setup_for_delete["node_id"]
         res = fa_client.delete(
             url=f"/api/nodes/{del_node_id}",
@@ -301,21 +301,21 @@ class TestSuccessDelete:
 
 
 class TestFailDelete:
-    def test_func_nodes_delete_root(self, id_token, root_node_id):
+    def test_delete_root_node(self, id_token, root_node_id):
         res = fa_client.delete(
             url=f"/api/nodes/{root_node_id}",
             headers={"Authorization": id_token},
         )
         assert res.status_code == 400
 
-    def test_func_nodes_delete_invalid_token(self, invalid_id_token):
+    def test_with_invalid_token(self, invalid_id_token):
         res = fa_client.delete(
             url="/api/nodes/00000000-0000-0000-0000-000000000000",
             headers={"Authorization": invalid_id_token},
         )
         assert res.status_code == 401
 
-    def test_func_nodes_delete_non_exist(self, id_token):
+    def test_delete_non_exist_node(self, id_token):
         res = fa_client.delete(
             url="/api/nodes/00000000-0000-0000-0000-000000000000",
             headers={"Authorization": id_token},

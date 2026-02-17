@@ -2,7 +2,7 @@ from .conftest import EMAIL, PASSWORD, fa_client
 
 
 class TestSuccessPost:
-    def test_func_signin_normal(self):
+    def test_signin(self):
         res = fa_client.post(
             url="/api/signin",
             json={
@@ -17,7 +17,7 @@ class TestSuccessPost:
 
 
 class TestFailPost:
-    def test_func_signin_invalid_email_pw(self):
+    def test_with_incorrect_email_pw(self):
         res = fa_client.post(
             url="/api/signin",
             json={
@@ -27,7 +27,7 @@ class TestFailPost:
         )
         assert res.status_code == 401
 
-    def test_func_signin_invalid_pw(self):
+    def test_with_incorrect_pw(self):
         res = fa_client.post(
             url="/api/signin",
             json={
@@ -37,7 +37,7 @@ class TestFailPost:
         )
         assert res.status_code == 401
 
-    def test_func_signin_bad_request(self):
+    def test_with_bad_request(self):
         res = fa_client.post(
             url="/api/signin",
             json={},

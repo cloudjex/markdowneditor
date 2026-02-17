@@ -25,7 +25,7 @@ def setup1(id_token):
 
 
 class TestSuccessGet:
-    def test_func_users_me_get_normal(self, id_token):
+    def test_get_user_me(self, id_token):
         res = fa_client.get(
             url="/api/users/me",
             headers={"Authorization": id_token},
@@ -44,7 +44,7 @@ class TestSuccessGet:
 
 
 class TestFailGet:
-    def test_func_users_me_get_invalid_token(self, invalid_id_token):
+    def test_with_invalid_token(self, invalid_id_token):
         res = fa_client.get(
             url="/api/users/me",
             headers={"Authorization": invalid_id_token},
@@ -53,7 +53,7 @@ class TestFailGet:
 
 
 class TestSuccessPut:
-    def test_func_users_me_put_pw(self, id_token, setup1):
+    def test_put_me_pw(self, id_token, setup1):
         new_password = setup1
 
         res = fa_client.put(
@@ -71,7 +71,7 @@ class TestSuccessPut:
 
 
 class TestFailPut:
-    def test_func_users_me_put_invalid_token(self, invalid_id_token):
+    def test_with_invalid_token(self, invalid_id_token):
         res = fa_client.put(
             url="/api/users/me/password",
             headers={"Authorization": invalid_id_token},
@@ -82,7 +82,7 @@ class TestFailPut:
         )
         assert res.status_code == 401
 
-    def test_func_users_me_put_invalid_password(self, id_token):
+    def test_put_me_pw_with_incorrect_pw(self, id_token):
         res = fa_client.put(
             url="/api/users/me/password",
             headers={"Authorization": id_token},
@@ -93,7 +93,7 @@ class TestFailPut:
         )
         assert res.status_code == 401
 
-    def test_func_users_me_put_bad_request(self, id_token):
+    def test_with_bad_request(self, id_token):
         res = fa_client.put(
             url="/api/users/me/password",
             headers={"Authorization": id_token},
@@ -101,7 +101,7 @@ class TestFailPut:
         )
         assert res.status_code == 422
 
-    def test_func_users_me_put_invalid_str(self, id_token):
+    def test_put_me_pw_with_invalid_str(self, id_token):
         res = fa_client.put(
             url="/api/users/me/password",
             headers={"Authorization": id_token},

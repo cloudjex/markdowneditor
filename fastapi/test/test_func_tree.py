@@ -2,7 +2,7 @@ from .conftest import fa_client
 
 
 class TestSuccessGET:
-    def test_func_tree_get_normal(self, id_token):
+    def test_get_tree(self, id_token):
         res = fa_client.get(
             url="/api/tree",
             headers={"Authorization": id_token},
@@ -16,7 +16,7 @@ class TestSuccessGET:
 
 
 class TestFailGet:
-    def test_func_tree_get_invalid_token(self, invalid_id_token):
+    def test_with_invalid_token(self, invalid_id_token):
         res = fa_client.get(
             url="/api/tree",
             headers={"Authorization": invalid_id_token},
