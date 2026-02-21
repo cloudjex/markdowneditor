@@ -3,28 +3,7 @@ import pytest
 from .conftest import EMAIL, PASSWORD, fa_client
 
 
-@pytest.fixture()
-def reset_pw(id_token):
-    print("\nsetup...")
-    # Return new pw
-    new_password = "NewTestPassword123!"
-
-    yield new_password
-
-    # Clean up
-    print("\nteardown...")
-    res = fa_client.put(
-        url="/api/users/me/password",
-        headers={"Authorization": id_token},
-        json={
-            "old_password": new_password,
-            "new_password": PASSWORD,
-        },
-    )
-    assert res.status_code == 200
-
-
-class TestSuccessGet:
+class TestGetUsersMeSuccess:
     def test_get_user_me(self, id_token):
         res = fa_client.get(
             url="/api/users/me",
@@ -43,7 +22,7 @@ class TestSuccessGet:
         assert type(body["options"]["otp"]) is str
 
 
-class TestFailGet:
+class TestGetUsersMeFail:
     def test_with_invalid_token(self, invalid_id_token):
         res = fa_client.get(
             url="/api/users/me",
@@ -52,7 +31,27 @@ class TestFailGet:
         assert res.status_code == 401
 
 
-class TestSuccessPut:
+class TestPutUsersMeSuccess:
+    @pytest.fixture()
+    def reset_pw(self, id_token):
+        print("\nsetup...")
+        # Return new pw
+        new_password = "NewTestPassword123!"
+
+        yield new_password
+
+        # Clean up
+        print("\nteardown...")
+        res = fa_client.put(
+            url="/api/users/me/password",
+            headers={"Authorization": id_token},
+            json={
+                "old_password": new_password,
+                "new_password": PASSWORD,
+            },
+        )
+        assert res.status_code == 200
+
     def test_put_me_pw(self, id_token, reset_pw):
         new_password = reset_pw
 
@@ -70,7 +69,7 @@ class TestSuccessPut:
         assert body["result"] == "success"
 
 
-class TestFailPut:
+class TestPutUsersMeFail:
     def test_with_invalid_token(self, invalid_id_token):
         res = fa_client.put(
             url="/api/users/me/password",

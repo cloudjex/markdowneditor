@@ -1,24 +1,24 @@
 from .conftest import fa_client
 
 
-class TestSuccessGET:
-    def test_get_tree(self, id_token):
+class TestGetGroupsSuccess:
+    def test_get_nodes(self, id_token):
         res = fa_client.get(
-            url="/api/tree",
+            url="/api/groups",
             headers={"Authorization": id_token},
         )
         assert res.status_code == 200
 
-        body = res.json()
-        assert type(body["node_id"]) is str
-        assert type(body["label"]) is str
-        assert type(body["children"]) is list
+        body: list = res.json()
+        assert type(body) is list
+        assert type(body[0]["group_id"]) is str
+        assert type(body[0]["group_name"]) is str
 
 
-class TestFailGet:
+class TestGetGroupsFail:
     def test_with_invalid_token(self, invalid_id_token):
         res = fa_client.get(
-            url="/api/tree",
+            url="/api/nodes",
             headers={"Authorization": invalid_id_token},
         )
         assert res.status_code == 401
