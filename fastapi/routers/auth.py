@@ -1,12 +1,16 @@
+import secrets
+
 import config
-from db.dynamodb import DynamoDBClient
+from utilities.dynamodb_client import DynamoDBClient
 from fastapi import APIRouter, Depends
 from models import req
 from models.jwt import IdToken, JwtClaim
 from models.result import Result
+from models.user import User
 from utilities import errors
-from utilities.bcrypt_hash import Bcrypt
+from utilities.bcrypt_client import BcryptClient
 from utilities.jwt_client import JwtClient
+from utilities.smtp_client import SmtpClient
 
 router = APIRouter(tags=["Auth"])
 db_client = DynamoDBClient()
@@ -26,7 +30,7 @@ async def func(
     req: req.SignIn,
 ):
     user = db_client.get_user(email=req.email)
-    if not user or not Bcrypt().verify(req.password, user.password):
+    if not user or not BcryptClient().verify(req.password, user.password):
         raise errors.UnauthorizedError
 
     if not user.options.enabled:
@@ -58,6 +62,42 @@ async def func(
 
     id_token = JwtClient().encode(jwt.email, req.group_id)
     return {"id_token": id_token}
+
+
+@router.post(
+    path="/signup",
+    summary="Sign up",
+    response_model=Result,
+    responses={
+        409: config.RES_409,
+        422: config.RES_422,
+    },
+)
+async def func(
+    req: req.SignUp,
+):
+    if db_client.get_user(req.email) is not None:
+        raise errors.ConflictError
+
+    user = User(
+        email=req.email,
+        password=BcryptClient().hash(req.password),
+        groups=[],
+        options={
+            "enabled": False,
+            "otp": f"{secrets.randbelow(1000000):06d}",
+        },
+    )
+
+    db_client.put_user(user)
+
+    SmtpClient().send(
+        recipient=user.email,
+        subject="ユーザ仮登録が完了しました",
+        body=f"以下のワンタイムパスワードを入力し、Email認証を完了してください<br>{user.options.otp}",
+    )
+
+    return {"result": "success"}
 
 
 @router.post(

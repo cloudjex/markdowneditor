@@ -2,13 +2,13 @@ import uuid
 from typing import List
 
 import config
-from db.dynamodb import DynamoDBClient
 from fastapi import APIRouter, Depends, Path
 from models import req
 from models.jwt import JwtClaim
 from models.node import Node
 from models.uuid4_str import pattern
 from utilities import errors
+from utilities.dynamodb_client import DynamoDBClient
 from utilities.jwt_client import JwtClient
 from utilities.nodes_handler import NodesHandler
 

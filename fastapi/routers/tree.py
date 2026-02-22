@@ -1,8 +1,8 @@
 import config
-from db.dynamodb import DynamoDBClient
 from fastapi import APIRouter, Depends
 from models.jwt import JwtClaim
 from models.tree import Tree
+from utilities.dynamodb_client import DynamoDBClient
 from utilities.jwt_client import JwtClient
 from utilities.nodes_handler import NodesHandler
 

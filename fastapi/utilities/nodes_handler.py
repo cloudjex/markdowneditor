@@ -1,5 +1,5 @@
-from db.dynamodb import DynamoDBClient
 from models.node import Node
+from utilities.dynamodb_client import DynamoDBClient
 
 
 class NodesHandler:

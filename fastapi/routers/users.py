@@ -1,12 +1,12 @@
 import config
-from db.dynamodb import DynamoDBClient
+from utilities.dynamodb_client import DynamoDBClient
 from fastapi import APIRouter, Depends
 from models import req
 from models.jwt import JwtClaim
 from models.result import Result
 from models.user import User
 from utilities import errors
-from utilities.bcrypt_hash import Bcrypt
+from utilities.bcrypt_client import BcryptClient
 from utilities.jwt_client import JwtClient
 
 router = APIRouter(tags=["Users"])
@@ -43,10 +43,10 @@ async def func(
     jwt: JwtClaim = Depends(JwtClient().verify),
 ):
     user = db_client.get_user(jwt.email)
-    if not Bcrypt().verify(req.old_password, user.password):
+    if not BcryptClient().verify(req.old_password, user.password):
         raise errors.UnauthorizedError
 
-    hashed_new_password = Bcrypt().hash(req.new_password)
+    hashed_new_password = BcryptClient().hash(req.new_password)
 
     user.password = hashed_new_password
     db_client.put_user(user)
