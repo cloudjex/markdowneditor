@@ -40,12 +40,8 @@ jobs:
       - name: Build Lambda package
         working-directory: ./fastapi
         run: |
-          rm -rf ./_test
-          rm -rf __pycache__
           pip install -r requirements.txt -t .
-
-          find . -name "*.pyc" -delete
-          zip -r deploy.zip .
+          zip -r deploy.zip . -x "./_test/*" "*/.git*" "*/__pycache__/*" "*.egg-info/*"
 
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v3
