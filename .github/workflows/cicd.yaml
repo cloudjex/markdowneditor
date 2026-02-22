@@ -47,11 +47,11 @@ jobs:
         uses: hashicorp/setup-terraform@v3
 
       - name: Terraform Init
-        working-directory: ./terraform/fastapi
+        working-directory: ./.tf/fastapi
         run: terraform init
 
       - name: Terraform Apply
-        working-directory: ./terraform/fastapi
+        working-directory: ./.tf/fastapi
         run: terraform apply -auto-approve
 
   react:
@@ -85,12 +85,12 @@ jobs:
         uses: hashicorp/setup-terraform@v3
 
       - name: Terraform Init
-        working-directory: ./terraform/react
+        working-directory: ./.tf/react
         run: terraform init
 
       - name: Terraform Apply
         id: tf_output
-        working-directory: ./terraform/react
+        working-directory: ./.tf/react
         run: |
           terraform apply -auto-approve
 
