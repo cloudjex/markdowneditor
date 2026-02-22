@@ -1,7 +1,8 @@
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { Alert, Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Menu, MenuItem, Select, TextField } from '@mui/material';
-import fileDownload from 'js-file-download';
 import { useState } from 'react';
+
+import { downloadAsMarkdown } from '@/lib/file_download_utils';
 
 import RequestHandler from "@/lib/request_handler";
 import TreeHandler from '@/lib/tree_handler';
@@ -147,7 +148,7 @@ function EditorHeader(props: { tree: Tree, nodeId: string, text: string }) {
           <MenuItem
             sx={{ fontSize: "80%" }}
             onClick={() => {
-              fileDownload(props.text, `${label}.md`);
+              downloadAsMarkdown(props.text, label ?? "untitled");
               closeDialog();
             }}
           >
