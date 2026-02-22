@@ -76,7 +76,8 @@ async def func(
 async def func(
     req: req.SignUp,
 ):
-    if db_client.get_user(req.email) is not None:
+    user = db_client.get_user(req.email)
+    if (user is not None) and (user.options.enabled is True):
         raise errors.ConflictError
 
     user = User(
