@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./.github
+        working-directory: ./.github/workflows
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
@@ -52,18 +52,18 @@ jobs:
         uses: hashicorp/setup-terraform@v3
 
       - name: Terraform Init
-        working-directory: ./.github/fastapi_terraform
+        working-directory: ./terraform/fastapi
         run: terraform init
 
       - name: Terraform Apply
-        working-directory: ./.github/fastapi_terraform
+        working-directory: ./terraform/fastapi
         run: terraform apply -auto-approve
 
   react:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./.github
+        working-directory: ./.github/workflows
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
@@ -90,12 +90,12 @@ jobs:
         uses: hashicorp/setup-terraform@v3
 
       - name: Terraform Init
-        working-directory: ./.github/react_terraform
+        working-directory: ./terraform/react
         run: terraform init
 
       - name: Terraform Apply
         id: tf_output
-        working-directory: ./.github/react_terraform
+        working-directory: ./terraform/react
         run: |
           terraform apply -auto-approve
 
