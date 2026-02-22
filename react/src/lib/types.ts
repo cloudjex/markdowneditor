@@ -40,15 +40,14 @@ export interface User {
 export interface Group {
   group_id: string;
   group_name: string;
-  users: string[];
 };
 
 export interface Node {
+  group_id: string;
   node_id: string;
   label: string;
-  user_group: string;
   text: string;
-  children: string[],
+  children_ids: string[];
 };
 
 export interface Tree {
