@@ -8,12 +8,12 @@ import type { Tree } from '@/src/lib/types';
 import TreeHandler from '@/src/lib/tree_handler';
 
 
-function Explorer(props: { node_id: string, tree: Tree }) {
+function Explorer(props: { tree: Tree, nodeId: string }) {
   const navigate = useNavigate();
   const [expandedItems, setExpandedItems] = useState<string[]>([]);
 
-  const tree_handler = new TreeHandler(props.tree);
-  const parents = tree_handler.getParentNodeIds(props.node_id);
+  const treeHandler = new TreeHandler(props.tree);
+  const parents = treeHandler.getParentNodeIds(props.nodeId);
   const displayedExpanded = [
     ...new Set([props.tree.node_id, ...expandedItems, ...parents]),
   ];
@@ -29,10 +29,10 @@ function Explorer(props: { node_id: string, tree: Tree }) {
           sx={{}}
           items={[props.tree]}
           getItemId={getItemId}
-          onItemClick={(_, node_id) => {
-            navigate(`/node/${node_id}`);
+          onItemClick={(_, nodeId) => {
+            navigate(`/node/${nodeId}`);
           }}
-          selectedItems={props.node_id}
+          selectedItems={props.nodeId}
           expandedItems={displayedExpanded}
           onExpandedItemsChange={(_, ids) => setExpandedItems(ids)}
         />

@@ -12,9 +12,9 @@ import loadingState from "@/src/store/loading_store";
 import userStore from '@/src/store/user_store';
 
 
-function TreeUpdate(props: { node_id: string, tree: Tree }) {
+function TreeUpdate(props: { nodeId: string, tree: Tree }) {
   const navigate = useNavigate();
-  const { id_token, setTree } = userStore();
+  const { idToken, setTree } = userStore();
   const { setLoading } = loadingState();
 
   const [labelInput, setLabelInput] = useState({
@@ -24,8 +24,8 @@ function TreeUpdate(props: { node_id: string, tree: Tree }) {
   // 0: null, 1: post, 2: del
   const [dialogKind, setDialogKind] = useState(0);
 
-  const requests = new RequestHandler(id_token);
-  const tree_handler = new TreeHandler(props.tree);
+  const requests = new RequestHandler(idToken);
+  const treeHandler = new TreeHandler(props.tree);
 
   function closeDialog() {
     setLabelInput({ label: "", isInvalid: false, });
@@ -42,7 +42,7 @@ function TreeUpdate(props: { node_id: string, tree: Tree }) {
     setLoading(true);
 
     await requests.post(
-      `/api/nodes/${props.node_id}`,
+      `/api/nodes/${props.nodeId}`,
       { label: label, text: "" }
     );
 
@@ -58,8 +58,8 @@ function TreeUpdate(props: { node_id: string, tree: Tree }) {
     closeDialog();
     setLoading(true);
 
-    const del_node_id = props.node_id;
-    const parent_node = tree_handler.getParentNode(del_node_id);
+    const del_node_id = props.nodeId;
+    const parent_node = treeHandler.getParentNode(del_node_id);
     const next_node_id = parent_node?.node_id || props.tree.node_id;
 
     await requests.delete(
@@ -95,7 +95,7 @@ function TreeUpdate(props: { node_id: string, tree: Tree }) {
         <Button
           onClick={() => setDialogKind(2)}
           size="small"
-          disabled={props.node_id === props.tree.node_id}
+          disabled={props.nodeId === props.tree.node_id}
           variant="outlined"
           color="error"
         >
@@ -119,7 +119,7 @@ function TreeUpdate(props: { node_id: string, tree: Tree }) {
             label="親ラベル"
             variant="standard"
             disabled
-            value={tree_handler.getNode(props.node_id)?.label}
+            value={treeHandler.getNode(props.nodeId)?.label}
           />
           <TextField
             id="outlined-basic"

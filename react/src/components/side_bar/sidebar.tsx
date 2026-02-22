@@ -9,7 +9,7 @@ import Explorer from '@/src/components/side_bar/explorer';
 import TreeUpdate from '@/src/components/side_bar/tree_update';
 
 
-function Sidebar(props: { tree: Tree, node_id: string }) {
+function Sidebar(props: { tree: Tree, nodeId: string }) {
   const [drawewrOpen, setDrawerOpen] = useState(false);
 
   return (
@@ -47,8 +47,8 @@ function Sidebar(props: { tree: Tree, node_id: string }) {
             Explorer
           </Typography>
 
-          <TreeUpdate node_id={props.node_id} tree={props.tree} />
-          <Explorer node_id={props.node_id} tree={props.tree} />
+          <TreeUpdate tree={props.tree} nodeId={props.nodeId} />
+          <Explorer tree={props.tree} nodeId={props.nodeId} />
 
         </Container>
       </Drawer >

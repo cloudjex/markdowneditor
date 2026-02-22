@@ -3,7 +3,7 @@ import { persist } from "zustand/middleware";
 
 
 interface LoadingState {
-  loading_stack: number;
+  loadingStack: number;
 
   /* eslint-disable no-unused-vars */
   setLoading: (loading: boolean) => void;
@@ -14,18 +14,18 @@ interface LoadingState {
 const loadingState = create<LoadingState>()(
   persist(
     (set) => ({
-      loading_stack: 0,
+      loadingStack: 0,
 
       setLoading: (loading: boolean) => {set((state) => {
           const stack = loading
-            ? state.loading_stack + 1
-            : state.loading_stack - 1;
+            ? state.loadingStack + 1
+            : state.loadingStack - 1;
 
-          return { loading_stack: stack };
+          return { loadingStack: stack };
         });
       },
       resetLoadingState: () => set({
-        loading_stack: 0
+        loadingStack: 0
       }),
     }),
     { name: "loading-store" }

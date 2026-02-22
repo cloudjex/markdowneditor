@@ -14,7 +14,7 @@ import userStore from '@/src/store/user_store';
 
 function Signin() {
   const navigate = useNavigate();
-  const { id_token, setIdToken, groups, setGroups, setEmail, resetUserState, setTree } = userStore();
+  const { idToken, setIdToken, groups, setGroups, setEmail, resetUserState, setTree } = userStore();
   const { setLoading, resetLoadingState } = loadingState();
   const [signinError, setSigninError] = useState(false);
   const { register, handleSubmit, formState: { errors } } = useForm<SigninForm>();
@@ -34,39 +34,39 @@ function Signin() {
     setSigninError(false);
 
     const requests = new RequestHandler();
-    const signin_res = await requests.post<IdToken>(
+    const signinRes = await requests.post<IdToken>(
       `/api/signin`,
       { email: data.email, password: data.password }
     );
 
-    if (signin_res.status != 200) {
+    if (signinRes.status != 200) {
       setSigninError(true);
       setLoading(false);
       throw new Error("signin error");
     };
 
-    requests.id_token = signin_res.body.id_token;
+    requests.idToken = signinRes.body.id_token;
 
-    const user_res = await requests.get<Group[]>(
+    const userRes = await requests.get<Group[]>(
       `/api/groups`,
     );
 
-    if (user_res.status != 200) {
+    if (userRes.status != 200) {
       setSigninError(true);
       setLoading(false);
       throw new Error("get groups error");
     };
 
     setLoading(false);
-    setGroups(user_res.body);
-    setStateGroupId(user_res.body[0].group_id);
-    setIdToken(signin_res.body.id_token);
+    setGroups(userRes.body);
+    setStateGroupId(userRes.body[0].group_id);
+    setIdToken(signinRes.body.id_token);
     setEmail(data.email);
     setDialogKind(1);
   };
 
-  async function SigninWithUserGroup(group_id: string) {
-    if (!group_id) {
+  async function signinWithUserGroup(groupId: string) {
+    if (!groupId) {
       setSigninWithGroupError(true);
       throw new Error("no selected group");
     }
@@ -74,21 +74,21 @@ function Signin() {
     setDialogKind(0);
     setLoading(true);
 
-    const requests = new RequestHandler(id_token);
-    const signin_res = await requests.post<IdToken>(
+    const requests = new RequestHandler(idToken);
+    const signinRes = await requests.post<IdToken>(
       `/api/signin/group`,
-      { group_id: group_id }
+      { group_id: groupId }
     );
 
-    requests.id_token = signin_res.body.id_token;
-    const tree_res = await requests.get<Tree>(
+    requests.idToken = signinRes.body.id_token;
+    const treeRes = await requests.get<Tree>(
       `/api/tree`,
     );
 
     setLoading(false);
-    setIdToken(signin_res.body.id_token);
-    setTree(tree_res.body);
-    navigate(`/node/${tree_res.body.node_id}`);
+    setIdToken(signinRes.body.id_token);
+    setTree(treeRes.body);
+    navigate(`/node/${treeRes.body.node_id}`);
   }
 
   return (
@@ -161,7 +161,7 @@ function Signin() {
         <DialogActions>
           <Button
             autoFocus
-            onClick={() => SigninWithUserGroup(stateGroupId)}
+            onClick={() => signinWithUserGroup(stateGroupId)}
           >
             OK
           </Button>

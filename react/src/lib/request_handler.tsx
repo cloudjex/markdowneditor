@@ -2,16 +2,16 @@ import type { APIResponse } from '@/src/lib/types';
 
 
 class RequestHandler {
-  public id_token: string;
-  public api_host: string;
+  public idToken: string;
+  public apiHost: string;
 
-  constructor(id_token: string = "", api_host: string = "") {
-    this.id_token = id_token;
-    this.api_host = api_host ? api_host : import.meta.env.VITE_API_HOST;
+  constructor(idToken: string = "", apiHost: string = "") {
+    this.idToken = idToken;
+    this.apiHost = apiHost ? apiHost : import.meta.env.VITE_API_HOST;
   }
 
-  async get<T>(url: string, query_params: Record<string, unknown> = {}): Promise<APIResponse<T>> {
-    return this.send("GET", url, query_params);
+  async get<T>(url: string, queryParams: Record<string, unknown> = {}): Promise<APIResponse<T>> {
+    return this.send("GET", url, queryParams);
   }
 
   async put<T>(url: string, body: Record<string, unknown> = {}): Promise<APIResponse<T>> {
@@ -22,8 +22,8 @@ class RequestHandler {
     return this.send("POST", url, params);
   }
 
-  async delete<T>(url: string, query_params: Record<string, unknown> = {}): Promise<APIResponse<T>> {
-    return this.send("DELETE", url, query_params);
+  async delete<T>(url: string, queryParams: Record<string, unknown> = {}): Promise<APIResponse<T>> {
+    return this.send("DELETE", url, queryParams);
   }
 
   private async send<T>(
@@ -37,13 +37,13 @@ class RequestHandler {
       "Accept": "application/json",
     };
 
-    if (this.id_token) {
-      headers["Authorization"] = `Bearer ${this.id_token}`;
+    if (this.idToken) {
+      headers["Authorization"] = `Bearer ${this.idToken}`;
     }
 
-    let api_url = `${this.api_host}${url}`;
+    let apiUrl = `${this.apiHost}${url}`;
 
-    console.group("API Request", `[${method}]: ${api_url}`);
+    console.group("API Request", `[${method}]: ${apiUrl}`);
     console.log("Headers", headers);
 
     let detail;
@@ -52,7 +52,7 @@ class RequestHandler {
         method,
         headers,
       };
-      api_url = `${api_url}?${new URLSearchParams(params as Record<string, string>)}`;
+      apiUrl = `${apiUrl}?${new URLSearchParams(params as Record<string, string>)}`;
       console.log("Params", params);
     } else {
       detail = {
@@ -63,7 +63,7 @@ class RequestHandler {
       console.log("Body", params);
     }
 
-    const res = await fetch(api_url, detail);
+    const res = await fetch(apiUrl, detail);
     const result: APIResponse<T> = {
       status: res.status,
       headers: res.headers,

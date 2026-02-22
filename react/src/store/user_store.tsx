@@ -7,18 +7,18 @@ import type { Tree, Group } from "@/src/lib/types";
 interface UserState {
   email: string;
   password: string;
-  id_token: string;
+  idToken: string;
   groups: Group[];
   tree: Tree;
-  preview_text: string,
+  previewText: string,
 
   /* eslint-disable no-unused-vars */
   setEmail: (email: string) => void;
   setPassword: (password: string) => void;
-  setIdToken: (id_token: string) => void;
+  setIdToken: (idToken: string) => void;
   setGroups: (groups: Group[]) => void;
   setTree: (tree: Tree) => void;
-  setPreviewText: (preview_text: string) => void;
+  setPreviewText: (previewText: string) => void;
 
   resetUserState: () => void;
 }
@@ -27,24 +27,25 @@ const userStore = create<UserState>()(
   persist((set) => ({
     email: "",
     password: "",
-    id_token: "",
+    idToken: "",
     groups: [],
     tree: { children: [], node_id: "", label: "" },
-    preview_text: "",
+    previewText: "",
 
     setEmail: (email: string): void => { set({ email }); },
     setPassword: (password: string): void => { set({ password }); },
-    setIdToken: (id_token: string): void => { set({ id_token }); },
+    setIdToken: (idToken: string): void => { set({ idToken: idToken }); },
     setGroups: (groups: Group[]): void => { set({ groups: groups }); },
     setTree: (tree: Tree): void => { set({ tree: tree }); },
-    setPreviewText: (preview_text: string): void => { set({ preview_text }); },
+    setPreviewText: (previewText: string): void => { set({ previewText: previewText }); },
 
     resetUserState: () => set({
       email: "",
       password: "",
-      id_token: "",
+      idToken: "",
       groups: [],
       tree: { children: [], node_id: "", label: "" },
+      previewText: "",
     }),
   }),
     { name: "user-store", }

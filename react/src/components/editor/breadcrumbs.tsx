@@ -5,14 +5,14 @@ import type { Tree } from "@/src/lib/types";
 import TreeHandler from '@/src/lib/tree_handler';
 
 
-function Breadcrumb(props: { node_id: string, tree: Tree }) {
-  const tree_handler = new TreeHandler(props.tree);
+function Breadcrumb(props: { tree: Tree, nodeId: string }) {
+  const treeHandler = new TreeHandler(props.tree);
 
   let parentNodes: Tree[] = [];
-  const parents = tree_handler.getParentNodeIds(props.node_id);
-  parentNodes = parents.map((node_id) => tree_handler.getNode(node_id)).filter(node => node != null);
-  const this_node = tree_handler.getNode(props.node_id);
-  if (this_node) parentNodes.push(this_node);
+  const parents = treeHandler.getParentNodeIds(props.nodeId);
+  parentNodes = parents.map((nodeId) => treeHandler.getNode(nodeId)).filter(node => node != null);
+  const thisNode = treeHandler.getNode(props.nodeId);
+  if (thisNode) parentNodes.push(thisNode);
 
   return (
     <Breadcrumbs separator="›" aria-label="breadcrumb">

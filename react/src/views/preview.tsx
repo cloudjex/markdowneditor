@@ -1,5 +1,5 @@
 import { Box } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import ReactMarkdown from "react-markdown";
 import { useLocation, useParams } from "react-router-dom";
 import rehypeAutoLintHeading from "rehype-autolink-headings";
@@ -18,11 +18,10 @@ import userStore from "@/src/store/user_store";
 
 
 function Preview() {
-  const { id_token, preview_text } = userStore();
+  const { idToken, previewText, setPreviewText } = userStore();
   const { setLoading } = loadingState();
-  const [previewText, setPreviewText] = useState("");
 
-  const requests = new RequestHandler(id_token);
+  const requests = new RequestHandler(idToken);
 
   const location = useLocation();
   const node_id = useParams<{ node_id: string }>().node_id || "";
@@ -30,7 +29,6 @@ function Preview() {
   useEffect(() => {
     async function fetchPreview() {
       if (node_id === "state") {
-        setPreviewText(preview_text);
         return;
       }
 

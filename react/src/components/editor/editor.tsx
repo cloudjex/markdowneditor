@@ -14,19 +14,19 @@ import loadingState from "@/src/store/loading_store";
 import userStore from '@/src/store/user_store';
 
 
-function Editor(props: { tree: Tree, node_id: string }) {
-  const { id_token } = userStore();
+function Editor(props: { tree: Tree, nodeId: string }) {
+  const { idToken } = userStore();
   const { setLoading } = loadingState();
   const [markdownValue, setMarkdownValue] = useState("");
 
-  const requests = new RequestHandler(id_token);
+  const requests = new RequestHandler(idToken);
 
   useEffect(() => {
     const fetchNode = async () => {
       setLoading(true);
 
       const res = await requests.get<Node>(
-        `/api/nodes/${props.node_id}`,
+        `/api/nodes/${props.nodeId}`,
       );
 
       setMarkdownValue(res.body.text);
@@ -34,7 +34,7 @@ function Editor(props: { tree: Tree, node_id: string }) {
     };
 
     fetchNode();
-  }, [props.node_id]);
+  }, [props.nodeId]);
 
   const options: Options = useMemo(() => ({
     spellChecker: false,
@@ -48,8 +48,8 @@ function Editor(props: { tree: Tree, node_id: string }) {
   return (
     <>
       <Box display="flex" justifyContent="space-between">
-        <Breadcrumb node_id={props.node_id} tree={props.tree} />
-        <EditorHeader node_id={props.node_id} tree={props.tree} text={markdownValue} />
+        <Breadcrumb tree={props.tree} nodeId={props.nodeId} />
+        <EditorHeader tree={props.tree} nodeId={props.nodeId} text={markdownValue} />
       </Box>
 
       <SimpleMde

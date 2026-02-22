@@ -11,8 +11,8 @@ import loadingState from "@/src/store/loading_store";
 import userStore from '@/src/store/user_store';
 
 
-function EditorHeader(props: { node_id: string, tree: Tree, text: string }) {
-  const { id_token, setTree, setPreviewText } = userStore();
+function EditorHeader(props: { tree: Tree, nodeId: string, text: string }) {
+  const { idToken, setTree, setPreviewText } = userStore();
   const { setLoading } = loadingState();
 
   const [isMenuOpen, setIsMenuOpen] = useState<null | HTMLElement>(null);
@@ -24,20 +24,20 @@ function EditorHeader(props: { node_id: string, tree: Tree, text: string }) {
     isInvalid: false,
   });
   const [moveInput, setMoveInput] = useState({
-    parent_id: "",
+    parentId: "",
     isInvalid: false,
   });
 
-  const requests = new RequestHandler(id_token);
-  const tree_handler = new TreeHandler(props.tree);
-  const node_list = tree_handler.moveNodeList(props.node_id);
-  const label = tree_handler.getNode(props.node_id)?.label;
+  const requests = new RequestHandler(idToken);
+  const treeHandler = new TreeHandler(props.tree);
+  const nodeList = treeHandler.moveNodeList(props.nodeId);
+  const label = treeHandler.getNode(props.nodeId)?.label;
 
   async function upload() {
     setLoading(true);
 
     await requests.put(
-      `/api/nodes/${props.node_id}`,
+      `/api/nodes/${props.nodeId}`,
       { text: props.text, label: label }
     );
 
@@ -46,7 +46,7 @@ function EditorHeader(props: { node_id: string, tree: Tree, text: string }) {
 
   function closeDialog() {
     setLabelInput({ label: "", isInvalid: false, });
-    setMoveInput({ parent_id: "", isInvalid: false, });
+    setMoveInput({ parentId: "", isInvalid: false, });
     setDialogKind(0);
     setIsMenuOpen(null);
   };
@@ -61,7 +61,7 @@ function EditorHeader(props: { node_id: string, tree: Tree, text: string }) {
     setLoading(true);
 
     await requests.put(
-      `/api/nodes/${props.node_id}`,
+      `/api/nodes/${props.nodeId}`,
       { text: props.text, label: labelInput.label }
     );
 
@@ -74,7 +74,7 @@ function EditorHeader(props: { node_id: string, tree: Tree, text: string }) {
   }
 
   async function updateMoveNode() {
-    if (!moveInput.parent_id) {
+    if (!moveInput.parentId) {
       setMoveInput({ ...moveInput, isInvalid: true });
       throw new Error("destination is invalid");
     }
@@ -83,8 +83,8 @@ function EditorHeader(props: { node_id: string, tree: Tree, text: string }) {
     setLoading(true);
 
     await requests.put<Tree>(
-      `/api/nodes/move/${props.node_id}`,
-      { parent_id: moveInput.parent_id }
+      `/api/nodes/move/${props.nodeId}`,
+      { parent_id: moveInput.parentId }
     );
 
     const res = await requests.get<Tree>(
@@ -167,7 +167,7 @@ function EditorHeader(props: { node_id: string, tree: Tree, text: string }) {
             onClick={() => {
               setDialogKind(2);
             }}
-            disabled={props.node_id === props.tree.node_id}
+            disabled={props.nodeId === props.tree.node_id}
           >
             ページ移動
           </MenuItem>
@@ -224,11 +224,11 @@ function EditorHeader(props: { node_id: string, tree: Tree, text: string }) {
           </Box>
 
           <Select
-            value={moveInput.parent_id}
-            onChange={(e) => setMoveInput({ ...moveInput, parent_id: e.target.value })}
+            value={moveInput.parentId}
+            onChange={(e) => setMoveInput({ ...moveInput, parentId: e.target.value })}
             sx={{ width: 300 }}
           >
-            {node_list.map((node) => (
+            {nodeList.map((node) => (
               <MenuItem key={node.node_id} value={node.node_id}>
                 {node.label}
               </MenuItem>

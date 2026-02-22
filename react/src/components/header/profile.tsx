@@ -11,11 +11,11 @@ import userStore from '@/src/store/user_store';
 
 
 function Profile() {
-  const { email, id_token, setTree } = userStore();
+  const { email, idToken, setTree } = userStore();
   const { setLoading } = loadingState();
   const [isMenuOpen, setIsMenuOpen] = useState<null | HTMLElement>(null);
 
-  const requests = new RequestHandler(id_token);
+  const requests = new RequestHandler(idToken);
 
   async function clickReload() {
     setIsMenuOpen(null);

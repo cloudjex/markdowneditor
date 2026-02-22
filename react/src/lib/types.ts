@@ -14,7 +14,7 @@ export interface SigninForm {
 export interface SignupForm {
   email: string;
   password: string;
-  password_confirm: string;
+  passwordConfirm: string;
 };
 
 // Object

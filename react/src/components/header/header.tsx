@@ -6,13 +6,13 @@ import Profile from '@/src/components/header/profile';
 import Sidebar from '@/src/components/side_bar/sidebar';
 
 
-function Header(props: { tree?: Tree, node_id?: string }) {
+function Header(props: { tree?: Tree, nodeId?: string }) {
   return (
     <AppBar position="static">
       <Toolbar style={{ display: "flex" }}>
 
-        {props.tree && props.node_id &&
-          <Sidebar tree={props.tree} node_id={props.node_id} />
+        {props.tree && props.nodeId &&
+          <Sidebar tree={props.tree} nodeId={props.nodeId} />
         }
 
         <Typography
@@ -21,7 +21,7 @@ function Header(props: { tree?: Tree, node_id?: string }) {
           cloudjex.com
         </Typography>
 
-        {props.tree && props.node_id &&
+        {props.tree && props.nodeId &&
           <Profile />
         }
 

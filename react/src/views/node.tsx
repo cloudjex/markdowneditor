@@ -13,10 +13,10 @@ function Node() {
   return (
     <>
       <title>Main</title>
-      <Header tree={tree} node_id={node_id} />
+      <Header tree={tree} nodeId={node_id} />
 
       <Container sx={{ mt: 2 }}>
-        <Editor tree={tree} node_id={node_id} />
+        <Editor tree={tree} nodeId={node_id} />
       </Container>
     </>
   );

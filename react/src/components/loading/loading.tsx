@@ -4,12 +4,12 @@ import loadingState from '@/src/store/loading_store';
 
 
 function Loading() {
-  const { loading_stack } = loadingState();
+  const { loadingStack } = loadingState();
 
   return (
     <Backdrop
       sx={(theme) => ({ color: '#fff', zIndex: theme.zIndex.drawer + 1 })}
-      open={loading_stack > 0}
+      open={loadingStack > 0}
     >
       <CircularProgress color="inherit" />
     </Backdrop>

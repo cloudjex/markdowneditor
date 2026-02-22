@@ -26,7 +26,7 @@ function Signup() {
   }, []);
 
   async function onSubmit(data: SignupForm) {
-    if (data.password !== data.password_confirm) {
+    if (data.password !== data.passwordConfirm) {
       setSignupError(true);
       throw new Error("signup error");
     };
@@ -35,12 +35,12 @@ function Signup() {
     setSignupError(false);
 
     const requests = new RequestHandler();
-    const signup_res = await requests.post(
+    const signupRes = await requests.post(
       `/api/signup`,
       { email: data.email, password: data.password }
     );
 
-    if (signup_res.status != 200) {
+    if (signupRes.status != 200) {
       setSignupError(true);
       setLoading(false);
       throw new Error("signup error");
@@ -62,12 +62,12 @@ function Signup() {
     setVerifyError(false);
 
     const requests = new RequestHandler();
-    const verify_res = await requests.post(
+    const verifyRes = await requests.post(
       `/api/signup/verify`,
       { otp: otp, email: email }
     );
 
-    if (verify_res.status != 200) {
+    if (verifyRes.status != 200) {
       setVerifyError(true);
       setLoading(false);
       throw new Error("verify error");
@@ -110,11 +110,11 @@ function Signup() {
           type="password"
           fullWidth
           margin="normal"
-          {...register("password_confirm", {
+          {...register("passwordConfirm", {
             required: "パスワード(確認用)は必須です",
           })}
-          error={!!errors.password_confirm}
-          helperText={errors.password_confirm?.message}
+          error={!!errors.passwordConfirm}
+          helperText={errors.passwordConfirm?.message}
         />
 
         <Button
