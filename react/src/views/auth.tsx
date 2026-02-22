@@ -2,6 +2,7 @@ import { Container, Tabs, Tab, Box } from "@mui/material";
 import { useState } from "react";
 
 import Signin from "@/src/components/auth/signin";
+import Signup from "@/src/components/auth/signup";
 import Header from "@/src/components/header/header";
 
 
@@ -26,6 +27,7 @@ function Auth() {
         })}
       >
         <Tab label="Sign In" />
+        <Tab label="Sign Up" />
       </Tabs >
 
       <Container
@@ -44,7 +46,7 @@ function Auth() {
       >
 
         <Box>
-          {tab === 0 && <Signin />}
+          {tab === 0 ? <Signin /> : <Signup />}
         </Box>
 
       </Container>
