@@ -1,4 +1,4 @@
-import { Alert, Button, TextField } from "@mui/material";
+import { Alert, Button, TextField, Dialog, DialogTitle, DialogContent, DialogActions } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
@@ -10,10 +10,15 @@ import userStore from '@/src/store/user_store';
 
 
 function Signup() {
-  const { resetUserState } = userStore();
+  const { resetUserState, email, setEmail } = userStore();
   const { setLoading, resetLoadingState } = loadingState();
   const [signupError, setSignupError] = useState(false);
   const { register, handleSubmit, formState: { errors } } = useForm<SignupForm>();
+
+  // for otp dialog
+  const [otp, setOtp] = useState("");
+  const [otpDialogOpen, setOtpDialogOpen] = useState(false);
+  const [verifyError, setVerifyError] = useState(false);
 
   useEffect(() => {
     resetUserState();
@@ -41,8 +46,38 @@ function Signup() {
       throw new Error("signup error");
     };
 
+    setEmail(data.email);
     setLoading(false);
+
+    setOtpDialogOpen(true);
   };
+
+  async function verifyEmail(otp: string) {
+    if (otp.length === 0) {
+      setVerifyError(true);
+      throw new Error("verify error");
+    }
+
+    setLoading(true);
+    setVerifyError(false);
+
+    const requests = new RequestHandler();
+    const verify_res = await requests.post(
+      `/api/signup/verify`,
+      { otp: otp, email: email }
+    );
+
+    if (verify_res.status != 200) {
+      setVerifyError(true);
+      setLoading(false);
+      throw new Error("verify error");
+    }
+
+    setLoading(false);
+    setOtpDialogOpen(false);
+
+    window.location.reload();
+  }
 
   return (
     <>
@@ -97,6 +132,38 @@ function Signup() {
           </Alert>
         )}
       </form>
+
+      {otpDialogOpen && (
+        <Dialog
+          open={otpDialogOpen}
+          onClose={() => setOtpDialogOpen(false)}
+        >
+          <DialogTitle
+            sx={{ fontSize: "1rem" }}
+          >
+            メールアドレスに送信されたOTPを入力してください
+          </DialogTitle>
+
+          <DialogContent>
+            <TextField
+              label="OTP"
+              fullWidth
+              margin="normal"
+              onChange={(e) => setOtp(e.target.value)}
+            />
+
+            {verifyError && (
+              <Alert severity="error" sx={{ mt: 2 }}>
+                メール認証に失敗しました
+              </Alert>
+            )}
+          </DialogContent>
+
+          <DialogActions>
+            <Button onClick={() => verifyEmail(otp)}>OK</Button>
+          </DialogActions>
+        </Dialog>
+      )}
     </>
   );
 };
