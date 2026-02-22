@@ -1,4 +1,5 @@
 import secrets
+
 import config
 from db.dynamodb import DynamoDBClient
 from fastapi import APIRouter, Depends
@@ -9,6 +10,7 @@ from models.user import User
 from utilities import errors
 from utilities.bcrypt_hash import Bcrypt
 from utilities.jwt_client import JwtClient
+from utilities.smtp_client import SmtpClient
 
 router = APIRouter(tags=["Auth"])
 db_client = DynamoDBClient()
@@ -87,6 +89,13 @@ async def func(
         },
     )
 
+    db_client.put_user(user)
+
+    SmtpClient().send(
+        recipient=user.email,
+        subject="ユーザ仮登録が完了しました",
+        body=f"以下のワンタイムパスワードを入力し、Email認証を完了してください<br>{user.options.otp}",
+    )
 
     return {"result": "success"}
 

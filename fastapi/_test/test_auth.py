@@ -1,3 +1,5 @@
+import time
+
 from .conftest import EMAIL, GROUP_ID, PASSWORD, fa_client
 
 
@@ -89,6 +91,51 @@ class TestSigninGroupFail:
             url="/api/signin/group",
             headers={"Authorization": user_token},
             json={},
+        )
+        assert res.status_code == 422
+
+
+class TestSignupSuccess:
+    def test_signup(self):
+        user = f"test-{int(time.time())}@cloudjex.com"
+        res = fa_client.post(
+            url="/api/signup",
+            json={
+                "email": user,
+                "password": PASSWORD,
+            },
+        )
+        assert res.status_code == 200
+
+        body: dict = res.json()
+        assert body["result"] == "success"
+
+
+class TestSignupFail:
+    def test_with_existing_email(self):
+        res = fa_client.post(
+            url="/api/signup",
+            json={
+                "email": EMAIL,
+                "password": PASSWORD,
+            },
+        )
+        assert res.status_code == 409
+
+    def test_with_bad_request(self):
+        res = fa_client.post(
+            url="/api/signup",
+            json={},
+        )
+        assert res.status_code == 422
+
+    def test_with_invalid_pw(self):
+        res = fa_client.post(
+            url="/api/signup",
+            json={
+                "email": EMAIL,
+                "password": "123",
+            },
         )
         assert res.status_code == 422
 
