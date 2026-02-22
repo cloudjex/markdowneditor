@@ -34,8 +34,8 @@ resource "aws_lambda_function" "fastapi_lambda" {
   role             = aws_iam_role.lambda_exec_role.arn
   runtime          = "python3.13"
   handler          = "app.handler"
-  filename         = "${path.module}/../build/deploy.zip"
-  source_code_hash = filebase64sha256("${path.module}/../build/deploy.zip")
+  filename         = "${path.module}/../../fastapi/deploy.zip"
+  source_code_hash = filebase64sha256("${path.module}/../../fastapi/deploy.zip")
   timeout          = 30
 
   environment {
