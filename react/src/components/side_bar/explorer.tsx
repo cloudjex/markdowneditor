@@ -3,8 +3,8 @@ import { RichTreeView } from '@mui/x-tree-view/RichTreeView';
 import { useState } from 'react';
 import { useNavigate } from "react-router-dom";
 
-import TreeHandler from '@/src/lib/tree_handler';
-import type { Tree } from '@/src/lib/types';
+import TreeHandler from '@/lib/tree_handler';
+import type { Tree } from '@/lib/types';
 
 
 function Explorer(props: { tree: Tree, nodeId: string }) {

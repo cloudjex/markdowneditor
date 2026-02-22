@@ -2,10 +2,10 @@ import { Alert, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextF
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
-import RequestHandler from "@/src/lib/request_handler";
-import type { SignupForm } from "@/src/lib/types";
-import loadingState from "@/src/store/loading_store";
-import userStore from '@/src/store/user_store';
+import RequestHandler from "@/lib/request_handler";
+import type { SignupForm } from "@/lib/types";
+import loadingState from "@/store/loading_store";
+import userStore from '@/store/user_store';
 
 
 function Signup() {

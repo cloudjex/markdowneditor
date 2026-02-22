@@ -1,8 +1,8 @@
 import { AppBar, Toolbar, Typography } from '@mui/material';
 
-import Profile from '@/src/components/header/profile';
-import Sidebar from '@/src/components/side_bar/sidebar';
-import type { Tree } from "@/src/lib/types";
+import Profile from '@/components/header/profile';
+import Sidebar from '@/components/side_bar/sidebar';
+import type { Tree } from "@/lib/types";
 
 
 function Header(props: { tree?: Tree, nodeId?: string }) {

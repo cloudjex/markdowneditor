@@ -1,5 +1,5 @@
 import "highlight.js/styles/github-dark.css";
-import "../css/preview.css";
+import "@/css/preview.css";
 
 import { Box } from "@mui/material";
 import { useEffect } from "react";
@@ -11,10 +11,10 @@ import rehypeSlug from "rehype-slug";
 import remarkEmoji from "remark-emoji";
 import remarkGmf from "remark-gfm";
 
-import RequestHandler from "@/src/lib/request_handler";
-import type { Node } from "@/src/lib/types";
-import loadingState from "@/src/store/loading_store";
-import userStore from "@/src/store/user_store";
+import RequestHandler from "@/lib/request_handler";
+import type { Node } from "@/lib/types";
+import loadingState from "@/store/loading_store";
+import userStore from "@/store/user_store";
 
 
 function Preview() {

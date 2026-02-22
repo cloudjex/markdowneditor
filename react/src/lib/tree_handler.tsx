@@ -1,4 +1,4 @@
-import type { Tree } from '@/src/lib/types';
+import type { Tree } from '@/lib/types';
 
 
 class TreeHandler {

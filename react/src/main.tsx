@@ -2,10 +2,10 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
-import Loading from '@/src/components/loading/loading';
-import Auth from '@/src/views/auth';
-import Node from '@/src/views/node';
-import Preview from '@/src/views/preview';
+import Loading from '@/components/loading/loading';
+import Auth from '@/views/auth';
+import Node from '@/views/node';
+import Preview from '@/views/preview';
 
 
 export default function App() {

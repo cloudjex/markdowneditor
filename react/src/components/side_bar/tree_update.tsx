@@ -4,11 +4,11 @@ import {
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import RequestHandler from "@/src/lib/request_handler";
-import TreeHandler from '@/src/lib/tree_handler';
-import type { Tree } from "@/src/lib/types";
-import loadingState from "@/src/store/loading_store";
-import userStore from '@/src/store/user_store';
+import RequestHandler from "@/lib/request_handler";
+import TreeHandler from '@/lib/tree_handler';
+import type { Tree } from "@/lib/types";
+import loadingState from "@/store/loading_store";
+import userStore from '@/store/user_store';
 
 
 function TreeUpdate(props: { nodeId: string, tree: Tree }) {

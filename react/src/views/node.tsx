@@ -1,9 +1,9 @@
 import { Container } from "@mui/material";
 import { useParams } from "react-router-dom";
 
-import Editor from "@/src/components/editor/editor";
-import Header from "@/src/components/header/header";
-import userStore from '@/src/store/user_store';
+import Editor from "@/components/editor/editor";
+import Header from "@/components/header/header";
+import userStore from '@/store/user_store';
 
 
 function Node() {

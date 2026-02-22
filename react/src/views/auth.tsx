@@ -1,9 +1,9 @@
 import { Box, Container, Tab, Tabs } from "@mui/material";
 import { useState } from "react";
 
-import Signin from "@/src/components/auth/signin";
-import Signup from "@/src/components/auth/signup";
-import Header from "@/src/components/header/header";
+import Signin from "@/components/auth/signin";
+import Signup from "@/components/auth/signup";
+import Header from "@/components/header/header";
 
 
 function Auth() {

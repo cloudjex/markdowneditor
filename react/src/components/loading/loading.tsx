@@ -1,6 +1,6 @@
 import { Backdrop, CircularProgress } from '@mui/material';
 
-import loadingState from '@/src/store/loading_store';
+import loadingState from '@/store/loading_store';
 
 
 function Loading() {

@@ -1,4 +1,4 @@
-import type { APIResponse } from '@/src/lib/types';
+import type { APIResponse } from '@/lib/types';
 
 
 class RequestHandler {
