@@ -97,7 +97,7 @@ class TestSigninGroupFail:
 
 class TestSignupSuccess:
     def test_signup(self):
-        user = f"test-{int(time.time())}@cloudjex.com"
+        user = f"{int(time.time())}@cloudjex.com"
         res = fa_client.post(
             url="/api/signup",
             json={
