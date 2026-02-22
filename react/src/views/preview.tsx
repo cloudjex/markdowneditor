@@ -5,7 +5,7 @@ import { Box } from "@mui/material";
 import { useEffect } from "react";
 import ReactMarkdown from "react-markdown";
 import { useLocation, useParams } from "react-router-dom";
-import rehypeAutoLintHeading from "rehype-autolink-headings";
+import rehypeAutoLinkHeading from "rehype-autolink-headings";
 import rehypeHighlight from "rehype-highlight";
 import rehypeSlug from "rehype-slug";
 import remarkEmoji from "remark-emoji";
@@ -84,7 +84,7 @@ function Preview() {
             rehypeHighlight,
             rehypeSlug,
             [
-              rehypeAutoLintHeading, {
+              rehypeAutoLinkHeading, {
                 behavior: "prepend", content: () => ({
                   type: "element",
                   tagName: "span",
