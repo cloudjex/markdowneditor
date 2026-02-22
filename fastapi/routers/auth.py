@@ -1,7 +1,6 @@
 import secrets
 
 import config
-from utilities.dynamodb_client import DynamoDBClient
 from fastapi import APIRouter, Depends
 from models import req
 from models.jwt import IdToken, JwtClaim
@@ -9,6 +8,7 @@ from models.result import Result
 from models.user import User
 from utilities import errors
 from utilities.bcrypt_client import BcryptClient
+from utilities.dynamodb_client import DynamoDBClient
 from utilities.jwt_client import JwtClient
 from utilities.smtp_client import SmtpClient
 
@@ -96,6 +96,34 @@ async def func(
         subject="ユーザ仮登録が完了しました",
         body=f"以下のワンタイムパスワードを入力し、Email認証を完了してください<br>{user.options.otp}",
     )
+
+    return {"result": "success"}
+
+
+@router.post(
+    path="/signup/verify",
+    summary="Verify sign up",
+    response_model=Result,
+    responses={
+        401: config.RES_401,
+        404: config.RES_404,
+        422: config.RES_422,
+    },
+)
+async def func(
+    req: req.SignUpVerify,
+):
+    user = db_client.get_user(req.email)
+    if not user:
+        raise errors.NotFoundError
+
+    if user.options.otp != req.otp:
+        raise errors.UnauthorizedError
+
+    user.options.enabled = True
+    user.options.otp = ""
+
+    db_client.put_user(user)
 
     return {"result": "success"}
 

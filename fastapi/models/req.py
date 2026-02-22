@@ -17,6 +17,11 @@ class SignUp(BaseModel):
     password: str = Field(min_length=4)
 
 
+class SignUpVerify(BaseModel):
+    email: EmailStr
+    otp: str = Field(min_length=6, max_length=6, examples=["123456"])
+
+
 class UpdatePassword(BaseModel):
     old_password: str = Field(min_length=4)
     new_password: str = Field(min_length=4)
