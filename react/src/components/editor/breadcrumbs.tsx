@@ -1,8 +1,7 @@
 import { Breadcrumbs, Link } from '@mui/material';
 
-import type { Tree } from "@/src/lib/types";
-
 import TreeHandler from '@/src/lib/tree_handler';
+import type { Tree } from "@/src/lib/types";
 
 
 function Breadcrumb(props: { tree: Tree, nodeId: string }) {

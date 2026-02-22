@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-import type { Tree, Group } from "@/src/lib/types";
+import type { Group, Tree } from "@/src/lib/types";
 
 
 interface UserState {

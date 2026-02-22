@@ -1,3 +1,6 @@
+import "highlight.js/styles/github-dark.css";
+import "../css/preview.css";
+
 import { Box } from "@mui/material";
 import { useEffect } from "react";
 import ReactMarkdown from "react-markdown";
@@ -8,11 +11,8 @@ import rehypeSlug from "rehype-slug";
 import remarkEmoji from "remark-emoji";
 import remarkGmf from "remark-gfm";
 
-import "highlight.js/styles/github-dark.css";
-import "../css/preview.css";
-import type { Node } from "@/src/lib/types";
-
 import RequestHandler from "@/src/lib/request_handler";
+import type { Node } from "@/src/lib/types";
 import loadingState from "@/src/store/loading_store";
 import userStore from "@/src/store/user_store";
 

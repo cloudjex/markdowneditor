@@ -1,10 +1,9 @@
-import { Alert, Button, TextField, Dialog, DialogTitle, DialogContent, DialogActions } from "@mui/material";
+import { Alert, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
-import type { SignupForm } from "@/src/lib/types";
-
 import RequestHandler from "@/src/lib/request_handler";
+import type { SignupForm } from "@/src/lib/types";
 import loadingState from "@/src/store/loading_store";
 import userStore from '@/src/store/user_store';
 

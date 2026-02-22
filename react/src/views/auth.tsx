@@ -1,4 +1,4 @@
-import { Container, Tabs, Tab, Box } from "@mui/material";
+import { Box, Container, Tab, Tabs } from "@mui/material";
 import { useState } from "react";
 
 import Signin from "@/src/components/auth/signin";

@@ -3,10 +3,9 @@ import { Alert, Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, 
 import fileDownload from 'js-file-download';
 import { useState } from 'react';
 
-import type { Tree } from '@/src/lib/types';
-
 import RequestHandler from "@/src/lib/request_handler";
 import TreeHandler from '@/src/lib/tree_handler';
+import type { Tree } from '@/src/lib/types';
 import loadingState from "@/src/store/loading_store";
 import userStore from '@/src/store/user_store';
 

@@ -2,11 +2,9 @@ import MenuIcon from '@mui/icons-material/Menu';
 import { Container, Drawer, IconButton, Tooltip, Typography } from '@mui/material';
 import { useState } from 'react';
 
-import type { Tree } from "@/src/lib/types";
-
-
 import Explorer from '@/src/components/side_bar/explorer';
 import TreeUpdate from '@/src/components/side_bar/tree_update';
+import type { Tree } from "@/src/lib/types";
 
 
 function Sidebar(props: { tree: Tree, nodeId: string }) {

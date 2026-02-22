@@ -3,9 +3,8 @@ import {
 } from "@mui/material";
 import { useState } from 'react';
 
-import type { Tree } from "@/src/lib/types";
-
 import RequestHandler from "@/src/lib/request_handler";
+import type { Tree } from "@/src/lib/types";
 import loadingState from "@/src/store/loading_store";
 import userStore from '@/src/store/user_store';
 

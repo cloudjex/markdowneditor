@@ -1,15 +1,15 @@
-import { Box } from "@mui/material";
-import { useState, useMemo, useEffect } from "react";
-import SimpleMde from "react-simplemde-editor";
-
 import "easymde/dist/easymde.min.css";
 import "@/src/css/editor.css";
-import type { Node, Tree } from "@/src/lib/types";
+
+import { Box } from "@mui/material";
 import type { Options } from "easymde";
+import { useEffect, useMemo, useState } from "react";
+import SimpleMde from "react-simplemde-editor";
 
 import Breadcrumb from "@/src/components/editor/breadcrumbs";
 import EditorHeader from "@/src/components/editor/editor_header";
 import RequestHandler from "@/src/lib/request_handler";
+import type { Node, Tree } from "@/src/lib/types";
 import loadingState from "@/src/store/loading_store";
 import userStore from '@/src/store/user_store';
 
