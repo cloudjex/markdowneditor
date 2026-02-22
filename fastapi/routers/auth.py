@@ -1,14 +1,14 @@
 import secrets
 
 import config
-from db.dynamodb import DynamoDBClient
+from utilities.dynamodb_client import DynamoDBClient
 from fastapi import APIRouter, Depends
 from models import req
 from models.jwt import IdToken, JwtClaim
 from models.result import Result
 from models.user import User
 from utilities import errors
-from utilities.bcrypt_hash import Bcrypt
+from utilities.bcrypt_client import BcryptClient
 from utilities.jwt_client import JwtClient
 from utilities.smtp_client import SmtpClient
 
@@ -30,7 +30,7 @@ async def func(
     req: req.SignIn,
 ):
     user = db_client.get_user(email=req.email)
-    if not user or not Bcrypt().verify(req.password, user.password):
+    if not user or not BcryptClient().verify(req.password, user.password):
         raise errors.UnauthorizedError
 
     if not user.options.enabled:
@@ -81,7 +81,7 @@ async def func(
 
     user = User(
         email=req.email,
-        password=Bcrypt().hash(req.password),
+        password=BcryptClient().hash(req.password),
         groups=[],
         options={
             "enabled": False,

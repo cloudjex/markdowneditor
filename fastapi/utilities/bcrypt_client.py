@@ -1,7 +1,7 @@
 import bcrypt
 
 
-class Bcrypt:
+class BcryptClient:
     def hash(self, plain_password: str) -> str:
         hashed = bcrypt.hashpw(plain_password.encode(), bcrypt.gensalt())
         return hashed.decode()
