@@ -1,13 +1,13 @@
 import config
 from fastapi import APIRouter, Depends
+from lib import errors
+from lib.bcrypt_client import BcryptClient
+from lib.dynamodb_client import DynamoDBClient
+from lib.jwt_client import JwtClient
 from models import req
 from models.jwt import JwtClaim
 from models.result import Result
 from models.user import User
-from utilities import errors
-from utilities.bcrypt_client import BcryptClient
-from utilities.dynamodb_client import DynamoDBClient
-from utilities.jwt_client import JwtClient
 
 router = APIRouter(tags=["Users"])
 db_client = DynamoDBClient()

@@ -3,14 +3,14 @@ from typing import List
 
 import config
 from fastapi import APIRouter, Depends, Path
+from lib import errors
+from lib.dynamodb_client import DynamoDBClient
+from lib.jwt_client import JwtClient
+from lib.nodes_handler import NodesHandler
 from models import req
 from models.jwt import JwtClaim
 from models.node import Node
 from models.uuid4_str import pattern
-from utilities import errors
-from utilities.dynamodb_client import DynamoDBClient
-from utilities.jwt_client import JwtClient
-from utilities.nodes_handler import NodesHandler
 
 router = APIRouter(tags=["Nodes"])
 db_client = DynamoDBClient()

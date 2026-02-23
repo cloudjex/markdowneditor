@@ -4,8 +4,8 @@ import jwt
 
 import config
 from fastapi import Request
+from lib import errors
 from models.jwt import JwtClaim
-from utilities import errors
 
 
 class JwtClient:

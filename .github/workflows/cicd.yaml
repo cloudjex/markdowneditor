@@ -41,7 +41,7 @@ jobs:
         working-directory: ./fastapi
         run: |
           pip install -r requirements.txt -t .
-          zip -r deploy.zip . -x "./_test/*" "*/.git*" "*/__pycache__/*" "*.egg-info/*"
+          zip -r deploy.zip . -x "./test/*" "*/.git*" "*/__pycache__/*" "*.egg-info/*"
 
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v3

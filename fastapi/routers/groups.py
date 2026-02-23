@@ -3,12 +3,12 @@ from uuid import uuid4
 
 import config
 from fastapi import APIRouter, Depends
+from lib.dynamodb_client import DynamoDBClient
+from lib.jwt_client import JwtClient
 from models import req
 from models.group import Group
 from models.jwt import JwtClaim
 from models.user import User
-from utilities.dynamodb_client import DynamoDBClient
-from utilities.jwt_client import JwtClient
 
 router = APIRouter(tags=["Groups"])
 db_client = DynamoDBClient()

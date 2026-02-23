@@ -2,15 +2,15 @@ import secrets
 
 import config
 from fastapi import APIRouter, Depends
+from lib import errors
+from lib.bcrypt_client import BcryptClient
+from lib.dynamodb_client import DynamoDBClient
+from lib.jwt_client import JwtClient
+from lib.smtp_client import SmtpClient
 from models import req
 from models.jwt import IdToken, JwtClaim
 from models.result import Result
 from models.user import User
-from utilities import errors
-from utilities.bcrypt_client import BcryptClient
-from utilities.dynamodb_client import DynamoDBClient
-from utilities.jwt_client import JwtClient
-from utilities.smtp_client import SmtpClient
 
 router = APIRouter(tags=["Auth"])
 db_client = DynamoDBClient()
