@@ -1,10 +1,10 @@
-from uuid import uuid4
+import time
 
 from .conftest import fa_client
 
 
 class TestGetGroupsSuccess:
-    def test_get_nodes(self, id_token):
+    def test_get_groups(self, id_token):
         res = fa_client.get(
             url="/api/groups",
             headers={"Authorization": id_token},
@@ -19,7 +19,7 @@ class TestGetGroupsSuccess:
 class TestGetGroupsFail:
     def test_with_invalid_token(self, invalid_id_token):
         res = fa_client.get(
-            url="/api/nodes",
+            url="/api/groups",
             headers={"Authorization": invalid_id_token},
         )
         assert res.status_code == 401
@@ -27,7 +27,7 @@ class TestGetGroupsFail:
 
 class TestPostGroupsSuccess:
     def test_post_group(self, id_token):
-        group_name = str(uuid4())
+        group_name = str(time.time())
         res = fa_client.post(
             url="/api/groups",
             headers={"Authorization": id_token},
@@ -37,8 +37,28 @@ class TestPostGroupsSuccess:
         )
         assert res.status_code == 200
         body = res.json()
-        assert type(body["group_id"]) is str
+        group_id = body["group_id"]
+        assert type(group_id) is str
         assert body["group_name"] == group_name
+
+        # check if group is added to db
+        res = fa_client.get(
+            url="/api/groups",
+            headers={"Authorization": id_token},
+        )
+        assert res.status_code == 200
+        body: list = res.json()
+        assert any(group["group_id"] == group_id for group in body)
+
+        # check if group is added to user's groups
+        res = fa_client.get(
+            url="/api/users/me",
+            headers={"Authorization": id_token},
+        )
+        assert res.status_code == 200
+        body = res.json()
+        assert type(body["groups"]) is list
+        assert body["groups"][-1]["group_id"] == group_id
 
 
 class TestPostGroupsFail:

@@ -2,6 +2,8 @@ from typing import List
 
 from pydantic import BaseModel, EmailStr, Field
 
+from models.uuid4_str import pattern
+
 
 class User(BaseModel):
     email: EmailStr
@@ -10,9 +12,9 @@ class User(BaseModel):
     options: "Options"
 
     class Group(BaseModel):
-        group_id: str
-        role: str
+        group_id: str = Field(**pattern)
+        role: str = Field(examples=["admin", "editor", "viewer"])
 
     class Options(BaseModel):
         enabled: bool
-        otp: str
+        otp: str = Field(min_length=0, max_length=6, examples=["123456"])

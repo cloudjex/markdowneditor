@@ -8,6 +8,7 @@ from lib.jwt_client import JwtClient
 from models import req
 from models.group import Group
 from models.jwt import JwtClaim
+from models.node import Node
 from models.user import User
 
 router = APIRouter(tags=["Groups"])
@@ -55,12 +56,21 @@ async def func(
 
     group_for_user = User.Group(
         group_id=group_id,
-        role="owner",
+        role="admin",
     )
     user = db_client.get_user(jwt.email)
     user.groups.append(group_for_user)
 
+    default_node = Node(
+        group_id=group_id,
+        node_id=str(uuid4()),
+        label="Default",
+        text="",
+        children_ids=[],
+    )
+
     db_client.put_group(group)
     db_client.put_user(user)
+    db_client.put_node(default_node)
 
     return group.model_dump()
