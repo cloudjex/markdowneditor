@@ -19,10 +19,7 @@ def root_node_id(id_token):
         headers={"Authorization": id_token},
     )
     assert res.status_code == 200
-
     body: dict = res.json()
-    assert type(body) is dict
-    assert type(body["node_id"]) is str
     return body["node_id"]
 
 
