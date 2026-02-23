@@ -10,7 +10,6 @@ class TestGetUsersMeSuccess:
             headers={"Authorization": id_token},
         )
         assert res.status_code == 200
-
         body = res.json()
         assert body["email"] == EMAIL
         assert body["password"] == "*****"
@@ -64,7 +63,6 @@ class TestPutUsersMeSuccess:
             },
         )
         assert res.status_code == 200
-
         body = res.json()
         assert body["result"] == "success"
 

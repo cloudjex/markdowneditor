@@ -14,7 +14,6 @@ class TestSigninSuccess:
         )
         assert res.status_code == 200
         body: dict = res.json()
-
         assert type(body["id_token"]) is str
 
 
@@ -58,7 +57,6 @@ class TestSigninGroupSuccess:
         )
         assert res.status_code == 200
         body: dict = res.json()
-
         assert type(body["id_token"]) is str
 
     def test_signin_group_with_group_token(self, id_token):
@@ -71,7 +69,6 @@ class TestSigninGroupSuccess:
         )
         assert res.status_code == 200
         body: dict = res.json()
-
         assert type(body["id_token"]) is str
 
 
@@ -106,7 +103,6 @@ class TestSignupSuccess:
             },
         )
         assert res.status_code == 200
-
         body: dict = res.json()
         assert body["result"] == "success"
 
@@ -147,7 +143,6 @@ class TestSignoutSuccess:
             headers={"Authorization": id_token},
         )
         assert res.status_code == 200
-
         body = res.json()
         assert body["result"] == "success"
 

@@ -12,7 +12,6 @@ class TestGetNodesSuccess:
             headers={"Authorization": id_token},
         )
         assert res.status_code == 200
-
         body: list = res.json()
         assert type(body) is list
         assert type(body[0]["group_id"]) is str
@@ -27,7 +26,6 @@ class TestGetNodesSuccess:
             headers={"Authorization": id_token},
         )
         assert res.status_code == 200
-
         body: dict = res.json()
         assert type(body) is dict
         assert type(body["group_id"]) is str
@@ -175,7 +173,6 @@ class TestPutNodesSuccess:
             },
         )
         assert res.status_code == 200
-
         body = res.json()
         assert type(body) is dict
         assert body["text"] == text
@@ -197,7 +194,6 @@ class TestPutNodesSuccess:
             },
         )
         assert res.status_code == 200
-
         body = res.json()
         assert type(body) is dict
         assert body["text"] == text
@@ -219,7 +215,6 @@ class TestPutNodesSuccess:
             },
         )
         assert res.status_code == 200
-
         body = res.json()
         assert type(body) is dict
         assert body["text"] == text
@@ -292,7 +287,6 @@ class TestDeleteNodesSuccess:
             headers={"Authorization": id_token},
         )
         assert res.status_code == 200
-
         body = res.json()
         children = body["children"]
         children_ids = [i["node_id"] for i in children]

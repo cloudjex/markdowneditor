@@ -8,7 +8,6 @@ class TestGetTreeSuccess:
             headers={"Authorization": id_token},
         )
         assert res.status_code == 200
-
         body = res.json()
         assert type(body["node_id"]) is str
         assert type(body["label"]) is str

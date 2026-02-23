@@ -10,7 +10,6 @@ class TestGetGroupsSuccess:
             headers={"Authorization": id_token},
         )
         assert res.status_code == 200
-
         body: list = res.json()
         assert type(body) is list
         assert type(body[0]["group_id"]) is str
@@ -38,7 +37,6 @@ class TestPostGroupsSuccess:
         )
         assert res.status_code == 200
         body = res.json()
-
         assert type(body["group_id"]) is str
         assert body["group_name"] == group_name
 
