@@ -27,6 +27,10 @@ class UpdatePassword(BaseModel):
     new_password: str = Field(min_length=4)
 
 
+class UserGroupPost(BaseModel):
+    group_name: str = Field(min_length=1)
+
+
 class TreeNodePost(BaseModel):
     parent_id: str = Field(**pattern)
     label: str = Field(min_length=1)

@@ -68,6 +68,15 @@ class DynamoDBClient:
                 group_name=item["group_name"],
             )
 
+    def put_group(self, group: Group) -> None:
+        self._db_client.put_item(
+            Item={
+                "PK": f"GROUP_ID#{group.group_id}",
+                "SK": "USER_GROUP",
+                "group_name": group.group_name,
+            }
+        )
+
     ###############################
     # For Node
     ###############################
