@@ -6,7 +6,7 @@ from lib.nodes_handler import NodesHandler
 from models.jwt import JwtClaim
 from models.tree import Tree
 
-router = APIRouter(tags=["Tree"], prefix="/api")
+router = APIRouter()
 db_client = DynamoDBClient()
 
 

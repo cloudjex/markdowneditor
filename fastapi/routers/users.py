@@ -9,7 +9,7 @@ from models.jwt import JwtClaim
 from models.result import Result
 from models.user import User
 
-router = APIRouter(tags=["Users"], prefix="/api")
+router = APIRouter()
 db_client = DynamoDBClient()
 
 

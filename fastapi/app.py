@@ -8,15 +8,14 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from lib import errors
-from routers import auth, groups, move, nodes, tree, users
+from routers import auth, groups, nodes, tree, users
 
 app = FastAPI(title="cloudjex.com", description="# OpenAPI for cloudjex.com")
-app.include_router(router=auth.router)
-app.include_router(router=groups.router)
-app.include_router(router=move.router)
-app.include_router(router=nodes.router)
-app.include_router(router=tree.router)
-app.include_router(router=users.router)
+app.include_router(router=auth.router, tags=["Auth"], prefix="/api")
+app.include_router(router=groups.router, tags=["Groups"], prefix="/api")
+app.include_router(router=nodes.router, tags=["Nodes"], prefix="/api")
+app.include_router(router=tree.router, tags=["Tree"], prefix="/api")
+app.include_router(router=users.router, tags=["Users"], prefix="/api")
 app.add_middleware(
     CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"]
 )
