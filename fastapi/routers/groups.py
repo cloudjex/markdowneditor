@@ -11,7 +11,7 @@ from models.jwt import JwtClaim
 from models.node import Node
 from models.user import User
 
-router = APIRouter(tags=["Groups"])
+router = APIRouter(tags=["Groups"], prefix="/api")
 db_client = DynamoDBClient()
 
 

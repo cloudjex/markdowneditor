@@ -12,7 +12,7 @@ from models.jwt import JwtClaim
 from models.node import Node
 from models.uuid4_str import pattern
 
-router = APIRouter(tags=["Nodes"])
+router = APIRouter(tags=["Nodes"], prefix="/api")
 db_client = DynamoDBClient()
 
 

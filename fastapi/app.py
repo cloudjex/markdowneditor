@@ -11,12 +11,12 @@ from lib import errors
 from routers import auth, groups, move, nodes, tree, users
 
 app = FastAPI(title="cloudjex.com", description="# OpenAPI for cloudjex.com")
-app.include_router(router=auth.router, prefix="/api")
-app.include_router(router=groups.router, prefix="/api")
-app.include_router(router=move.router, prefix="/api")
-app.include_router(router=nodes.router, prefix="/api")
-app.include_router(router=tree.router, prefix="/api")
-app.include_router(router=users.router, prefix="/api")
+app.include_router(router=auth.router)
+app.include_router(router=groups.router)
+app.include_router(router=move.router)
+app.include_router(router=nodes.router)
+app.include_router(router=tree.router)
+app.include_router(router=users.router)
 app.add_middleware(
     CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"]
 )

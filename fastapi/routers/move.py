@@ -9,7 +9,7 @@ from models.jwt import JwtClaim
 from models.result import Result
 from models.uuid4_str import pattern
 
-router = APIRouter(tags=["Move"])
+router = APIRouter(tags=["Move"], prefix="/api")
 db_client = DynamoDBClient()
 
 
