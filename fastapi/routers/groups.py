@@ -98,3 +98,39 @@ async def func(
     db_client.put_node(default_node)
 
     return group.model_dump()
+
+
+@router.delete(
+    path="/groups/{group_id}",
+    summary="Delete user group",
+    response_model=Group,
+    responses={
+        401: config.RES_401,
+        403: config.RES_403,
+        404: config.RES_404,
+        422: config.RES_422,
+    },
+)
+async def func(
+    group_id: str,
+    jwt: JwtClaim = Depends(JwtClient().verify),
+):
+    group = db_client.get_group(group_id)
+    user = db_client.get_user(jwt.email)
+
+    if (group_id not in user.groups) or (not group):
+        raise errors.NotFoundError
+
+    user_in_group = next((u for u in group.users if u.email == jwt.email), None)
+    if (not user_in_group) or (user_in_group.role != "admin"):
+        raise errors.ForbiddenError
+
+    user.groups.remove(group_id)
+    db_client.put_user(user)
+    db_client.delete_group(group)
+
+    nodes = db_client.get_nodes(group_id)
+    for node in nodes:
+        db_client.delete_node(node)
+
+    return group.model_dump()

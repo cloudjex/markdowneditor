@@ -61,15 +61,11 @@ class TestGetNodesFail:
 class TestPostNodesSuccess:
     @pytest.fixture()
     def delete_node(self, id_token):
-        # Nothing to set up
-        print("\nsetup...")
-
         context = {}
         yield context
 
-        # Delete created node
+        # Clean up
         node = context["node"]
-        print("\nteardown...")
         res = fa_client.delete(
             url=f"/api/nodes/{node['node_id']}",
             headers={"Authorization": id_token},
@@ -138,7 +134,6 @@ class TestPutNodesSuccess:
     @pytest.fixture()
     def reset_root_node(self, id_token, root_node_id):
         # Backup current label and text
-        print("\nsetup...")
         res = fa_client.get(
             url=f"/api/nodes/{root_node_id}",
             headers={"Authorization": id_token},
@@ -149,7 +144,6 @@ class TestPutNodesSuccess:
         yield res_json["label"], res_json["text"]
 
         # Restore previous label and text
-        print("\nteardown...")
         res = fa_client.put(
             url=f"/api/nodes/{root_node_id}",
             headers={"Authorization": id_token},
@@ -256,7 +250,6 @@ class TestDeleteNodesSuccess:
     @pytest.fixture()
     def prepare_node(self, id_token, root_node_id):
         # Create new node
-        print("\nsetup...")
         new_node_label = str(time.time())
         res = fa_client.post(
             url=f"/api/nodes/{root_node_id}",
@@ -269,9 +262,6 @@ class TestDeleteNodesSuccess:
         assert res.status_code == 200
 
         yield res.json()
-
-        # Nothig to tear down
-        print("\nteardown...")
 
     def test_delete_node(self, id_token, prepare_node):
         del_node_id = prepare_node["node_id"]
@@ -320,7 +310,6 @@ class TestMoveNodeSuccess:
     @pytest.fixture()
     def prepare_2_node(self, id_token, root_node_id):
         # First, create 2 nodes
-        print("\nsetup...")
         res = fa_client.post(
             url=f"/api/nodes/{root_node_id}",
             headers={"Authorization": id_token},
@@ -346,7 +335,6 @@ class TestMoveNodeSuccess:
         yield [to_be_parent_node["node_id"], to_be_child_node["node_id"]]
 
         # Clean up
-        print("\nteardown...")
         res = fa_client.delete(
             url=f"/api/nodes/{to_be_parent_node['node_id']}",
             headers={"Authorization": id_token},
@@ -389,7 +377,6 @@ class TestMoveNodeFail:
     @pytest.fixture()
     def prepare_2_node(self, id_token, root_node_id):
         # Create parent node and child node
-        print("\nsetup...")
         res = fa_client.post(
             url=f"/api/nodes/{root_node_id}",
             headers={"Authorization": id_token},
@@ -415,7 +402,6 @@ class TestMoveNodeFail:
         yield [parent_node_id, child_node_id]
 
         # Clean up
-        print("\nteardown...")
         res = fa_client.delete(
             url=f"/api/nodes/{parent_node_id}",
             headers={"Authorization": id_token},

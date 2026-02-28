@@ -32,14 +32,12 @@ class TestGetUsersMeFail:
 class TestPutUsersMeSuccess:
     @pytest.fixture()
     def reset_pw(self, id_token):
-        print("\nsetup...")
         # Return new pw
         new_password = "NewTestPassword123!"
 
         yield new_password
 
-        # Clean up
-        print("\nteardown...")
+        # Reset to original pw
         res = fa_client.put(
             url="/api/users/me/password",
             headers={"Authorization": id_token},

@@ -1,5 +1,7 @@
 import time
 
+import pytest
+
 from .conftest import EMAIL, GROUP_ID, fa_client
 
 
@@ -52,7 +54,20 @@ class TestGetGroupsFail:
 
 
 class TestPostGroupsSuccess:
-    def test_post_group(self, id_token):
+    @pytest.fixture()
+    def delete_group(self, id_token):
+        context = {}
+        yield context
+
+        # Clean up
+        group_id = context["group_id"]
+        res = fa_client.delete(
+            url=f"/api/groups/{group_id}",
+            headers={"Authorization": id_token},
+        )
+        assert res.status_code == 200
+
+    def test_post_group(self, id_token, delete_group):
         group_name = str(time.time())
         res = fa_client.post(
             url="/api/groups",
@@ -89,6 +104,9 @@ class TestPostGroupsSuccess:
         body = res.json()
         assert type(body["groups"]) is list
         assert body["groups"][-1] == group_id
+
+        # return context to fixture
+        delete_group["group_id"] = group_id
 
 
 class TestPostGroupsFail:
