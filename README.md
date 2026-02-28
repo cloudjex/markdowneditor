@@ -44,17 +44,20 @@ NoSQL(ドキュメント指向DB)を使用し、Itemは単一テーブルに格�
 | PK        | str    | `EMAIL#{email}` | PartitionKey                      |
 | SK        | str    | `USER`          | SortKey                           |
 | password  | str    |                 | hashed by bcrypt                  |
-| groups    | array  |                 | ex.`[{group_id: str, role: str}]` |
+| groups    | array  |                 | array of group ids                |
 | options   | object |                 |                                   |
 | ├ enabled | bool   |                 |                                   |
 | └ otp     | str    |                 | only inactive user has this value |
 
 ### user group
-| key        | type | value                 | description  |
-| ---------- | ---- | --------------------- | ------------ |
-| PK         | str  | `GROUP_ID#{group_id}` | PartitionKey |
-| SK         | str  | `USER_GROUP`          | SortKey      |
-| group_name | str  |                       |              |
+| key         | type  | value                 | description           |
+| ----------- | ----- | --------------------- | --------------------- |
+| PK          | str   | `GROUP_ID#{group_id}` | PartitionKey          |
+| SK          | str   | `USER_GROUP`          | SortKey               |
+| group_name  | str   |                       |                       |
+| users       | array |                       | array of user objects |
+| ├ [i].email | str   |                       | email                 |
+| └ [i].role  | str   |                       | `admin` or `member`   |
 
 ### node item
 | key          | type  | value                 | description  |
