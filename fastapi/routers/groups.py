@@ -3,6 +3,7 @@ from uuid import uuid4
 
 import config
 from fastapi import APIRouter, Depends
+from lib import errors
 from lib.dynamodb_client import DynamoDBClient
 from lib.jwt_client import JwtClient
 from models import req
@@ -32,6 +33,28 @@ async def func(
         if group:
             groups.append(group.model_dump())
     return groups
+
+
+@router.get(
+    path="/groups/{group_id}",
+    summary="Get user group",
+    response_model=Group,
+    responses={
+        401: config.RES_401,
+        404: config.RES_404,
+    },
+)
+async def func(
+    group_id: str,
+    jwt: JwtClaim = Depends(JwtClient().verify),
+):
+    user = db_client.get_user(jwt.email)
+    group = db_client.get_group(group_id)
+
+    if (group_id not in user.groups) or (not group):
+        raise errors.NotFoundError
+
+    return group.model_dump()
 
 
 @router.post(

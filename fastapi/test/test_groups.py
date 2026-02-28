@@ -1,6 +1,6 @@
 import time
 
-from .conftest import EMAIL, fa_client
+from .conftest import EMAIL, GROUP_ID, fa_client
 
 
 class TestGetGroupsSuccess:
@@ -19,6 +19,21 @@ class TestGetGroupsSuccess:
         assert type(body[0]["users"][0]["email"]) is str
         assert type(body[0]["users"][0]["role"]) is str
 
+    def test_get_group(self, id_token):
+        res = fa_client.get(
+            url=f"/api/groups/{GROUP_ID}",
+            headers={"Authorization": id_token},
+        )
+        assert res.status_code == 200
+        body = res.json()
+        assert type(body) is dict
+        assert body["group_id"] == GROUP_ID
+        assert type(body["group_name"]) is str
+        assert type(body["users"]) is list
+        assert type(body["users"][0]) is dict
+        assert type(body["users"][0]["email"]) is str
+        assert type(body["users"][0]["role"]) is str
+
 
 class TestGetGroupsFail:
     def test_with_invalid_token(self, invalid_id_token):
@@ -27,6 +42,13 @@ class TestGetGroupsFail:
             headers={"Authorization": invalid_id_token},
         )
         assert res.status_code == 401
+
+    def test_get_non_exist_group(self, id_token):
+        res = fa_client.get(
+            url=f"/api/groups/00000000-0000-0000-0000-000000000000",
+            headers={"Authorization": id_token},
+        )
+        assert res.status_code == 404
 
 
 class TestPostGroupsSuccess:
