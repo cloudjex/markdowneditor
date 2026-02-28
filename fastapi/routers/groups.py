@@ -9,7 +9,6 @@ from models import req
 from models.group import Group
 from models.jwt import JwtClaim
 from models.node import Node
-from models.user import User
 
 router = APIRouter()
 db_client = DynamoDBClient()
@@ -28,8 +27,8 @@ async def func(
 ):
     user = db_client.get_user(jwt.email)
     groups = []
-    for i in user.groups:
-        group = db_client.get_group(i.group_id)
+    for group_id in user.groups:
+        group = db_client.get_group(group_id)
         if group:
             groups.append(group.model_dump())
     return groups
@@ -52,14 +51,16 @@ async def func(
     group = Group(
         group_id=group_id,
         group_name=req.group_name,
+        users=[
+            {
+                "email": jwt.email,
+                "role": "admin",
+            },
+        ],
     )
 
-    group_for_user = User.Group(
-        group_id=group_id,
-        role="admin",
-    )
     user = db_client.get_user(jwt.email)
-    user.groups.append(group_for_user)
+    user.groups.append(group_id)
 
     default_node = Node(
         group_id=group_id,

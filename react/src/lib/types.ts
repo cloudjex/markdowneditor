@@ -25,12 +25,7 @@ export interface IdToken {
 export interface User {
   email: string;
   password: string;
-  groups: [
-    {
-      group_id: string,
-      role: string
-    }
-  ];
+  groups: string[];
   options: {
     enabled: boolean;
     otp: string;
@@ -40,6 +35,10 @@ export interface User {
 export interface Group {
   group_id: string;
   group_name: string;
+  users: {
+    email: string;
+    role: string;
+  }[];
 };
 
 export interface Node {

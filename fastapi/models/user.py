@@ -2,18 +2,12 @@ from typing import List
 
 from pydantic import BaseModel, EmailStr, Field
 
-from models.uuid4_str import pattern
-
 
 class User(BaseModel):
     email: EmailStr
     password: str = Field(min_length=4, examples=["*****"])
-    groups: List["Group"]
+    groups: List[str]
     options: "Options"
-
-    class Group(BaseModel):
-        group_id: str = Field(**pattern)
-        role: str = Field(examples=["admin", "editor", "viewer"])
 
     class Options(BaseModel):
         enabled: bool

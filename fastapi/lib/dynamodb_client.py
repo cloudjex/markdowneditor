@@ -42,7 +42,7 @@ class DynamoDBClient:
                 "PK": f"EMAIL#{user.email}",
                 "SK": "USER",
                 "password": user.password,
-                "groups": [i.model_dump() for i in user.groups],
+                "groups": user.groups,
                 "options": user.options.model_dump(),
             }
         )
@@ -66,6 +66,7 @@ class DynamoDBClient:
             return Group(
                 group_id=item["PK"],
                 group_name=item["group_name"],
+                users=item["users"],
             )
 
     def put_group(self, group: Group) -> None:
@@ -74,6 +75,15 @@ class DynamoDBClient:
                 "PK": f"GROUP_ID#{group.group_id}",
                 "SK": "USER_GROUP",
                 "group_name": group.group_name,
+                "users": [u.model_dump() for u in group.users],
+            }
+        )
+
+    def delete_group(self, group: Group) -> None:
+        self._db_client.delete_item(
+            Key={
+                "PK": f"GROUP_ID#{group.group_id}",
+                "SK": "USER_GROUP",
             }
         )
 

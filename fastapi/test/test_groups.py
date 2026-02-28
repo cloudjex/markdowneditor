@@ -1,6 +1,6 @@
 import time
 
-from .conftest import fa_client
+from .conftest import EMAIL, fa_client
 
 
 class TestGetGroupsSuccess:
@@ -14,6 +14,10 @@ class TestGetGroupsSuccess:
         assert type(body) is list
         assert type(body[0]["group_id"]) is str
         assert type(body[0]["group_name"]) is str
+        assert type(body[0]["users"]) is list
+        assert type(body[0]["users"][0]) is dict
+        assert type(body[0]["users"][0]["email"]) is str
+        assert type(body[0]["users"][0]["role"]) is str
 
 
 class TestGetGroupsFail:
@@ -48,7 +52,11 @@ class TestPostGroupsSuccess:
         )
         assert res.status_code == 200
         body: list = res.json()
-        assert any(group["group_id"] == group_id for group in body)
+
+        group = next((g for g in body if g["group_id"] == group_id), None)
+        assert group is not None
+        assert group["users"][0]["email"] == EMAIL
+        assert group["users"][0]["role"] == "admin"
 
         # check if group is added to user's groups
         res = fa_client.get(
@@ -58,7 +66,7 @@ class TestPostGroupsSuccess:
         assert res.status_code == 200
         body = res.json()
         assert type(body["groups"]) is list
-        assert body["groups"][-1]["group_id"] == group_id
+        assert body["groups"][-1] == group_id
 
 
 class TestPostGroupsFail:

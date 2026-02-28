@@ -45,7 +45,7 @@ async def func(
     summary="Sign in to user group",
     response_model=IdToken,
     responses={
-        403: config.RES_403,
+        401: config.RES_401,
         422: config.RES_422,
     },
 )
@@ -54,11 +54,16 @@ async def func(
     jwt: JwtClaim = Depends(JwtClient().verify),
 ):
     user = db_client.get_user(email=jwt.email)
-    if not user.options.enabled:
-        raise errors.ForbiddenError
+    group = db_client.get_group(req.group_id)
 
-    if not any(req.group_id == g.group_id for g in user.groups):
-        raise errors.ForbiddenError
+    if not user or not group:
+        raise errors.UnauthorizedError
+
+    if not user.options.enabled or not any(req.group_id == g for g in user.groups):
+        raise errors.UnauthorizedError
+
+    if not any(jwt.email == u.email for u in group.users):
+        raise errors.UnauthorizedError
 
     id_token = JwtClient().encode(jwt.email, req.group_id)
     return {"id_token": id_token}
